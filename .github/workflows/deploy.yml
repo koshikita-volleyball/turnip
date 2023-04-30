@@ -44,6 +44,7 @@ jobs:
           --resolve-image-repos \
           --stack-name ${{ env.project-name }} \
           --capabilities CAPABILITY_IAM
+        working-directory: ${{ env.server-directory }}
   # # Build job
   # nextjs-build:
   #   needs:
