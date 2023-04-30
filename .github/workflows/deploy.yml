@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - bugfix/34-sam-setting-file-and-command-params-mismatch
 
 env:
   project-name: koshikita-volleyball-turnip
