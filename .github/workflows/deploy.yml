@@ -39,11 +39,11 @@ jobs:
       - name: Deploy Lambda
         run: |
           sam deploy \
-            --no-confirm-changeset \
-            --no-fail-on-empty-changeset \
-            --resolve-image-repos \
-            --stack-name ${{ env.project-name }} \
-            --capabilities CAPABILITY_IAM
+          --no-confirm-changeset \
+          --no-fail-on-empty-changeset \
+          --resolve-image-repos \
+          --stack-name ${{ env.project-name }} \
+          --capabilities CAPABILITY_IAM
   # # Build job
   # nextjs-build:
   #   needs:
