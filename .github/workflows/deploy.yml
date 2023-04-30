@@ -45,119 +45,98 @@ jobs:
           --stack-name ${{ env.project-name }} \
           --capabilities CAPABILITY_IAM
         working-directory: ${{ env.server-directory }}
-  # # Build job
-  # nextjs-build:
-  #   needs:
-  #     - lambda-deploy
-  #     - nextjs-test
-  #   if: ${{ needs.nextjs-test.outputs.test-status == 'success' }}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     # ★ 機密情報を扱う際にOutputsを使用すると空文字になるため、二度手間になってしまうが、、、
-  #     - uses: aws-actions/configure-aws-credentials@v1
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: ${{ secrets.AWS_REGION }}
-  #     # ★ 機密情報を扱う際にOutputsを使用すると空文字になるため、二度手間になってしまうが、、、
-  #     - name: Get API Gateway URL
-  #       run: |
-  #         API_GATEWAY_URL=$(aws cloudformation describe-stacks --stack-name ${{ env.project_name }} --query "Stacks[0].Outputs[?OutputKey=='YourInfoApi'].OutputValue" --output text --no-cli-pager)
-  #         echo "API_GATEWAY_URL=$API_GATEWAY_URL" >> $GITHUB_ENV
-  #     - name: API Gateway URL empty guard
-  #       run: |
-  #         echo "API Gateway URL -> ${{ env.API_GATEWAY_URL }}"
-  #         if [ -z "${{ env.API_GATEWAY_URL }}" ]; then
-  #           echo "API Gateway URL is empty"
-  #           exit 1
-  #         fi
-  #     - name: API Gateway URL empty guard
-  #       run: |
-  #         echo "API Gateway URL -> ${{ env.API_GATEWAY_URL }}"
-  #         if [ -z "${{ env.API_GATEWAY_URL }}" ]; then
-  #           echo "API Gateway URL is empty"
-  #           exit 1
-  #         fi
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #     - name: Setup Node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: "18"
-  #         cache: yarn
-  #     - name: Setup Pages
-  #       uses: actions/configure-pages@v2
-  #       with:
-  #         # Automatically inject basePath in your Next.js configuration file and disable
-  #         # server side image optimization (https://nextjs.org/docs/api-reference/next/image#unoptimized).
-  #         #
-  #         # You may remove this line if you want to manage the configuration yourself.
-  #         static_site_generator: next
-  #     - name: Restore cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: |
-  #           .next/cache
-  #         # Generate a new cache whenever packages or source files change.
-  #         key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
-  #         # If source files changed but packages didn't, rebuild from a prior cache.
-  #         restore-keys: |
-  #           ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
-  #     - name: Install dependencies
-  #       run: yarn
-  #     # - name: Generating .env.local
-  #     #   run: |
-  #     #     echo "${{ secrets.ENV_LOCAL }}" > .env.local
-  #     - name: Show API Gateway URL
-  #       env:
-  #         api-gateway-url: ${{ env.API_GATEWAY_URL }}
-  #       run: |
-  #         echo "API Gateway URL -> ${{ env.api-gateway-url }}"
-  #     - name: Check status code of curl response
-  #       env:
-  #         api-gateway-url: ${{ env.API_GATEWAY_URL }}
-  #       run: |
-  #         response=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.API_GATEWAY_URL }}/your-info")
-  #         if [ $response -eq 200 ]; then
-  #           echo "Success"
-  #         else
-  #           echo "Failed"
-  #           echo "Response code: $response"
-  #           echo "API Gateway URL: ${{ env.API_GATEWAY_URL }}"
-  #           exit 1
-  #         fi
-  #     - name: Set API Gateway URL
-  #       env:
-  #         api-gateway-url: ${{ env.API_GATEWAY_URL }}
-  #       run: |
-  #         echo "NEXT_PUBLIC_LAMBDA_API_URL=${{ env.API_GATEWAY_URL }}" >> .env.local
-  #     - name: My Debug # デバグ用コード
-  #       env:
-  #         api-gateway-url: ${{ env.API_GATEWAY_URL }}
-  #       run: |
-  #         echo "NEXT_PUBLIC_LAMBDA_API_URL=${{ env.API_GATEWAY_URL }}" >> ./public/env.txt
-  #     - name: My Debug # デバグ用コード
-  #       env:
-  #         api-gateway-url: ${{ needs.lambda-deploy.outputs.api-gateway-url }}
-  #       run: |
-  #         echo "NEXT_PUBLIC_LAMBDA_API_URL=${{ env.api-gateway-url }}" >> ./public/output-env.txt
-  #     - name: Cat .env.local
-  #       run: |
-  #         cat .env.local
-  #     - name: Build with Next.js
-  #       run: yarn build
-  #     - name: Upload artifact
-  #       uses: actions/upload-pages-artifact@v1
-  #       with:
-  #         path: ./dist
-  # # Deployment job
-  # nextjs-deploy:
-  #   environment:
-  #     name: github-pages
-  #     url: ${{ steps.deployment.outputs.page_url }}
-  #   runs-on: ubuntu-latest
-  #   needs: nextjs-build
-  #   steps:
-  #     - name: Deploy to GitHub Pages
-  #       id: deployment
-  #       uses: actions/deploy-pages@v1
+  # Build job
+  nextjs-build:
+    needs: lambda-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Get API Gateway URL
+        run: |
+          API_GATEWAY_URL=$(aws cloudformation describe-stacks --stack-name ${{ env.project-name }} --query "Stacks[0].Outputs[?OutputKey=='MyApiGateway'].OutputValue" --output text --no-cli-pager)
+          echo "API_GATEWAY_URL=$API_GATEWAY_URL" >> $GITHUB_ENV
+      - name: API Gateway URL empty guard
+        run: |
+          echo "API Gateway URL -> ${{ env.API_GATEWAY_URL }}"
+          if [ -z "${{ env.API_GATEWAY_URL }}" ]; then
+            echo "API Gateway URL is empty"
+            exit 1
+          fi
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: yarn
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+        with:
+          static_site_generator: next
+      - name: Restore cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            .next/cache
+          # Generate a new cache whenever packages or source files change.
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          # If source files changed but packages didn't, rebuild from a prior cache.
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
+      - name: Install dependencies
+        run: yarn install
+      # - name: Generating .env.local
+      #   run: |
+      #     echo "${{ secrets.ENV_LOCAL }}" > .env.local
+      - name: Check status code of curl response
+        env:
+          api-gateway-url: ${{ env.API_GATEWAY_URL }}
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.API_GATEWAY_URL }}/api/hello")
+          if [ $response -eq 200 ]; then
+            echo "Success"
+          else
+            echo "Failed"
+            echo "Response code: $response"
+            echo "API Gateway URL: ${{ env.API_GATEWAY_URL }}"
+            exit 1
+          fi
+      - name: Set API Gateway URL
+        env:
+          api-gateway-url: ${{ env.API_GATEWAY_URL }}
+        run: |
+          echo "NEXT_PUBLIC_LAMBDA_API_URL=${{ env.API_GATEWAY_URL }}" >> .env.local
+      - name: My Debug # デバグ用コード
+        env:
+          api-gateway-url: ${{ env.API_GATEWAY_URL }}
+        run: |
+          echo "NEXT_PUBLIC_LAMBDA_API_URL=${{ env.API_GATEWAY_URL }}" >> ./public/env.txt
+      - name: My Debug # デバグ用コード
+        env:
+          api-gateway-url: ${{ needs.lambda-deploy.outputs.api-gateway-url }}
+        run: |
+          echo "NEXT_PUBLIC_LAMBDA_API_URL=${{ env.api-gateway-url }}" >> ./public/output-env.txt
+      - name: Cat .env.local
+        run: |
+          cat .env.local
+      - name: Build with Next.js
+        run: yarn build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./.next
+  # Deployment job
+  nextjs-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: nextjs-build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1

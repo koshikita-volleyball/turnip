@@ -8,19 +8,61 @@ Description: >
 Globals:
   Function:
     Timeout: 60
-
-    Tracing: Active
   Api:
-    TracingEnabled: true
+    Cors:
+      AllowOrigin: "'*'"
+      AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+      AllowHeaders: "'*'"
+
 Resources:
-  HelloWorldFunction:
+  MyBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-image
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+
+  MyLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${AWS::StackName}-lambda-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: !Sub ${AWS::StackName}-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: AllowS3Object
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                  - s3:ListBucket
+                Resource: !Sub "arn:aws:s3:::${MyBucket}/*"
+              - Sid: AllowS3List
+                Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource: !Sub "arn:aws:s3:::${MyBucket}"
+
+  HelloFunction:
     Type: AWS::Serverless::Function
+    FunctionName: !Sub ${AWS::StackName}-hello
     Properties:
       PackageType: Image
+      Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
       Events:
-        HelloWorld:
+        MyApiGateway:
           Type: Api
           Properties:
             Path: /api/hello
@@ -31,12 +73,6 @@ Resources:
       Dockerfile: Dockerfile
 
 Outputs:
-  HelloWorldApi:
-    Description: API Gateway endpoint URL for Prod stage for Hello World function
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
-    Description: Hello World Lambda Function ARN
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
-    Description: Implicit IAM Role created for Hello World function
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+  MyApiGateway:
+    Description: API Gateway endpoint URL for Prod stage
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
