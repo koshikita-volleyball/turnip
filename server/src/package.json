@@ -1,11 +1,11 @@
 {
-  "name": "hello_world",
+  "name": "turnip",
   "version": "1.0.0",
-  "description": "hello world sample for NodeJS",
+  "description": "株価予測プログラム！",
   "main": "app.js",
-  "repository": "https://github.com/awslabs/aws-sam-cli/tree/develop/samcli/local/init/templates/cookiecutter-aws-sam-hello-nodejs",
-  "author": "SAM CLI",
-  "license": "MIT",
+  "repository": "https://github.com/koshikita-volleyball/turnip.git",
+  "author": "koshikita-volleyball",
+  "license": "Apache-2.0",
   "dependencies": {
     "axios": ">=0.21.1"
   },
