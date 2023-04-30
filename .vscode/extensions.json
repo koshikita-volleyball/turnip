@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "ms-azuretools.vscode-docker",
+    "editorconfig.editorconfig",
+    "dsznajder.es7-react-js-snippets",
+    "dbaeumer.vscode-eslint",
+    "github.copilot",
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+    "wayou.vscode-todo-highlight"
+  ]
+}
