@@ -7,7 +7,7 @@ on:
       - main
 
 env:
-  project-name: turnip
+  project-name: koshikita-volleyball-turnip
   client-directory: ./client
   server-directory: ./server
 
