@@ -64,6 +64,16 @@ Resources:
                 Action:
                   - s3:ListBucket
                 Resource: !Sub "arn:aws:s3:::${MyBucket}"
+              - Sid: AllowDynamoDBTable
+                Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource: !GetAtt MyDynamoDBTable.Arn
 
   HelloFunction:
     Type: AWS::Serverless::Function
