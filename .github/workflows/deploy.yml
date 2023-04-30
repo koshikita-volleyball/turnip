@@ -78,6 +78,7 @@ jobs:
           static_site_generator: next
       - name: Install dependencies
         run: yarn install
+        working-directory: ${{ env.client-directory }}
       # - name: Generating .env.local
       #   run: |
       #     echo "${{ secrets.ENV_LOCAL }}" > .env.local
