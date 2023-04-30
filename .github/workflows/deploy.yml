@@ -39,59 +39,11 @@ jobs:
       - name: Deploy Lambda
         run: |
           sam deploy \
-            --no-confirm-changeset \
-            --no-fail-on-empty-changeset \
-            --resolve-image-repos \
-            --stack-name ${{ env.project-name }} \
-            --s3-bucket ${{ env.project-name }} \
-            --capabilities CAPABILITY_IAM \
-          || aws s3 mb s3://${{ env.project-name }} && sam deploy \
-            --no-confirm-changeset \
-            --no-fail-on-empty-changeset \
-            --resolve-image-repos \
-            --stack-name ${{ env.project-name }} \
-            --s3-bucket ${{ env.project-name }} \
-            --capabilities CAPABILITY_IAM
-        working-directory: ${{ env.server-directory }}
-      # - name: Get API Gateway URL
-      #   run: |
-      #     API_GATEWAY_URL=$(aws cloudformation describe-stacks --stack-name ${{ env.project-name }} --query "Stacks[0].Outputs[?OutputKey=='YourInfoApi'].OutputValue" --output text --no-cli-pager)
-      #     echo "API_GATEWAY_URL=$API_GATEWAY_URL" >> $GITHUB_ENV
-      # - name: Cat API Gateway URL
-      #   run: echo $API_GATEWAY_URL
-      # - name: Check status code of curl response
-      #   run: |
-      #     response=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.API_GATEWAY_URL }}/your-info")
-      #     if [ $response -eq 200 ]; then
-      #       echo "Success"
-      #     else
-      #       echo "Failed"
-      #       echo "Response code: $response"
-      #       echo "API Gateway URL: ${{ env.API_GATEWAY_URL }}"
-      #       exit 1
-      #     fi
-    # Outputsで機密情報を扱うことはできない？
-      # - name: Keep API Gateway URL
-      #   id: api-gateway-output
-      #   run: echo "url=${{ env.API_GATEWAY_URL }}" >> "$GITHUB_OUTPUT"
-    # outputs:
-    #   api-gateway-url: ${{ steps.api-gateway-output.outputs.url }}
-  # nextjs-test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #     - name: Setup Node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: "18"
-  #         cache: yarn
-  #     - name: Install dependencies
-  #       run: yarn
-  #     - name: Test
-  #       run: yarn test
-  #   outputs:
-  #     test-status: ${{ job.status }}
+          --no-confirm-changeset \
+          --no-fail-on-empty-changeset \
+          --resolve-image-repos \
+          --stack-name ${{ env.project-name }} \
+          --capabilities CAPABILITY_IAM
   # # Build job
   # nextjs-build:
   #   needs:
