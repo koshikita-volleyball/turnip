@@ -43,7 +43,7 @@ jobs:
           --no-fail-on-empty-changeset \
           --resolve-image-repos \
           --stack-name ${{ env.project-name }} \
-          --capabilities CAPABILITY_IAM
+          --capabilities CAPABILITY_NAMED_IAM
         working-directory: ${{ env.server-directory }}
   # Build job
   nextjs-build:
