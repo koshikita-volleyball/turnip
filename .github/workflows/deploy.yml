@@ -2,7 +2,7 @@ name: deploy
 
 on:
   workflow_dispatch:
-  pull_request:
+  push:
     branches:
       - main
     types:
@@ -26,7 +26,6 @@ concurrency:
 
 jobs:
   lambda-deploy:
-    if: ${{ needs.lambda-test.outputs.test-status == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
