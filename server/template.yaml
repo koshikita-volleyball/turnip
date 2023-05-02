@@ -107,7 +107,10 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        Schedule: cron(30 23 ? * MON-FRI *)
+        MySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 0 ? * MON *)
     Metadata:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
