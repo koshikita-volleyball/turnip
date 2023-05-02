@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-      - server/49-sam-training
+      - server/50-run-periodically
 
 env:
   project-name: koshikita-volleyball-turnip
