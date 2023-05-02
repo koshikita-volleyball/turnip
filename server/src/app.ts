@@ -41,3 +41,8 @@ export const goodbyeHandler = async (event: any, context: any) => {
     return err;
   }
 };
+
+
+export const listed_info_handler = async (event: any, context: any) => {
+
+}
