@@ -15,6 +15,7 @@
     "test": "mocha tests/unit/"
   },
   "devDependencies": {
+    "@types/node": "^18.16.3",
     "chai": "^4.3.6",
     "mocha": "^10.1.0"
   }
