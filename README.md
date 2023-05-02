@@ -54,3 +54,14 @@ sam local start-api
 ```
 
 <http://localhost:3000/api/hello>にリクエストを投げて、`hello world`が返ってくればOKです。  
+
+## 本番環境の準備
+
+### GitHub Secretsの設定
+
+| キー | バリュー |
+| --- | --- |
+| AWS_ACCESS_KEY_ID | AWSのアクセスキーID |
+| AWS_SECRET_ACCESS_KEY | AWSのシークレットアクセスキー |
+| AWS_REGION | リージョン名 |
+| LAMBDA_DOTENV | Lambda関数で使用する`.env`ファイルの内容 |
