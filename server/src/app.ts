@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import JQuantsClient from './common/jquants_client';
+import ListedInfoStruct from './interface/listed_info';
 
 dotenv.config();
 
@@ -44,5 +45,16 @@ export const goodbyeHandler = async (event: any, context: any) => {
 
 
 export const listed_info_handler = async (event: any, context: any) => {
-
+  try {
+    return {
+      'statusCode': 200,
+      headers: CORS_HEADERS,
+      'body': JSON.stringify(
+        await JQuantsClient<ListedInfoStruct>("/v1/listed/info"),
+      ),
+    }
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
 }
