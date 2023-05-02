@@ -17,9 +17,6 @@ export const lambdaHandler = async (event: any, context: any) => {
       headers: CORS_HEADERS,
       'body': JSON.stringify({
         message: 'hello world',
-        env1: process.env.ENV1,
-        env2: process.env.ENV2,
-        '/v1/listed/info': await JQuantsClient("/v1/listed/info"),
       })
     }
   } catch (err) {
