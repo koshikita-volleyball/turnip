@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import GetIdToken from './common/get_id_token';
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ export const lambdaHandler = async (event: any, context: any) => {
         message: 'hello world',
         env1: process.env.ENV1,
         env2: process.env.ENV2,
+        id_token: await GetIdToken(),
       })
     }
   } catch (err) {
