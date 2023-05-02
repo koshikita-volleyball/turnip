@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import GetIdToken from './common/get_id_token';
+import JQuantsClient from './common/jquants_client';
 
 dotenv.config();
 
@@ -18,7 +18,7 @@ export const lambdaHandler = async (event: any, context: any) => {
         message: 'hello world',
         env1: process.env.ENV1,
         env2: process.env.ENV2,
-        id_token: await GetIdToken(),
+        '/v1/listed/info': await JQuantsClient("/v1/listed/info"),
       })
     }
   } catch (err) {

@@ -1,4 +1,4 @@
-const base_uri = `https://api.jquants.com`
+import { base_uri } from "./const"
 
 type RefreshTokenResponseStruct = {
   refreshToken: string
