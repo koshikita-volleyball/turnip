@@ -8,7 +8,7 @@ Description: >
 Globals:
   Function:
     Timeout: 60
-    MemorySize: 128
+    MemorySize: 256
   Api:
     Cors:
       AllowOrigin: "'*'"
