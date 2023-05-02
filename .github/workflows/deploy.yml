@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - server/51-using-dotenv
 
 env:
   project-name: koshikita-volleyball-turnip
