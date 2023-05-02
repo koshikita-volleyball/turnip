@@ -107,11 +107,10 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        MyApiGateway:
-          Type: Api
+        MySchedule:
+          Type: Schedule
           Properties:
-            Path: /api/goodbye
-            Method: get
+            Schedule: cron(0 22 * * ? *)
     Metadata:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
