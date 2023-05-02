@@ -34,3 +34,18 @@ export const lambdaHandler = async (event, context) => {
 
   return response
 };
+
+export const goodbyeHandler = async (event, context) => {
+  try {
+    return {
+      'statusCode': 200,
+      headers: CORS_HEADERS,
+      'body': JSON.stringify({
+        message: 'good bye',
+      })
+    }
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
