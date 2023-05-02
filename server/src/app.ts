@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -12,6 +15,8 @@ export const lambdaHandler = async (event: any, context: any) => {
       headers: CORS_HEADERS,
       'body': JSON.stringify({
         message: 'hello world',
+        env1: process.env.ENV1,
+        env2: process.env.ENV2,
       })
     }
   } catch (err) {
