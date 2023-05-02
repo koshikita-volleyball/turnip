@@ -21,6 +21,7 @@ export default function Hello() {
       </Head>
       <main>
         { process.env.NEXT_PUBLIC_LAMBDA_API_URL }
+        <br />
         { text }
       </main>
     </>
