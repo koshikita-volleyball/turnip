@@ -80,6 +80,8 @@ Resources:
     FunctionName: !Sub ${AWS::StackName}-hello
     Properties:
       PackageType: Image
+      ImageConfig:
+        Command: [ "app.lambdaHandler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -88,6 +90,27 @@ Resources:
           Type: Api
           Properties:
             Path: /api/hello
+            Method: get
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
+  
+  GoodByeFunction:
+    Type: AWS::Serverless::Function
+    FunctionName: !Sub ${AWS::StackName}-goodbye
+    Properties:
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.goodbyeHandler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MyApiGateway:
+          Type: Api
+          Properties:
+            Path: /api/goodbye
             Method: get
     Metadata:
       DockerTag: nodejs18.x-v1

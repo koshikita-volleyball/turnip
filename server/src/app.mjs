@@ -1,3 +1,10 @@
+
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS,PATCH',
+  'Access-Control-Allow-Headers': 'Content-Type'
+};
+
 /**
  *
  * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
@@ -15,6 +22,7 @@ export const lambdaHandler = async (event, context) => {
   try {
     return {
       'statusCode': 200,
+      headers: CORS_HEADERS,
       'body': JSON.stringify({
         message: 'hello world',
       })
@@ -25,4 +33,19 @@ export const lambdaHandler = async (event, context) => {
   }
 
   return response
+};
+
+export const goodbyeHandler = async (event, context) => {
+  try {
+    return {
+      'statusCode': 200,
+      headers: CORS_HEADERS,
+      'body': JSON.stringify({
+        message: 'good bye',
+      })
+    }
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
 };
