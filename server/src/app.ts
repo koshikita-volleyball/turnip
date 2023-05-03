@@ -43,13 +43,12 @@ export const goodbyeHandler = async (event: any, context: any) => {
 
 export const listed_info_handler = async (event: any, context: any) => {
   try {
-    const items = await JQuantsClient<ListedInfoStruct[]>("/v1/listed/info");
-    const result = items.slice(0, 10);
+    const items: any = await JQuantsClient("/v1/listed/info");
     return {
       'statusCode': 200,
       headers: CORS_HEADERS,
       'body': JSON.stringify(
-        result,
+        items,
       ),
     }
   } catch (err) {
