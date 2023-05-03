@@ -99,35 +99,3 @@ export const slack_notify_handler = async (event: any, context: any) => {
 
   console.log(`Successfully send message ${result.ts} in conversation ${channel}`);
 }
-
-export const using_s3_handler = async (event: any, context: any) => {
-  try {
-    const s3 = new AWS.S3();
-    const bucket = process.env.S3_BUCKET_NAME!;
-    const key = 'test.txt';
-    const params = {
-      Bucket: bucket,
-      Key: key,
-      Body: 'Hello World!'
-    };
-    await s3.putObject(params).promise();
-    const data = await s3.getObject({ Bucket: bucket, Key: key }).promise();
-    console.log(data.Body?.toString());
-    return {
-      'statusCode': 200,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify({
-        message: 'hello world',
-      })
-    }
-  } catch (err) {
-    console.log(err);
-    return {
-      'statusCode': 500,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify({
-        message: err,
-      })
-    }
-  }
-}
