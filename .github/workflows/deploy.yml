@@ -23,6 +23,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+lambda-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: Install dependencies
+        run: yarn install
+        working-directory: ${{ env.server-directory }}
+      - name: Lint
+        run: yarn lint
+        working-directory: ${{ env.server-directory }}
+      - name: Test
+        run: yarn test
+        working-directory: ${{ env.server-directory }}
   lambda-deploy:
     runs-on: ubuntu-latest
     steps:
