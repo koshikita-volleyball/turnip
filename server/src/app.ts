@@ -99,3 +99,23 @@ export const slack_notify_handler = async (event: any, context: any) => {
 
   console.log(`Successfully send message ${result.ts} in conversation ${channel}`);
 }
+
+export const id_token_updater_handler = async (event: any, context: any) => {
+  try {
+    // S3からリフレッシュトークンを取得
+    const s3 = new AWS.S3();
+    const params = {
+      Bucket: process.env.S3_BUCKET_NAME!,
+      Key: "refresh_token.txt",
+    };
+    const data = await s3.getObject(params).promise();
+    const refreshToken = data.Body?.toString('utf-8');
+    if (refreshToken) {
+      // リフレッシュトークンを使ってIDトークンを更新
+    } else {
+      console.log("refresh_token.txt is empty");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
