@@ -26,6 +26,12 @@ jobs:
       - name: Create dotenv file
         run: echo $'${{ secrets.LAMBDA_DOTENV }}' > ./src/.env
         working-directory: ${{ env.server-directory }}
+      - name: Add S3 Bucket name to dotenv file
+        run: |
+          branch_name=${GITHUB_REF#refs/heads/}  # refs/heads/を削除
+          branch_name=${branch_name#staging/}  # staging/を削除
+          echo "S3_BUCKET_NAME=${{ env.project-name }}-staging-$branch_name-s3-bucket" >> ./src/.env
+        working-directory: ${{ env.server-directory }}
       - run: sam build --use-container
         working-directory: ${{ env.server-directory }}
       - name: Deploy Lambda
