@@ -15,7 +15,7 @@
   },
   "scripts": {
     "lint": "echo \"Linter not implemented yet...\" && exit 0",
-    "console": "ts-node",
+    "console": "ts-node console.ts",
     "test": "tsc && mocha tests/unit/"
   },
   "devDependencies": {
