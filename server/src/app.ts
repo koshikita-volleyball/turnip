@@ -47,7 +47,7 @@ export const listed_info_handler = async (event: any, context: any) => {
       ),
     }
   } catch (err) {
-    console.log(err);
+    console.error(`[ERROR] ${err}`);
     return {
       'statusCode': 500,
       headers: CORS_HEADERS,
@@ -78,7 +78,7 @@ export const prices_daily_quotes_handler = async (event: any, context: any) => {
       ),
     }
   } catch (err) {
-    console.log(err);
+    console.error(`[ERROR] ${err}`);
     return {
       'statusCode': 500,
       headers: CORS_HEADERS,
@@ -186,7 +186,7 @@ export const refresh_token_updater_handler = async (event: any, context: any) =>
     });
     console.log(`Successfully send message ${result.ts} in conversation ${channel}`);
   } catch (err) {
-    console.log(err);
+    console.error(`[ERROR] ${err}`);
   }
 }
 
@@ -201,6 +201,7 @@ export const id_token_updater_handler = async (event: any, context: any) => {
     const data = await s3.getObject(params).promise();
     const refreshToken = data.Body?.toString('utf-8');
     if (refreshToken) {
+      console.log("refreshToken: ", refreshToken);
       // リフレッシュトークンを使ってIDトークンを更新
       const id_token = GetIdToken(refreshToken);
       // S3にIDトークンを保存
@@ -226,6 +227,6 @@ export const id_token_updater_handler = async (event: any, context: any) => {
       console.log("refresh_token.txt is empty");
     }
   } catch (err) {
-    console.log(err);
+    console.error(`[ERROR] ${err}`);
   }
 }
