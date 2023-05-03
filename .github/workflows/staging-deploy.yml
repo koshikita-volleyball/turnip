@@ -9,6 +9,18 @@ env:
   server-directory: ./server
 
 jobs:
+  get-branch-name:
+    runs-on: ubuntu-latest
+    outputs:
+      branch_name: ${{ steps.get-branch-step.outputs.branch_name }}
+    steps:
+      - id: get-branch-step
+        name: Get branch name
+        run: |
+          branch_name=${GITHUB_REF#refs/heads/}  # refs/heads/を削除
+          branch_name=${branch_name#staging/}  # staging/を削除
+          echo "Deploying to staging branch $branch_name"
+          echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
   staging-deploy:
     runs-on: ubuntu-latest
     outputs:
@@ -22,18 +34,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-      - id: get-branch-step
-        name: Get branch name
-        run: |
-          branch_name=${GITHUB_REF#refs/heads/}  # refs/heads/を削除
-          branch_name=${branch_name#staging/}  # staging/を削除
-          echo "Deploying to staging branch $branch_name"
-          echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
-      - name: Create dotenv file
-        run: echo $'${{ secrets.LAMBDA_DOTENV }}' > ./src/.env
-        working-directory: ${{ env.server-directory }}
-      - run: sam build --use-container
-        working-directory: ${{ env.server-directory }}
-      - name: Deploy Lambda
-        run: sam deploy --stack-name ${{ env.project-name }}-staging-${{ needs.stagin-deploy.outputs.branch_name }}
-        working-directory: ${{ env.server-directory }}
+      - name: Cat branch name
+        run: cat ${{ needs.get-branch-name.outputs.branch_name }}
+      # - name: Create dotenv file
+      #   run: echo $'${{ secrets.LAMBDA_DOTENV }}' > ./src/.env
+      #   working-directory: ${{ env.server-directory }}
+      # - run: sam build --use-container
+      #   working-directory: ${{ env.server-directory }}
+      # - name: Deploy Lambda
+      #   run: sam deploy --stack-name ${{ env.project-name }}-staging-${{ needs.stagin-deploy.outputs.branch_name }}
+      #   working-directory: ${{ env.server-directory }}
