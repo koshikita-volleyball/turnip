@@ -1,11 +1,15 @@
 import dotenv from 'dotenv';
 import JQuantsClient from './common/jquants_client';
 import ListedInfoStruct from './interface/listed_info';
-import { GetMailAddressAndPassword, GetRefreshToken } from './common/get_id_token';
 import PricesDailyQuotesStruct from './interface/prices_daily_quotes';
-import { base_uri } from './common/const';
+import { WebClient, LogLevel } from '@slack/web-api';
+import AWS from 'aws-sdk';
 
 dotenv.config();
+AWS.config.update({ region: process.env.AWS_REGION });
+AWS.config.apiVersions = {
+  s3: "2006-03-01",
+};
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -27,22 +31,6 @@ export const lambdaHandler = async (event: any, context: any) => {
     return err;
   }
 };
-
-export const goodbyeHandler = async (event: any, context: any) => {
-  try {
-    return {
-      'statusCode': 200,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify({
-        message: 'good bye',
-      })
-    }
-  } catch (err) {
-    console.log(err);
-    return err;
-  }
-};
-
 
 export const listed_info_handler = async (event: any, context: any) => {
   try {
@@ -97,62 +85,13 @@ export const prices_daily_quotes_handler = async (event: any, context: any) => {
   }
 }
 
-export const refresh_token_handler = async (event: any, context: any) => {
-  try {
-    return {
-      'statusCode': 200,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify({
-        mailaddress: GetMailAddressAndPassword().mailaddress,
-        password: GetMailAddressAndPassword().password,
-        refresh_token: GetRefreshToken(),
-      }),
-    }
-  } catch (err) {
-    console.log(err);
-    return {
-      'statusCode': 500,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify({
-        message: err,
-      })
-    };
-  }
-}
-
-export const weather_handler = async (event: any, context: any) => {
-  try {
-    const latitude = event.queryStringParameters?.latitude
-    const longitude = event.queryStringParameters?.longitude
-    const response = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}`)).json()
-    return {
-      'statusCode': 200,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify(
-        response
-      ),
-    }
-  } catch (err) {
-    console.log(err);
-    return {
-      'statusCode': 500,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify({
-        message: err,
-      })
-    };
-  }
-}
-
-
 export const slack_notify_handler = async (event: any, context: any) => {
 
-  const { WebClient, LogLevel } = require("@slack/web-api")
   const slackClient = new WebClient(process.env.SLACK_API_TOKEN, {
-    logLevel: LogLevel.DEBUG
+    logLevel: LogLevel.DEBUG,
   })
 
-  const channel = process.env.SLACK_NOTICE_CHANNEL
+  const channel = process.env.SLACK_NOTICE_CHANNEL!
   const result = await slackClient.chat.postMessage({
     text: '朝７時だよ :tori:',
     channel,
@@ -161,16 +100,25 @@ export const slack_notify_handler = async (event: any, context: any) => {
   console.log(`Successfully send message ${result.ts} in conversation ${channel}`);
 }
 
-
-export const uri_handler = async (event: any, context: any) => {
+export const using_s3_handler = async (event: any, context: any) => {
   try {
-    const uri = base_uri
+    const s3 = new AWS.S3();
+    const bucket = process.env.S3_BUCKET_NAME!;
+    const key = 'test.txt';
+    const params = {
+      Bucket: bucket,
+      Key: key,
+      Body: 'Hello World!'
+    };
+    await s3.putObject(params).promise();
+    const data = await s3.getObject({ Bucket: bucket, Key: key }).promise();
+    console.log(data.Body?.toString());
     return {
       'statusCode': 200,
       headers: CORS_HEADERS,
       'body': JSON.stringify({
-        uri: uri,
-      }),
+        message: 'hello world',
+      })
     }
   } catch (err) {
     console.log(err);
@@ -180,6 +128,6 @@ export const uri_handler = async (event: any, context: any) => {
       'body': JSON.stringify({
         message: err,
       })
-    };
+    }
   }
 }
