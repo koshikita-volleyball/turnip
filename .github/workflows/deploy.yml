@@ -128,6 +128,9 @@ jobs:
       - name: Set API Gateway URL
         run: echo "NEXT_PUBLIC_LAMBDA_API_URL=${{ env.API_GATEWAY_URL }}" >> .env.local
         working-directory: ${{ env.client-directory }}
+      - name: Cat .env.local
+        run: cat .env.local
+        working-directory: ${{ env.client-directory }}
       - name: Build with Next.js
         run: yarn build
         working-directory: ${{ env.client-directory }}
