@@ -3,6 +3,7 @@ import JQuantsClient from './common/jquants_client';
 import ListedInfoStruct from './interface/listed_info';
 import { GetMailAddressAndPassword, GetRefreshToken } from './common/get_id_token';
 import PricesDailyQuotesStruct from './interface/prices_daily_quotes';
+import { base_uri } from './common/const';
 
 dotenv.config();
 
@@ -130,6 +131,28 @@ export const weather_handler = async (event: any, context: any) => {
       'body': JSON.stringify(
         response
       ),
+    }
+  } catch (err) {
+    console.log(err);
+    return {
+      'statusCode': 500,
+      headers: CORS_HEADERS,
+      'body': JSON.stringify({
+        message: err,
+      })
+    };
+  }
+}
+
+export const uri_handler = async (event: any, context: any) => {
+  try {
+    const uri = base_uri
+    return {
+      'statusCode': 200,
+      headers: CORS_HEADERS,
+      'body': JSON.stringify({
+        uri: uri,
+      }),
     }
   } catch (err) {
     console.log(err);
