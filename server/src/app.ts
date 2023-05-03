@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import JQuantsClient from './common/jquants_client';
 import ListedInfoStruct from './interface/listed_info';
 import { GetMailAddressAndPassword, GetRefreshToken } from './common/get_id_token';
+import PricesDailyQuotesStruct from './interface/prices_daily_quotes';
 
 dotenv.config();
 
@@ -75,7 +76,7 @@ export const prices_daily_quotes_handler = async (event: any, context: any) => {
     if (date) params['date'] = date
     if (from) params['from'] = from
     if (to) params['to'] = to
-    const data = await JQuantsClient<{daily_quotes: ListedInfoStruct[]}>("/v1/prices/daily_quotes", params)
+    const data = await JQuantsClient<{daily_quotes: PricesDailyQuotesStruct[]}>("/v1/prices/daily_quotes", params)
     return {
       'statusCode': 200,
       headers: CORS_HEADERS,
