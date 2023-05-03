@@ -222,12 +222,7 @@ Resources:
         MySchedule:
           Type: Schedule
           Properties:
-            Schedule: rate(1 minute)
-        MyApiGateway:
-          Type: Api
-          Properties:
-            Path: /api/slack
-            Method: get
+            Schedule: cron(0 22 * * ? *)
     Metadata:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
