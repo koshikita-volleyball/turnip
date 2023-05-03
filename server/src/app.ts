@@ -4,6 +4,7 @@ import ListedInfoStruct from './interface/listed_info';
 import { GetMailAddressAndPassword, GetRefreshToken } from './common/get_id_token';
 import PricesDailyQuotesStruct from './interface/prices_daily_quotes';
 import { base_uri } from './common/const';
+import { getBusinessDays } from './analysis/utils';
 
 dotenv.config();
 
@@ -181,5 +182,21 @@ export const uri_handler = async (event: any, context: any) => {
         message: err,
       })
     };
+  }
+}
+
+// テクニカル系のハンドラー
+
+/**
+ * 前営業日からの株価の変化率を返す。
+ */
+export const growth_rate_handler = async (event: any, context: any) => {
+  const prices = await getBusinessDays()
+  return {
+    'statusCode': 200,
+    headers: CORS_HEADERS,
+    'body': JSON.stringify({
+      prices,
+    }),
   }
 }
