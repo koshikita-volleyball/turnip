@@ -1,6 +1,6 @@
 import dayjs from '../common/dayjs'
 import JQuantsClient from '../common/jquants_client';
-import PricesDailyQuotesStruct from '../interface/prices_daily_quotes';
+import PricesDailyQuotesStruct from '../interface/jquants/prices_daily_quotes';
 
 export const getBusinessDays = async (from?: dayjs.Dayjs, to?: dayjs.Dayjs) : Promise<dayjs.Dayjs[]> => {
   const code_toyota = '72030'

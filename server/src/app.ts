@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import JQuantsClient from './common/jquants_client';
-import ListedInfoStruct from './interface/listed_info';
+import ListedInfoStruct from './interface/jquants/listed_info';
 import { GetRefreshToken } from './common/get_id_token';
-import PricesDailyQuotesStruct from './interface/prices_daily_quotes';
+import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes';
 import { base_uri } from './common/const';
 import { getBusinessDays } from './analysis/utils';
 import { WebClient, LogLevel } from '@slack/web-api';
