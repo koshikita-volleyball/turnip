@@ -98,14 +98,30 @@ export const prices_daily_quotes_handler = async (event: any, context: any) => {
 }
 
 export const refresh_token_handler = async (event: any, context: any) => {
+
+  const mailaddress = process.env.JQUANTS_MAILADDRESS
+  const password = process.env.JQUANTS_PASSWORD
+
+  const refresh_token_json = await fetch('https://api.jquants.com/v1/token/auth_user', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      mailaddress,
+      password,
+    }),
+  })
+  const refresh_token = (await refresh_token_json.json()).refreshToken
+
   try {
     return {
       'statusCode': 200,
       headers: CORS_HEADERS,
       'body': JSON.stringify({
-        mailaddress: GetMailAddressAndPassword().mailaddress,
-        password: GetMailAddressAndPassword().password,
-        refresh_token: GetRefreshToken(),
+        mailaddress,
+        password,
+        refresh_token,
       }),
     }
   } catch (err) {

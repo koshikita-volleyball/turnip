@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - server/68-jquants-api-test
 
 env:
   project-name: koshikita-volleyball-turnip
