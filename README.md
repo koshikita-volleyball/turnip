@@ -6,7 +6,21 @@
 
 ### クライアントサイド
 
+`.env.local.example`ファイルをリネームして、`.env.local`ファイルを作成します。  
+ファイルの内容は適宜変更してください。  
+
+次に以下のコマンドを実行します。  
+
+```shell
+yarn dev
+```
+
+これを実行するためには、Node.jsが必要です。  
+
 ### サーバサイド
+
+準備として、`.env.example`ファイルをリネームして、`.env`ファイルを作成します。  
+ファイルの内容は適宜変更してください。  
 
 最初にAWS CLIをインストールします。  
 <https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/install-cliv2.html>  
