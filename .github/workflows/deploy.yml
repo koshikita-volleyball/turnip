@@ -109,9 +109,9 @@ jobs:
       - name: Install dependencies
         run: yarn install
         working-directory: ${{ env.client-directory }}
-      # - name: Generating .env.local
-      #   run: |
-      #     echo "${{ secrets.ENV_LOCAL }}" > .env.local
+      - name: Generating .env.local
+        run: |
+          echo "${{ secrets.NEXTJS_ENV_LOCAL }}" > .env.local
       - name: Check status code of curl response
         env:
           api-gateway-url: ${{ env.API_GATEWAY_URL }}
@@ -127,17 +127,6 @@ jobs:
           fi
       - name: Set API Gateway URL
         run: echo "NEXT_PUBLIC_LAMBDA_API_URL=${{ env.API_GATEWAY_URL }}" >> .env.local
-        working-directory: ${{ env.client-directory }}
-      - name: My Debug # デバグ用コード
-        run: echo "NEXT_PUBLIC_LAMBDA_API_URL=${{ env.API_GATEWAY_URL }}" >> ./public/env.txt
-        working-directory: ${{ env.client-directory }}
-      - name: My Debug # デバグ用コード
-        env:
-          api-gateway-url: ${{ needs.lambda-deploy.outputs.api-gateway-url }}
-        run: echo "NEXT_PUBLIC_LAMBDA_API_URL=${{ env.api-gateway-url }}" >> ./public/output-env.txt
-        working-directory: ${{ env.client-directory }}
-      - name: Cat .env.local
-        run: cat .env.local
         working-directory: ${{ env.client-directory }}
       - name: Build with Next.js
         run: yarn build
