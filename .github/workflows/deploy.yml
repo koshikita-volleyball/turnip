@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - server/68-empty-listed-info-bugfix
 
 env:
   project-name: koshikita-volleyball-turnip
