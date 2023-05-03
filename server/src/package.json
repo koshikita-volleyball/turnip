@@ -12,9 +12,11 @@
     "typescript": "^5.0.4"
   },
   "scripts": {
-    "test": "mocha tests/unit/"
+    "test": "tsc && mocha tests/unit/"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.5",
+    "@types/mocha": "^10.0.1",
     "@types/node": "^18.16.3",
     "chai": "^4.3.6",
     "mocha": "^10.1.0"
