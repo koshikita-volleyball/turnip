@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import JQuantsClient from './common/jquants_client';
 import ListedInfoStruct from './interface/listed_info';
 import PricesDailyQuotesStruct from './interface/prices_daily_quotes';
+import { WebClient, LogLevel } from '@slack/web-api';
 
 dotenv.config();
 
@@ -81,12 +82,11 @@ export const prices_daily_quotes_handler = async (event: any, context: any) => {
 
 export const slack_notify_handler = async (event: any, context: any) => {
 
-  const { WebClient, LogLevel } = require("@slack/web-api")
   const slackClient = new WebClient(process.env.SLACK_API_TOKEN, {
-    logLevel: LogLevel.DEBUG
+    logLevel: LogLevel.DEBUG,
   })
 
-  const channel = process.env.SLACK_NOTICE_CHANNEL
+  const channel = process.env.SLACK_NOTICE_CHANNEL!
   const result = await slackClient.chat.postMessage({
     text: '朝７時だよ :tori:',
     channel,
