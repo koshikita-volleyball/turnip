@@ -9,24 +9,6 @@ env:
   server-directory: ./server
 
 jobs:
-  get-branch-name:
-    runs-on: ubuntu-latest
-    outputs:
-      branch_name: ${{ steps.get-branch-step.outputs.branch_name }}
-      output1: ${{ steps.step1.outputs.test }}
-      output2: ${{ steps.step2.outputs.test }}
-    steps:
-      - id: step1
-        run: echo "test=hello" >> $GITHUB_OUTPUT
-      - id: step2
-        run: echo "test=world" >> $GITHUB_OUTPUT
-      - id: get-branch-step
-        name: Get branch name
-        run: |
-          branch_name=${GITHUB_REF#refs/heads/}  # refs/heads/を削除
-          branch_name=${branch_name#staging/}  # staging/を削除
-          echo "Deploying to staging branch $branch_name"
-          echo "branch_name=world" >> $GITHUB_OUTPUT
   staging-deploy:
     runs-on: ubuntu-latest
     steps:
@@ -41,11 +23,14 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-      # - name: Create dotenv file
-      #   run: echo $'${{ secrets.LAMBDA_DOTENV }}' > ./src/.env
-      #   working-directory: ${{ env.server-directory }}
-      # - run: sam build --use-container
-      #   working-directory: ${{ env.server-directory }}
-      # - name: Deploy Lambda
-      #   run: sam deploy --stack-name ${{ env.project-name }}-staging-${{ needs.stagin-deploy.outputs.branch_name }}
-      #   working-directory: ${{ env.server-directory }}
+      - name: Create dotenv file
+        run: echo $'${{ secrets.LAMBDA_DOTENV }}' > ./src/.env
+        working-directory: ${{ env.server-directory }}
+      - run: sam build --use-container
+        working-directory: ${{ env.server-directory }}
+      - name: Deploy Lambda
+        run: |
+          branch_name=${GITHUB_REF#refs/heads/}  # refs/heads/を削除
+          branch_name=${branch_name#staging/}  # staging/を削除
+          sam deploy --stack-name ${{ env.project-name }}-staging-$branch_name
+        working-directory: ${{ env.server-directory }}
