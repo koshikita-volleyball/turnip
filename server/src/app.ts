@@ -98,6 +98,7 @@ export const prices_daily_quotes_handler = async (event: any, context: any) => {
 }
 
 export const refresh_token_handler = async (event: any, context: any) => {
+  const refresh_token =  await GetRefreshToken()
   try {
     return {
       'statusCode': 200,
@@ -105,7 +106,7 @@ export const refresh_token_handler = async (event: any, context: any) => {
       'body': JSON.stringify({
         mailaddress: GetMailAddressAndPassword().mailaddress,
         password: GetMailAddressAndPassword().password,
-        refresh_token: GetRefreshToken(),
+        refresh_token,
       }),
     }
   } catch (err) {
