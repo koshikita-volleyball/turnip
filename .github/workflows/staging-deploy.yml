@@ -9,7 +9,7 @@ env:
   server-directory: ./server
 
 jobs:
-  stagin-deploy:
+  staging-deploy:
     runs-on: ubuntu-latest
     outputs:
       branch_name: ${{ steps.get-branch-step.outputs.branch_name }}
