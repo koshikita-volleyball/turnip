@@ -1,9 +1,15 @@
-import { lambdaHandler } from './app'
+global.fetch = require('node-fetch')
 
-lambdaHandler(null, null)
-.then((result) => {
+const func = require('./app')
+
+const handlerName = process.argv[2]
+const handlerEvent = eval('(' + process.argv[3] + ')') || {}
+const handlerContext = eval('(' + process.argv[4] + ')') || {}
+
+func[handlerName](handlerEvent, handlerContext)
+.then((result: any) => {
   console.log(result)
 })
-.catch((error) => {
+.catch((error: any) => {
   console.error(error)
 })
