@@ -12,6 +12,7 @@
     "axios": ">=0.21.1",
     "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
+    "node-fetch": "2.6.6",
     "typescript": "^5.0.4"
   },
   "scripts": {
@@ -23,6 +24,7 @@
     "@types/chai": "^4.3.5",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.16.3",
+    "@types/node-fetch": "2.x",
     "chai": "^4.3.6",
     "mocha": "^10.1.0",
     "ts-node": "^10.9.1"
