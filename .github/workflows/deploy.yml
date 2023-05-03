@@ -11,13 +11,11 @@ env:
   client-directory: ./client
   server-directory: ./server
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -59,7 +57,6 @@ jobs:
       - name: Deploy Lambda
         run: sam deploy --stack-name ${{ env.project-name }}
         working-directory: ${{ env.server-directory }}
-  # nextjs-check
   nextjs-check:
     runs-on: ubuntu-latest
     steps:
@@ -76,7 +73,6 @@ jobs:
       - name: Test
         run: yarn test
         working-directory: ${{ env.client-directory }}
-  # Build job
   nextjs-build:
     needs:
       - nextjs-check
@@ -149,7 +145,6 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           path: ${{ env.client-directory }}/dist
-  # Deployment job
   nextjs-deploy:
     environment:
       name: github-pages
