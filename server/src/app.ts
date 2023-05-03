@@ -120,27 +120,27 @@ type ResponseGrowthRateClose = {
  * 前営業日からの終値の変化率が一定以上の銘柄を返す。
  */
 export const growth_rate_close_handler = async (event: any, context: any) => {
-  
+
   // 閾値を取得
   const threshold = parseFloat(event.queryStringParameters?.threshold)
 
   const res : ResponseGrowthRateClose[]  = []
-  
+
   const dates = await getBusinessDays()
   const { daily_quotes:daily_quotes_before } = await JQuantsClient<{daily_quotes: PricesDailyQuotesStruct[]}>("/v1/prices/daily_quotes", {
     date: dates[dates.length - 2].format('YYYY-MM-DD'),
   })
-  
+
   const { daily_quotes:daily_quotes_after } = await JQuantsClient<{daily_quotes: PricesDailyQuotesStruct[]}>("/v1/prices/daily_quotes", {
     date: dates[dates.length - 1].format('YYYY-MM-DD'),
   })
 
   // prices_beforeをfor文で回して、prices_afterの中にある銘柄を探す
   for(const dq_before of daily_quotes_before) {
-    
+
     const dq_after = daily_quotes_after.find(dq => dq.Code === dq_before.Code)
     if (!dq_after || !dq_before.Close || !dq_after.Close) continue
-    
+
     const growth_rate = (dq_after.Close - dq_before.Close) / dq_before.Close
     if (!threshold || growth_rate > threshold) {
       res.push({
