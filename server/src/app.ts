@@ -26,22 +26,6 @@ export const lambdaHandler = async (event: any, context: any) => {
   }
 };
 
-export const goodbyeHandler = async (event: any, context: any) => {
-  try {
-    return {
-      'statusCode': 200,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify({
-        message: 'good bye',
-      })
-    }
-  } catch (err) {
-    console.log(err);
-    return err;
-  }
-};
-
-
 export const listed_info_handler = async (event: any, context: any) => {
   try {
     const data = await JQuantsClient<{info: ListedInfoStruct[]}>("/v1/listed/info")
