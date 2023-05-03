@@ -34,8 +34,8 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-      - name: Cat branch name
-        run: cat ${{ needs.get-branch-name.outputs.branch_name }}
+      - name: Echo branch name
+        run: echo ${{ needs.get-branch-name.outputs.branch_name }}
       # - name: Create dotenv file
       #   run: echo $'${{ secrets.LAMBDA_DOTENV }}' > ./src/.env
       #   working-directory: ${{ env.server-directory }}
