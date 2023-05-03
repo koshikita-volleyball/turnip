@@ -7,7 +7,7 @@ Description: >
 
 Globals:
   Function:
-    Timeout: 60
+    Timeout: 300
     MemorySize: 256
   Api:
     Cors:
@@ -161,6 +161,48 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: cron(0 22 * * ? *)
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
+
+  UriFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-uri
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.uri_handler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MyApiGateway:
+          Type: Api
+          Properties:
+            Path: /api/uri
+            Method: get
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
+
+  TechnicalGrowthRateFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-technical-growth-rate
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.growth_rate_close_handler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MyApiGateway:
+          Type: Api
+          Properties:
+            Path: /api/technical/growth_rate_close
+            Method: get
     Metadata:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
