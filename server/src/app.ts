@@ -42,12 +42,15 @@ export const goodbyeHandler = async (event: any, context: any) => {
 
 
 export const listed_info_handler = async (event: any, context: any) => {
+  const items = await JQuantsClient<ListedInfoStruct[]>("/v1/listed/info");
+  // 先頭の10件を返す
+  const result = items.slice(0, 10);
   try {
     return {
       'statusCode': 200,
       headers: CORS_HEADERS,
       'body': JSON.stringify(
-        await JQuantsClient<ListedInfoStruct[]>("/v1/listed/info"),
+        result,
       ),
     }
   } catch (err) {
