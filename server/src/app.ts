@@ -141,3 +141,20 @@ export const weather_handler = async (event: any, context: any) => {
     };
   }
 }
+
+export const slack_notify_handler = async (event: any, context: any) => {
+
+  const { WebClient, LogLevel } = require("@slack/web-api")
+  const slackClient = new WebClient(process.env.SLACK_API_TOKEN, {
+    logLevel: LogLevel.DEBUG
+  })
+
+  const channel = process.env.SLACK_NOTICE_CHANNEL
+  const result = await slackClient.chat.postMessage({
+    text: '`/api/slack`にアクセスあった時 or 30秒ごとにトリ :tori:',
+    channel,
+  });
+
+  console.log(`Successfully send message ${result.ts} in conversation ${channel}`);
+}
+

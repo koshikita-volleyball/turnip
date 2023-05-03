@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - server/72-slack-notification
 
 env:
   project-name: koshikita-volleyball-turnip
