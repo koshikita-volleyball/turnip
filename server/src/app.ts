@@ -189,5 +189,3 @@ export const refresh_token_updater_handler = async (event: any, context: any) =>
     console.log(err);
   }
 }
-=========
->>>>>>>>> Temporary merge branch 2
