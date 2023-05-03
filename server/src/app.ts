@@ -5,14 +5,10 @@ import { GetRefreshToken } from './common/get_id_token';
 import PricesDailyQuotesStruct from './interface/prices_daily_quotes';
 import { getBusinessDays } from './analysis/utils';
 import { WebClient, LogLevel } from '@slack/web-api';
-import AWS from 'aws-sdk';
+import AWS from './common/aws';
 import GetIdToken from './common/get_id_token';
 
 dotenv.config();
-AWS.config.update({ region: process.env.AWS_REGION });
-AWS.config.apiVersions = {
-  s3: "2006-03-01",
-};
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',

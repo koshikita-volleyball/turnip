@@ -1,11 +1,6 @@
 import GetIdToken from "./get_id_token"
 import { base_uri } from "./const"
-import AWS from 'aws-sdk';
-
-AWS.config.update({ region: process.env.AWS_REGION });
-AWS.config.apiVersions = {
-  s3: "2006-03-01",
-};
+import AWS from './aws'
 
 async function JQuantsClient<T>(path: string, params: {[key: string]: string} | null = null): Promise<T> {
   // S3からIDトークンを取得
