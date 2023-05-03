@@ -7,7 +7,6 @@
   "author": "koshikita-volleyball",
   "license": "Apache-2.0",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.325.0",
     "@slack/web-api": "^6.8.1",
     "axios": ">=0.21.1",
     "dotenv": "^16.0.3",
