@@ -23,7 +23,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-lambda-check:
+  lambda-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
