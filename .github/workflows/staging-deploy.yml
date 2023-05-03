@@ -20,11 +20,9 @@ jobs:
           branch_name=${GITHUB_REF#refs/heads/}  # refs/heads/を削除
           branch_name=${branch_name#staging/}  # staging/を削除
           echo "Deploying to staging branch $branch_name"
-          echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
+          echo "branch_name=world" >> $GITHUB_OUTPUT
   staging-deploy:
     runs-on: ubuntu-latest
-    outputs:
-      branch_name: ${{ steps.get-branch-step.outputs.branch_name }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
