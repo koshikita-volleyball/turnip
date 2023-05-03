@@ -10,18 +10,23 @@
     "@slack/web-api": "^6.8.1",
     "aws-sdk": "^2.1370.0",
     "axios": ">=0.21.1",
+    "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
+    "node-fetch": "2.6.6",
     "typescript": "^5.0.4"
   },
   "scripts": {
     "lint": "echo \"Linter not implemented yet...\" && exit 0",
+    "console": "ts-node console.ts",
     "test": "tsc && mocha tests/unit/"
   },
   "devDependencies": {
     "@types/chai": "^4.3.5",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.16.3",
+    "@types/node-fetch": "2.x",
     "chai": "^4.3.6",
-    "mocha": "^10.1.0"
+    "mocha": "^10.1.0",
+    "ts-node": "^10.9.1"
   }
 }
