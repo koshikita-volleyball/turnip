@@ -47,7 +47,7 @@ export const listed_info_handler = async (event: any, context: any) => {
       'statusCode': 200,
       headers: CORS_HEADERS,
       'body': JSON.stringify(
-        await JQuantsClient<ListedInfoStruct>("/v1/listed/info"),
+        [[]],
       ),
     }
   } catch (err) {
