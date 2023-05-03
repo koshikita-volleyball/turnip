@@ -130,7 +130,6 @@ export const uri_handler = async (event: any, context: any) => {
 
 // TODO: レスポンスの型をまとめたい
 type ResponseGrowthRateClose = {
-  threshold: number,
   code: string,
   growth_rate: number,
   daily_quotes: {
@@ -167,7 +166,6 @@ export const growth_rate_close_handler = async (event: any, context: any) => {
     const growth_rate = (dq_after.Close - dq_before.Close) / dq_before.Close
     if (!threshold || growth_rate > threshold) {
       res.push({
-        threshold,
         code: dq_before.Code,
         growth_rate,
         daily_quotes: {
