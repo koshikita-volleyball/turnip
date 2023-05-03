@@ -1,5 +1,7 @@
 FROM public.ecr.aws/lambda/nodejs:18
-COPY . .
+WORKDIR /app
 RUN npm install -g yarn
+RUN package.json yarn.lock .
 RUN yarn install
+COPY . .
 RUN yarn tsc
