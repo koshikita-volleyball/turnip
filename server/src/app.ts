@@ -53,6 +53,7 @@ export const listed_info_handler = async (event: any, context: any) => {
       ),
     }
   } catch (err) {
+    console.log(err);
     return {
       'statusCode': 500,
       headers: CORS_HEADERS,
