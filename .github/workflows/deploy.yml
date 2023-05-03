@@ -7,7 +7,7 @@ on:
       - main
 
 env:
-  project-name: koshikita-volleyball-turnip
+  project-name: ${{ secrets.PROJECT_NAME }}
   client-directory: ./client
   server-directory: ./server
   node-version: 18
@@ -52,6 +52,9 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Create dotenv file
         run: echo $'${{ secrets.LAMBDA_DOTENV }}' > ./src/.env
+        working-directory: ${{ env.server-directory }}
+      - name: Add S3 Bucket name to dotenv file
+        run: echo "S3_BUCKET_NAME=${{ env.project-name }}-s3-bucket" >> ./src/.env
         working-directory: ${{ env.server-directory }}
       - run: sam build --use-container
         working-directory: ${{ env.server-directory }}

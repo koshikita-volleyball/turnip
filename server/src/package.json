@@ -7,12 +7,15 @@
   "author": "koshikita-volleyball",
   "license": "Apache-2.0",
   "dependencies": {
+    "@slack/web-api": "^6.8.1",
+    "aws-sdk": "^2.1370.0",
     "axios": ">=0.21.1",
     "dotenv": "^16.0.3",
     "typescript": "^5.0.4"
   },
   "scripts": {
     "lint": "echo \"Linter not implemented yet...\" && exit 0",
+    "console": "ts-node console.ts",
     "test": "tsc && mocha tests/unit/"
   },
   "devDependencies": {
@@ -20,6 +23,7 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.16.3",
     "chai": "^4.3.6",
-    "mocha": "^10.1.0"
+    "mocha": "^10.1.0",
+    "ts-node": "^10.9.1"
   }
 }
