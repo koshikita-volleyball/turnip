@@ -91,3 +91,5 @@ sam local start-api
 ```shell
 sam delete --stack-name <プロジェクト名>-staging-***
 ```
+
+AWSコンソールでひとつひとつ李リソースを削除すると消し忘れが発生する危険性があるため、原則としてこのコマンドを使用してください。  
