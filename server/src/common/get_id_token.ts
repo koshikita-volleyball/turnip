@@ -39,4 +39,4 @@ async function GetIdToken(): Promise<string> {
 }
 
 export default GetIdToken
-export { GetRefreshToken }
+export { GetRefreshToken, GetMailAddressAndPassword }

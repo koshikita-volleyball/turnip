@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import JQuantsClient from './common/jquants_client';
 import ListedInfoStruct from './interface/listed_info';
-import { GetRefreshToken } from './common/get_id_token';
+import { GetMailAddressAndPassword, GetRefreshToken } from './common/get_id_token';
 
 dotenv.config();
 
@@ -101,6 +101,8 @@ export const refresh_token_handler = async (event: any, context: any) => {
       'statusCode': 200,
       headers: CORS_HEADERS,
       'body': JSON.stringify({
+        mailaddress: GetMailAddressAndPassword().mailaddress,
+        password: GetMailAddressAndPassword().password,
         refresh_token: GetRefreshToken(),
       }),
     }
