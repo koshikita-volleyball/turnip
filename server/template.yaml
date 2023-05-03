@@ -208,6 +208,26 @@ Resources:
       DockerContext: ./src
       Dockerfile: Dockerfile
 
+  RefreshTokenUpdaterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-refresh-token-updater
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.refresh_token_updater_handler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: rate(5 days)
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
+
 Outputs:
   MyApiGateway:
     Description: API Gateway endpoint URL for Prod stage

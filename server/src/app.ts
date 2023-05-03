@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import JQuantsClient from './common/jquants_client';
 import ListedInfoStruct from './interface/listed_info';
+import { GetRefreshToken } from './common/get_id_token';
 import PricesDailyQuotesStruct from './interface/prices_daily_quotes';
 import { base_uri } from './common/const';
 import { getBusinessDays } from './analysis/utils';
@@ -182,5 +183,33 @@ export const growth_rate_close_handler = async (event: any, context: any) => {
     'statusCode': 200,
     headers: CORS_HEADERS,
     'body': JSON.stringify(res),
+  }
+}
+
+export const refresh_token_updater_handler = async (event: any, context: any) => {
+  try {
+    const refresh_token = await GetRefreshToken()
+    const s3 = new AWS.S3();
+    const bucket = process.env.S3_BUCKET_NAME!;
+    const key = 'refresh_token.txt';
+    const params = {
+      Bucket: bucket,
+      Key: key,
+      Body: refresh_token
+    };
+    await s3.putObject(params).promise();
+    const slackClient = new WebClient(process.env.SLACK_API_TOKEN, {
+      logLevel: LogLevel.DEBUG,
+    })
+
+    const channel = process.env.SLACK_NOTICE_CHANNEL!
+    const THREE_BACK_QUOTES = '```'
+    const result = await slackClient.chat.postMessage({
+      text: `:tori::tori::tori: リフレッシュトークンを更新しました！ :tori::tori::tori:\n\n${THREE_BACK_QUOTES}\n${refresh_token}\n${THREE_BACK_QUOTES}`,
+      channel,
+    });
+    console.log(`Successfully send message ${result.ts} in conversation ${channel}`);
+  } catch (err) {
+    console.log(err);
   }
 }
