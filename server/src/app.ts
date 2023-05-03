@@ -48,7 +48,38 @@ export const listed_info_handler = async (event: any, context: any) => {
       'statusCode': 200,
       headers: CORS_HEADERS,
       'body': JSON.stringify(
-        data,
+        data.info,
+      ),
+    }
+  } catch (err) {
+    console.log(err);
+    return {
+      'statusCode': 500,
+      headers: CORS_HEADERS,
+      'body': JSON.stringify({
+        message: err,
+      })
+    };
+  }
+}
+
+export const prices_daily_quotes_handler = async (event: any, context: any) => {
+  try {
+    const code = event.queryStringParameters?.code
+    const date = event.queryStringParameters?.date
+    const from = event.queryStringParameters?.from
+    const to = event.queryStringParameters?.to
+    const params: {[key: string]: string} = {}
+    if (code) params['code'] = code
+    if (date) params['date'] = date
+    if (from) params['from'] = from
+    if (to) params['to'] = to
+    const data = await JQuantsClient<{daily_quotes: ListedInfoStruct[]}>("/v1/prices/daily_quotes", params)
+    return {
+      'statusCode': 200,
+      headers: CORS_HEADERS,
+      'body': JSON.stringify(
+        data.daily_quotes,
       ),
     }
   } catch (err) {
