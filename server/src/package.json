@@ -12,6 +12,7 @@
     "typescript": "^5.0.4"
   },
   "scripts": {
+    "lint": "echo \"Linter not implemented yet...\" && exit 0",
     "test": "tsc && mocha tests/unit/"
   },
   "devDependencies": {
