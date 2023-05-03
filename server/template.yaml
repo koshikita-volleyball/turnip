@@ -104,26 +104,6 @@ Resources:
       DockerContext: ./src
       Dockerfile: Dockerfile
 
-  GoodByeFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-goodbye
-      PackageType: Image
-      ImageConfig:
-        Command: [ "app.goodbyeHandler" ]
-      Role: !GetAtt MyLambdaRole.Arn
-      Architectures:
-      - x86_64
-      Events:
-        MySchedule:
-          Type: Schedule
-          Properties:
-            Schedule: cron(0 22 * * ? *)
-    Metadata:
-      DockerTag: nodejs18.x-v1
-      DockerContext: ./src
-      Dockerfile: Dockerfile
-
   ListedInfoFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -166,48 +146,6 @@ Resources:
       DockerContext: ./src
       Dockerfile: Dockerfile
 
-  RefreshTokenFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-refresh-token
-      PackageType: Image
-      ImageConfig:
-        Command: [ "app.refresh_token_handler" ]
-      Role: !GetAtt MyLambdaRole.Arn
-      Architectures:
-      - x86_64
-      Events:
-        MyApiGateway:
-          Type: Api
-          Properties:
-            Path: /api/refresh-token
-            Method: get
-    Metadata:
-      DockerTag: nodejs18.x-v1
-      DockerContext: ./src
-      Dockerfile: Dockerfile
-
-  WeatherFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-weather
-      PackageType: Image
-      ImageConfig:
-        Command: [ "app.weather_handler" ]
-      Role: !GetAtt MyLambdaRole.Arn
-      Architectures:
-      - x86_64
-      Events:
-        MyApiGateway:
-          Type: Api
-          Properties:
-            Path: /api/weather
-            Method: get
-    Metadata:
-      DockerTag: nodejs18.x-v1
-      DockerContext: ./src
-      Dockerfile: Dockerfile
-  
   SlackNotifyFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -223,27 +161,6 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: cron(0 22 * * ? *)
-    Metadata:
-      DockerTag: nodejs18.x-v1
-      DockerContext: ./src
-      Dockerfile: Dockerfile
-
-  UriFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-uri
-      PackageType: Image
-      ImageConfig:
-        Command: [ "app.uri_handler" ]
-      Role: !GetAtt MyLambdaRole.Arn
-      Architectures:
-      - x86_64
-      Events:
-        MyApiGateway:
-          Type: Api
-          Properties:
-            Path: /api/uri
-            Method: get
     Metadata:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src

@@ -1,9 +1,8 @@
 import dotenv from 'dotenv';
 import JQuantsClient from './common/jquants_client';
 import ListedInfoStruct from './interface/listed_info';
-import { GetMailAddressAndPassword, GetRefreshToken } from './common/get_id_token';
 import PricesDailyQuotesStruct from './interface/prices_daily_quotes';
-import { base_uri } from './common/const';
+import { WebClient, LogLevel } from '@slack/web-api';
 
 dotenv.config();
 
@@ -27,22 +26,6 @@ export const lambdaHandler = async (event: any, context: any) => {
     return err;
   }
 };
-
-export const goodbyeHandler = async (event: any, context: any) => {
-  try {
-    return {
-      'statusCode': 200,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify({
-        message: 'good bye',
-      })
-    }
-  } catch (err) {
-    console.log(err);
-    return err;
-  }
-};
-
 
 export const listed_info_handler = async (event: any, context: any) => {
   try {
@@ -97,91 +80,17 @@ export const prices_daily_quotes_handler = async (event: any, context: any) => {
   }
 }
 
-export const refresh_token_handler = async (event: any, context: any) => {
-  const { mailaddress, password } = GetMailAddressAndPassword()
-  const refresh_token =  await GetRefreshToken()
-  try {
-    return {
-      'statusCode': 200,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify({
-        mailaddress,
-        password,
-        refresh_token,
-      }),
-    }
-  } catch (err) {
-    console.log(err);
-    return {
-      'statusCode': 500,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify({
-        message: err,
-      })
-    };
-  }
-}
-
-export const weather_handler = async (event: any, context: any) => {
-  try {
-    const latitude = event.queryStringParameters?.latitude
-    const longitude = event.queryStringParameters?.longitude
-    const response = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}`)).json()
-    return {
-      'statusCode': 200,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify(
-        response
-      ),
-    }
-  } catch (err) {
-    console.log(err);
-    return {
-      'statusCode': 500,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify({
-        message: err,
-      })
-    };
-  }
-}
-
-
 export const slack_notify_handler = async (event: any, context: any) => {
 
-  const { WebClient, LogLevel } = require("@slack/web-api")
   const slackClient = new WebClient(process.env.SLACK_API_TOKEN, {
-    logLevel: LogLevel.DEBUG
+    logLevel: LogLevel.DEBUG,
   })
 
-  const channel = process.env.SLACK_NOTICE_CHANNEL
+  const channel = process.env.SLACK_NOTICE_CHANNEL!
   const result = await slackClient.chat.postMessage({
     text: '朝７時だよ :tori:',
     channel,
   });
 
   console.log(`Successfully send message ${result.ts} in conversation ${channel}`);
-}
-
-
-export const uri_handler = async (event: any, context: any) => {
-  try {
-    const uri = base_uri
-    return {
-      'statusCode': 200,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify({
-        uri: uri,
-      }),
-    }
-  } catch (err) {
-    console.log(err);
-    return {
-      'statusCode': 500,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify({
-        message: err,
-      })
-    };
-  }
 }
