@@ -10,6 +10,7 @@ env:
   project-name: koshikita-volleyball-turnip
   client-directory: ./client
   server-directory: ./server
+  node-version: 18
 
 permissions:
   contents: read
@@ -27,7 +28,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: ${{ env.node-version }}
       - name: Install dependencies
         run: yarn install
         working-directory: ${{ env.server-directory }}/src
@@ -63,7 +64,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: ${{ env.node-version }}
       - name: Install dependencies
         run: yarn install
         working-directory: ${{ env.client-directory }}
