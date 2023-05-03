@@ -19,7 +19,7 @@ Resources:
   MyBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${AWS::StackName}-image
+      BucketName: !Sub ${AWS::StackName}-s3-bucket
       AccessControl: Private
       VersioningConfiguration:
         Status: Enabled
@@ -104,26 +104,6 @@ Resources:
       DockerContext: ./src
       Dockerfile: Dockerfile
 
-  GoodByeFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-goodbye
-      PackageType: Image
-      ImageConfig:
-        Command: [ "app.goodbyeHandler" ]
-      Role: !GetAtt MyLambdaRole.Arn
-      Architectures:
-      - x86_64
-      Events:
-        MySchedule:
-          Type: Schedule
-          Properties:
-            Schedule: cron(0 22 * * ? *)
-    Metadata:
-      DockerTag: nodejs18.x-v1
-      DockerContext: ./src
-      Dockerfile: Dockerfile
-
   ListedInfoFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -166,34 +146,33 @@ Resources:
       DockerContext: ./src
       Dockerfile: Dockerfile
 
-  RefreshTokenFunction:
+  SlackNotifyFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-refresh-token
+      FunctionName: !Sub ${AWS::StackName}-slack-notify
       PackageType: Image
       ImageConfig:
-        Command: [ "app.refresh_token_handler" ]
+        Command: [ "app.slack_notify_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
       Events:
-        MyApiGateway:
-          Type: Api
+        MySchedule:
+          Type: Schedule
           Properties:
-            Path: /api/refresh-token
-            Method: get
+            Schedule: cron(0 22 * * ? *)
     Metadata:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
       Dockerfile: Dockerfile
 
-  WeatherFunction:
+  UsingS3Function:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-weather
+      FunctionName: !Sub ${AWS::StackName}-using-s3
       PackageType: Image
       ImageConfig:
-        Command: [ "app.weather_handler" ]
+        Command: [ "app.using_s3_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -201,28 +180,7 @@ Resources:
         MyApiGateway:
           Type: Api
           Properties:
-            Path: /api/weather
-            Method: get
-    Metadata:
-      DockerTag: nodejs18.x-v1
-      DockerContext: ./src
-      Dockerfile: Dockerfile
-
-  UriFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-uri
-      PackageType: Image
-      ImageConfig:
-        Command: [ "app.uri_handler" ]
-      Role: !GetAtt MyLambdaRole.Arn
-      Architectures:
-      - x86_64
-      Events:
-        MyApiGateway:
-          Type: Api
-          Properties:
-            Path: /api/uri
+            Path: /api/using-s3
             Method: get
     Metadata:
       DockerTag: nodejs18.x-v1
