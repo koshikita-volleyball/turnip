@@ -7,6 +7,8 @@ import { base_uri } from './common/const';
 import { getBusinessDays } from './analysis/utils';
 import { WebClient, LogLevel } from '@slack/web-api';
 import AWS from 'aws-sdk';
+import GrowthRateClose  from './interface/turnip/growth_rate_close';
+import {Context, APIGatewayEvent, Handler} from 'aws-lambda';
 
 dotenv.config();
 AWS.config.update({ region: process.env.AWS_REGION });
@@ -128,25 +130,15 @@ export const uri_handler = async (event: any, context: any) => {
 
 // テクニカル系のハンドラー
 
-// TODO: レスポンスの型をまとめたい
-type ResponseGrowthRateClose = {
-  code: string,
-  growth_rate: number,
-  daily_quotes: {
-    before: PricesDailyQuotesStruct,
-    after: PricesDailyQuotesStruct,
-  }
-}
-
 /**
  * 前営業日からの終値の変化率が一定以上の銘柄を返す。
  */
-export const growth_rate_close_handler = async (event: any, context: any) => {
+export const growth_rate_close_handler = async (event: APIGatewayEvent, context: Context)  => {
   
   // 閾値を取得
-  const threshold = parseFloat(event.queryStringParameters?.threshold)
+  const threshold = event.queryStringParameters?.threshold
 
-  const res : ResponseGrowthRateClose[]  = []
+  const res : GrowthRateClose[]  = []
   
   const dates = await getBusinessDays()
   const { daily_quotes:daily_quotes_before } = await JQuantsClient<{daily_quotes: PricesDailyQuotesStruct[]}>("/v1/prices/daily_quotes", {
@@ -157,14 +149,13 @@ export const growth_rate_close_handler = async (event: any, context: any) => {
     date: dates[dates.length - 1].format('YYYY-MM-DD'),
   })
 
-  // prices_beforeをfor文で回して、prices_afterの中にある銘柄を探す
   for(const dq_before of daily_quotes_before) {
     
     const dq_after = daily_quotes_after.find(dq => dq.Code === dq_before.Code)
     if (!dq_after || !dq_before.Close || !dq_after.Close) continue
     
     const growth_rate = (dq_after.Close - dq_before.Close) / dq_before.Close
-    if (!threshold || growth_rate > threshold) {
+    if (!threshold || growth_rate > parseFloat(threshold)) {
       res.push({
         code: dq_before.Code,
         growth_rate,
@@ -180,7 +171,7 @@ export const growth_rate_close_handler = async (event: any, context: any) => {
   return {
     'statusCode': 200,
     headers: CORS_HEADERS,
-    'body': JSON.stringify(res),
+    body: JSON.stringify(res),
   }
 }
 
