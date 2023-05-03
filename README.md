@@ -75,6 +75,7 @@ sam local start-api
 
 | キー | バリュー |
 | --- | --- |
+| PROJECT_NAME | プロジェクト名(CloudFormationのスタック名) |
 | AWS_ACCESS_KEY_ID | AWSのアクセスキーID |
 | AWS_SECRET_ACCESS_KEY | AWSのシークレットアクセスキー |
 | AWS_REGION | リージョン名 |

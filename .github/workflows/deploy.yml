@@ -7,7 +7,7 @@ on:
       - main
 
 env:
-  project-name: koshikita-volleyball-turnip
+  project-name: ${{ secrets.PROJECT_NAME }}
   client-directory: ./client
   server-directory: ./server
   node-version: 18
