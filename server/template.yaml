@@ -85,8 +85,8 @@ Resources:
 
   HelloFunction:
     Type: AWS::Serverless::Function
-    FunctionName: !Sub ${AWS::StackName}-hello
     Properties:
+      FunctionName: !Sub ${AWS::StackName}-hello
       PackageType: Image
       ImageConfig:
         Command: [ "app.lambdaHandler" ]
@@ -106,8 +106,8 @@ Resources:
 
   GoodByeFunction:
     Type: AWS::Serverless::Function
-    FunctionName: !Sub ${AWS::StackName}-goodbye
     Properties:
+      FunctionName: !Sub ${AWS::StackName}-goodbye
       PackageType: Image
       ImageConfig:
         Command: [ "app.goodbyeHandler" ]
@@ -126,8 +126,8 @@ Resources:
 
   ListedInfoFunction:
     Type: AWS::Serverless::Function
-    FunctionName: !Sub ${AWS::StackName}-listed-info
     Properties:
+      FunctionName: !Sub ${AWS::StackName}-listed-info
       PackageType: Image
       ImageConfig:
         Command: [ "app.listed_info_handler" ]
@@ -147,8 +147,8 @@ Resources:
 
   PricesDailyQuotesFunction:
     Type: AWS::Serverless::Function
-    FunctionName: !Sub ${AWS::StackName}-prices-daily_quotes
     Properties:
+      FunctionName: !Sub ${AWS::StackName}-prices-daily_quotes
       PackageType: Image
       ImageConfig:
         Command: [ "app.prices_daily_quotes_handler" ]
@@ -168,8 +168,8 @@ Resources:
 
   RefreshTokenFunction:
     Type: AWS::Serverless::Function
-    FunctionName: !Sub ${AWS::StackName}-refresh-token
     Properties:
+      FunctionName: !Sub ${AWS::StackName}-refresh-token
       PackageType: Image
       ImageConfig:
         Command: [ "app.refresh_token_handler" ]
@@ -189,8 +189,8 @@ Resources:
 
   WeatherFunction:
     Type: AWS::Serverless::Function
-    FunctionName: !Sub ${AWS::StackName}-weather
     Properties:
+      FunctionName: !Sub ${AWS::StackName}-weather
       PackageType: Image
       ImageConfig:
         Command: [ "app.weather_handler" ]
