@@ -29,8 +29,7 @@ async function GetRefreshToken(): Promise<string> {
   return refresh_token
 }
 
-async function GetIdToken(): Promise<string> {
-  const refresh_token = await GetRefreshToken()
+async function GetIdToken(refresh_token: string): Promise<string> {
   const response_id_token = await fetch(`${base_uri}/v1/token/auth_refresh?refreshtoken=${refresh_token}`, {
     method: 'POST',
   })
