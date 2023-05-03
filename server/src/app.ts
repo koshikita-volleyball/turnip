@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import JQuantsClient from './common/jquants_client';
 import ListedInfoStruct from './interface/listed_info';
+import { GetMailAddressAndPassword, GetRefreshToken } from './common/get_id_token';
 
 dotenv.config();
 
@@ -81,6 +82,29 @@ export const prices_daily_quotes_handler = async (event: any, context: any) => {
       'body': JSON.stringify(
         data.daily_quotes,
       ),
+    }
+  } catch (err) {
+    console.log(err);
+    return {
+      'statusCode': 500,
+      headers: CORS_HEADERS,
+      'body': JSON.stringify({
+        message: err,
+      })
+    };
+  }
+}
+
+export const refresh_token_handler = async (event: any, context: any) => {
+  try {
+    return {
+      'statusCode': 200,
+      headers: CORS_HEADERS,
+      'body': JSON.stringify({
+        mailaddress: GetMailAddressAndPassword().mailaddress,
+        password: GetMailAddressAndPassword().password,
+        refresh_token: GetRefreshToken(),
+      }),
     }
   } catch (err) {
     console.log(err);

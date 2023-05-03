@@ -7,9 +7,14 @@ type IdTokenResponseStruct = {
   idToken: string
 }
 
-async function GetIdToken(): Promise<string> {
-  const mailaddress = process.env.JQUANTS_MAILADDRESS
-  const password = process.env.JQUANTS_PASSWORD
+function GetMailAddressAndPassword(): {mailaddress: string, password: string} {
+  const mailaddress = process.env.JQUANTS_MAILADDRESS!
+  const password = process.env.JQUANTS_PASSWORD!
+  return {mailaddress, password}
+}
+
+async function GetRefreshToken(): Promise<string> {
+  const {mailaddress, password} = GetMailAddressAndPassword()
   const response_refresh_token = await fetch(`${base_uri}/v1/token/auth_user`, {
     method: 'POST',
     headers: {
@@ -21,6 +26,11 @@ async function GetIdToken(): Promise<string> {
     }),
   })
   const refresh_token = (await response_refresh_token.json() as RefreshTokenResponseStruct).refreshToken
+  return refresh_token
+}
+
+async function GetIdToken(): Promise<string> {
+  const refresh_token = await GetRefreshToken()
   const response_id_token = await fetch(`${base_uri}/v1/token/auth_refresh?refreshtoken=${refresh_token}`, {
     method: 'POST',
   })
@@ -29,3 +39,4 @@ async function GetIdToken(): Promise<string> {
 }
 
 export default GetIdToken
+export { GetRefreshToken, GetMailAddressAndPassword }
