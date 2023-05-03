@@ -222,7 +222,7 @@ Resources:
         MySchedule:
           Type: Schedule
           Properties:
-            Schedule: rate(30 seconds)
+            Schedule: rate(1 minute)
         MyApiGateway:
           Type: Api
           Properties:

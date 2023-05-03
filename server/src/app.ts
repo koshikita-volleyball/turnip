@@ -151,7 +151,7 @@ export const slack_notify_handler = async (event: any, context: any) => {
 
   const channel = process.env.SLACK_NOTICE_CHANNEL
   const result = await slackClient.chat.postMessage({
-    text: '`/api/slack`にアクセスあった時 or 30秒ごとにトリ :tori:',
+    text: '`/api/slack`にアクセスあった時 or 1分毎にトリ :tori:',
     channel,
   });
 
