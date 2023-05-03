@@ -1,0 +1,16 @@
+name: Staging Deploy
+on:
+  push:
+    branches:
+      - 'staging/*'
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Deploy to staging
+        run: |
+          branch_name=${GITHUB_REF#refs/heads/}  # refs/heads/を削除
+          branch_name=${branch_name#staging/}  # staging/を削除
+          echo "Deploying to staging branch $branch_name"
