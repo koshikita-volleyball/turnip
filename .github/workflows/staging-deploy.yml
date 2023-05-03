@@ -9,8 +9,10 @@ env:
   server-directory: ./server
 
 jobs:
-  deploy:
+  stagin-deploy:
     runs-on: ubuntu-latest
+    outputs:
+      branch_name: ${{ steps.get-branch-step.outputs.branch_name }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
@@ -20,7 +22,8 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-      - name: Get branch name
+      - id: get-branch-step
+        name: Get branch name
         run: |
           branch_name=${GITHUB_REF#refs/heads/}  # refs/heads/を削除
           branch_name=${branch_name#staging/}  # staging/を削除
@@ -32,5 +35,5 @@ jobs:
       - run: sam build --use-container
         working-directory: ${{ env.server-directory }}
       - name: Deploy Lambda
-        run: sam deploy --stack-name ${{ env.project-name }}-${{ env.branch_name }}
+        run: sam deploy --stack-name ${{ env.project-name }}-staging-${{ needs.stagin-deploy.outputs.branch_name }}
         working-directory: ${{ env.server-directory }}
