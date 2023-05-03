@@ -6,7 +6,7 @@ import { WebClient, LogLevel } from '@slack/web-api';
 import AWS from 'aws-sdk';
 
 dotenv.config();
-AWS.config.update({ region: "ap-northeast-1" });
+AWS.config.update({ region: process.env.AWS_REGION });
 AWS.config.apiVersions = {
   s3: "2006-03-01",
 };
