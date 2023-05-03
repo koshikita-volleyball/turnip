@@ -201,7 +201,7 @@ Resources:
         MySchedule:
           Type: Schedule
           Properties:
-            Schedule: cron(0 0,12 * * * ?)
+            Schedule: rate(5 days)
     Metadata:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
