@@ -97,31 +97,6 @@ export const prices_daily_quotes_handler = async (event: any, context: any) => {
   }
 }
 
-export const weather_handler = async (event: any, context: any) => {
-  try {
-    const latitude = event.queryStringParameters?.latitude
-    const longitude = event.queryStringParameters?.longitude
-    const response = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}`)).json()
-    return {
-      'statusCode': 200,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify(
-        response
-      ),
-    }
-  } catch (err) {
-    console.log(err);
-    return {
-      'statusCode': 500,
-      headers: CORS_HEADERS,
-      'body': JSON.stringify({
-        message: err,
-      })
-    };
-  }
-}
-
-
 export const slack_notify_handler = async (event: any, context: any) => {
 
   const { WebClient, LogLevel } = require("@slack/web-api")
