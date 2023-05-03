@@ -47,9 +47,9 @@ export const listed_info_handler = async (event: any, context: any) => {
     return {
       'statusCode': 200,
       headers: CORS_HEADERS,
-      'body': JSON.stringify(
-        items,
-      ),
+      'body': JSON.stringify({
+        "A": items,
+      }),
     }
   } catch (err) {
     console.log(err);
