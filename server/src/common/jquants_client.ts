@@ -9,7 +9,7 @@ async function JQuantsClient<T>(path: string): Promise<T> {
       'Authorization': `Bearer ${id_token}`,
     }
   })
-  const json = (await response.json()).info as T
+  const json = (await response.json()) as T
   return json
 }
 
