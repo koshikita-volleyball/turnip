@@ -5,7 +5,7 @@ on:
       - 'staging/*'
 
 env:
-  project-name: koshikita-volleyball-turnip
+  project-name: ${{ secrets.PROJECT_NAME }}
   server-directory: ./server
 
 jobs:
