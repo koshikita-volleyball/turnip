@@ -255,7 +255,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-technical-growth-rate
       PackageType: Image
       ImageConfig:
-        Command: [ "app.growth_rate_handler" ]
+        Command: [ "app.growth_rate_close_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -263,7 +263,7 @@ Resources:
         MyApiGateway:
           Type: Api
           Properties:
-            Path: /api/technical/growth_rate
+            Path: /api/technical/growth_rate_close
             Method: get
     Metadata:
       DockerTag: nodejs18.x-v1
