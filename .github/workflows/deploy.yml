@@ -32,13 +32,13 @@ lambda-check:
           node-version: "18"
       - name: Install dependencies
         run: yarn install
-        working-directory: ${{ env.server-directory }}
+        working-directory: ${{ env.server-directory }}/src
       - name: Lint
         run: yarn lint
-        working-directory: ${{ env.server-directory }}
+        working-directory: ${{ env.server-directory }}/src
       - name: Test
         run: yarn test
-        working-directory: ${{ env.server-directory }}
+        working-directory: ${{ env.server-directory }}/src
   lambda-deploy:
     runs-on: ubuntu-latest
     steps:
