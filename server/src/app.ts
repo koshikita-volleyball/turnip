@@ -201,6 +201,7 @@ export const id_token_updater_handler = async (event: any, context: any) => {
     const data = await s3.getObject(params).promise();
     const refreshToken = data.Body?.toString('utf-8');
     if (refreshToken) {
+      console.log("refreshToken: ", refreshToken);
       // リフレッシュトークンを使ってIDトークンを更新
       const id_token = GetIdToken(refreshToken);
       // S3にIDトークンを保存
