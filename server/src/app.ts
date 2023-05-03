@@ -4,6 +4,7 @@ import ListedInfoStruct from './interface/listed_info';
 import PricesDailyQuotesStruct from './interface/prices_daily_quotes';
 import { WebClient, LogLevel } from '@slack/web-api';
 import AWS from 'aws-sdk';
+import GetIdToken from './common/get_id_token';
 
 dotenv.config();
 AWS.config.update({ region: process.env.AWS_REGION });
@@ -112,6 +113,26 @@ export const id_token_updater_handler = async (event: any, context: any) => {
     const refreshToken = data.Body?.toString('utf-8');
     if (refreshToken) {
       // リフレッシュトークンを使ってIDトークンを更新
+      const id_token = GetIdToken(refreshToken);
+      // S3にIDトークンを保存
+      const params = {
+        Bucket: process.env.S3_BUCKET_NAME!,
+        Key: "id_token.txt",
+        Body: id_token,
+      };
+      await s3.putObject(params).promise();
+
+      // Slackに通知
+      const slackClient = new WebClient(process.env.SLACK_API_TOKEN, {
+        logLevel: LogLevel.DEBUG,
+      })
+      const channel = process.env.SLACK_NOTICE_CHANNEL!
+      const THREE_BACK_QUOTE = "```";
+      const result = await slackClient.chat.postMessage({
+        text: `:tori::tori::tori: IDトークンを更新しました :tori::tori::tori:\n\n${THREE_BACK_QUOTE}${id_token}${THREE_BACK_QUOTE}`,
+        channel,
+      });
+      console.log(`Successfully send message ${result.ts} in conversation ${channel}`);
     } else {
       console.log("refresh_token.txt is empty");
     }
