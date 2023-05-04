@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/require-await */
 import dotenv from 'dotenv'
-import { APIGatewayEvent } from 'aws-lambda'
+import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
 import JQuantsClient from './common/jquants_client'
 import ListedInfoStruct from './interface/jquants/listed_info'
@@ -21,7 +21,7 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
-export const lambdaHandler = async () => {
+export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
   try {
     return {
       statusCode: 200,
@@ -44,7 +44,7 @@ export const lambdaHandler = async () => {
   }
 }
 
-export const listed_info_handler = async () => {
+export const listed_info_handler = async (): Promise<APIGatewayProxyResult> => {
   try {
     // DynamoDBから銘柄情報を取得
     const dynamodb = new AWS.DynamoDB()
@@ -73,7 +73,7 @@ export const listed_info_handler = async () => {
   }
 }
 
-export const prices_daily_quotes_handler = async (event: APIGatewayEvent) => {
+export const prices_daily_quotes_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   try {
     const code = event.queryStringParameters?.code
     const date = event.queryStringParameters?.date
@@ -106,7 +106,7 @@ export const prices_daily_quotes_handler = async (event: APIGatewayEvent) => {
   }
 }
 
-export const slack_notify_handler = async () => {
+export const slack_notify_handler = async (): Promise<void> => {
   const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
     logLevel: LogLevel.DEBUG,
   })
@@ -118,7 +118,7 @@ export const slack_notify_handler = async () => {
   console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
 }
 
-export const refresh_token_updater_handler = async () => {
+export const refresh_token_updater_handler = async (): Promise<void> => {
   try {
     const refresh_token = await GetRefreshToken()
     const s3 = new AWS.S3()
@@ -147,7 +147,7 @@ export const refresh_token_updater_handler = async () => {
   }
 }
 
-export const id_token_updater_handler = async () => {
+export const id_token_updater_handler = async (): Promise<void> => {
   try {
     // S3からリフレッシュトークンを取得
     const bucket = GetProcessEnv('S3_BUCKET_NAME')
@@ -191,7 +191,7 @@ export const id_token_updater_handler = async () => {
   }
 }
 
-export const listed_info_updater_handler = async () => {
+export const listed_info_updater_handler = async (): Promise<void> => {
   try {
     const { info: stocks } = await JQuantsClient<{ info: ListedInfoStruct[] }>('/v1/listed/info')
     // DynamoDBに保存
@@ -239,7 +239,7 @@ export const listed_info_updater_handler = async () => {
  * 前営業日からの終値の変化率が一定以上の銘柄を返す。
  */
 
-export const growth_rate_close_handler = async (event: APIGatewayEvent) => {
+export const growth_rate_close_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   // 閾値を取得
   const threshold = event.queryStringParameters?.threshold
 
