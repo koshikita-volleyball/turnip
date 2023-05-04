@@ -5,43 +5,65 @@ import setting from '../setting'
 import { Alert, Button, Form, Spinner, Table } from 'react-bootstrap'
 import ListedInfoStruct from '../interface/listed_info'
 
+import MarketInfo from '../data/MarketInfo'
+import Sector17Info from '../data/Sector17Info'
+import Sector33Info from '../data/Sector33Info'
+
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 export default function AboutPage() {
-  const [page, setPage] = useState(1)
-  const [useCondition, setUseCondition] = useState(false)
+  const [page, setPage] = useState(0)
+  const [useCondition, setUseCondition] = useState(true)
   const [company_name, setCompanyName] = useState('')
+  const [market_code, setMarketCode] = useState<string>('')
 
   const {
     data,
     error,
+    mutate,
   }: {
     data: ListedInfoStruct[]
     error: any
+    mutate: any
   } = useSWR(
-    `${setting.apiPath}/api/listed_info?page=${page + 1}${useCondition === false ? '' : company_name !== '' ? `&company_name=${company_name}` : ''}`
+    `${setting.apiPath}/api/listed_info`
+    + `?page=${page === 0 ? 1 : page}`
+    + `${useCondition === false ? '' : company_name !== '' ? `&company_name=${company_name}` : ''}`
+    + `${useCondition === false ? '' : market_code !== '' ? `&market_code=${market_code}` : ''}`
   , fetcher, {
     revalidateOnFocus: false,
     dedupingInterval: 10000,
   })
 
   useSWR(
-    `${setting.apiPath}/api/listed_info?page=${page + 1}${useCondition === false ? '' : company_name !== '' ? `&company_name=${company_name}` : ''}`
+    `${setting.apiPath}/api/listed_info`
+    + `?page=${page + 1}`
+    + `${useCondition === false ? '' : company_name !== '' ? `&company_name=${company_name}` : ''}`
+    + `${useCondition === false ? '' : market_code !== '' ? `&market_code=${market_code}` : ''}`
   , fetcher, {
     revalidateOnFocus: false,
     dedupingInterval: 10000,
   })
 
   useEffect(() => {
-    if (page === 1) return
-    window.history.pushState(null, '', `?page=${page}`)
-  }, [page])
-
-  useEffect(() => {
     const url = new URL(window.location.href)
     const page = url.searchParams.get('page')
     if (page) setPage(parseInt(page))
+    const company_name = url.searchParams.get('company_name')
+    if (company_name) setCompanyName(company_name)
+    const market_code = url.searchParams.get('market_code')
+    if (market_code) setMarketCode(market_code)
   }, [])
+
+  useEffect(() => {
+    // if (page === 0) return
+    window.history.pushState(null, '',
+      `${window.location.pathname}`
+      + `?page=${page === 0 ? 1 : page}`
+      + `${useCondition === false ? '' : company_name !== '' ? `&company_name=${company_name}` : ''}`
+      + `${useCondition === false ? '' : market_code !== '' ? `&market_code=${market_code}` : ''}`
+    )
+  }, [company_name, market_code, page, useCondition])
 
   return (
     <Layout>
@@ -65,7 +87,7 @@ export default function AboutPage() {
               <Button
                 variant="primary"
                 onClick={() => setPage(page - 1)}
-                disabled={page === 1}
+                disabled={page < 0}
               >
                 前へ
               </Button>
@@ -107,8 +129,14 @@ export default function AboutPage() {
         <div className='mt-3'>
         {
           useCondition
-          ? <Button variant="secondary" size='sm' onClick={() => setUseCondition(false)}>条件を指定しない</Button>
-          : <Button variant="secondary" size='sm' onClick={() => setUseCondition(true)}>条件を指定して検索</Button>
+          ? <Button variant="secondary" size='sm' onClick={() => {
+            setUseCondition(false)
+            setPage(0)
+          }}>条件を指定しない</Button>
+          : <Button variant="secondary" size='sm' onClick={() => {
+            setUseCondition(true)
+            setPage(0)
+          }}>条件を指定して検索</Button>
         }
         </div>
         {
@@ -122,6 +150,21 @@ export default function AboutPage() {
                 }} />
               </Form.Group>
             </Form>
+            <Form.Group className='mt-3'>
+              <Form.Label>市場</Form.Label>
+              <Form.Control as="select" onChange={(e) => {
+                const value = e.target.value
+                setMarketCode(value)
+                setPage(1)
+              }} value={market_code}>
+                <option value=''>指定しない</option>
+                {
+                  MarketInfo.map((item) => (
+                    <option key={item.code} value={item.code}>{item.name}</option>
+                  ))
+                }
+              </Form.Control>
+            </Form.Group>
           </div>
         }
       </div>
