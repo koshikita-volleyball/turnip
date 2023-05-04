@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await */
 import dotenv from 'dotenv'
 import { APIGatewayEvent } from 'aws-lambda'
 import JQuantsClient from './common/jquants_client'
@@ -19,7 +20,6 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
-// eslint-disable-next-line @typescript-eslint/require-await
 export const lambdaHandler = async () => {
   try {
     return {
@@ -45,11 +45,16 @@ export const lambdaHandler = async () => {
 
 export const listed_info_handler = async () => {
   try {
-    const data = await JQuantsClient<{ info: ListedInfoStruct[] }>('/v1/listed/info')
+    // DynamoDBから銘柄情報を取得
+    const dynamodb = new AWS.DynamoDB()
+    const params = {
+      TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
+    }
+    const data = await dynamodb.scan(params).promise()
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(data.info),
+      body: JSON.stringify(data.Items),
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -207,22 +212,17 @@ export const listed_info_updater_handler = async () => {
         },
       }
       await dynamoClient.put(params).promise()
-
-      // Slackに通知
-      const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
-        logLevel: LogLevel.DEBUG,
-      })
-      const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
-      const result = await slackClient.chat.postMessage({
-        text: `:tori::tori::tori: 銘柄情報を更新しました :tori::tori::tori:\n\n${JSON.stringify(
-          stock,
-          null,
-          2,
-        )}`,
-        channel,
-      })
-      console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
     }
+    // Slackに通知
+    const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
+      logLevel: LogLevel.DEBUG,
+    })
+    const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
+    const result = await slackClient.chat.postMessage({
+      text: `:tori::tori::tori: 銘柄情報を更新しました！ :tori::tori::tori:`,
+      channel,
+    })
+    console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.error(`[ERROR] ${err.message}`)
