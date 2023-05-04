@@ -55,6 +55,25 @@ export default function AboutPage() {
           </div>
         ) : (
           <>
+            <div className="d-flex justify-content-between align-items-center mt-3">
+              <Button
+                variant="primary"
+                onClick={() => setPage(page - 1)}
+                disabled={page === 1}
+              >
+                前へ
+              </Button>
+              <Alert variant="info" className="text-center mx-1 my-0 px-3 py-1">
+                Page {page}
+              </Alert>
+              <Button
+                variant="primary"
+                onClick={() => setPage(page + 1)}
+                disabled={data.length === 0}
+              >
+                次へ
+              </Button>
+            </div>
             <Table className="table table-striped table-hover mt-3">
               <thead>
                 <tr>
@@ -77,25 +96,6 @@ export default function AboutPage() {
                 ))}
               </tbody>
             </Table>
-            <div className="d-flex justify-content-between align-items-center mt-3">
-              <Button
-                variant="primary"
-                onClick={() => setPage(page - 1)}
-                disabled={page === 1}
-              >
-                前へ
-              </Button>
-              <Alert variant="info" className="text-center mx-1 my-0 px-3 py-1">
-                Page {page}
-              </Alert>
-              <Button
-                variant="primary"
-                onClick={() => setPage(page + 1)}
-                disabled={data.length === 0}
-              >
-                次へ
-              </Button>
-            </div>
           </>
         )}
       </div>
