@@ -37,7 +37,7 @@ jobs:
         working-directory: ${{ env.server-directory }}/src
       - name: Prettier
         run: yarn prettier:check
-        working-directory: ${{ env.client-directory }}/src
+        working-directory: ${{ env.server-directory }}/src
       - name: Test
         run: yarn test
         working-directory: ${{ env.server-directory }}/src
