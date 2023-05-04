@@ -9,6 +9,7 @@ import { getBusinessDays } from './analysis/utils'
 import { WebClient, LogLevel } from '@slack/web-api'
 import AWS from './common/aws'
 import GetIdToken from './common/get_id_token'
+import LambdaEventStruct from './interface/common/lambda_event'
 
 dotenv.config()
 
@@ -18,7 +19,7 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
-export const lambdaHandler = async (event: any, context: any) => {
+export const lambdaHandler = async (event: APIGatewayEvent, context: any) => {
   try {
     return {
       statusCode: 200,
@@ -33,7 +34,7 @@ export const lambdaHandler = async (event: any, context: any) => {
   }
 }
 
-export const listed_info_handler = async (event: any, context: any) => {
+export const listed_info_handler = async (event: APIGatewayEvent, context: any) => {
   try {
     const data = await JQuantsClient<{ info: ListedInfoStruct[] }>('/v1/listed/info')
     return {
@@ -53,7 +54,7 @@ export const listed_info_handler = async (event: any, context: any) => {
   }
 }
 
-export const prices_daily_quotes_handler = async (event: any, context: any) => {
+export const prices_daily_quotes_handler = async (event: APIGatewayEvent, context: any) => {
   try {
     const code = event.queryStringParameters?.code
     const date = event.queryStringParameters?.date
@@ -84,7 +85,7 @@ export const prices_daily_quotes_handler = async (event: any, context: any) => {
   }
 }
 
-export const slack_notify_handler = async (event: any, context: any) => {
+export const slack_notify_handler = async (event: APIGatewayEvent, context: any) => {
   const slackClient = new WebClient(process.env.SLACK_API_TOKEN, {
     logLevel: LogLevel.DEBUG,
   })
@@ -96,7 +97,7 @@ export const slack_notify_handler = async (event: any, context: any) => {
   console.log(`Successfully send message ${result.ts} in conversation ${channel}`)
 }
 
-export const refresh_token_updater_handler = async (event: any, context: any) => {
+export const refresh_token_updater_handler = async (event: APIGatewayEvent, context: any) => {
   try {
     const refresh_token = await GetRefreshToken()
     const s3 = new AWS.S3()
@@ -124,7 +125,7 @@ export const refresh_token_updater_handler = async (event: any, context: any) =>
   }
 }
 
-export const id_token_updater_handler = async (event: any, context: any) => {
+export const id_token_updater_handler = async (event: APIGatewayEvent, context: any) => {
   try {
     // S3からリフレッシュトークンを取得
     const s3 = new AWS.S3()
