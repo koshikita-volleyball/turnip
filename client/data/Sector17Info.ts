@@ -1,4 +1,3 @@
-
 const Sector17Info = [
   { code: '1', name: '食品' },
   { code: '2', name: 'エネルギー資源' },

@@ -1,4 +1,3 @@
-
 const MarketInfo = [
   { code: '0101', name: '東証一部' },
   { code: '0102', name: '東証二部' },

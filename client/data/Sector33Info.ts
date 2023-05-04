@@ -1,4 +1,3 @@
-
 const sector33Info = [
   { code: '0050', name: '水産・農林業' },
   { code: '1050', name: '鉱業' },
