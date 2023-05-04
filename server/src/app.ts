@@ -54,22 +54,22 @@ export const listed_info_handler = async (event: APIGatewayEvent): Promise<APIGa
     const market_code = event.queryStringParameters?.market_code
 
     // DynamoDBから銘柄情報を取得
-    const key_condition_expressions = []
+    const filter_expressions = []
     const expression_attribute_values: ExpressionAttributeValueMap = {}
     if (sector_17_code) {
-      key_condition_expressions.push('sector_17_code = :sector_17_code')
+      filter_expressions.push('sector_17_code = :sector_17_code')
       expression_attribute_values[':sector_17_code'] = {
         S: sector_17_code,
       }
     }
     if (sector_33_code) {
-      key_condition_expressions.push('sector_33_code = :sector_33_code')
+      filter_expressions.push('sector_33_code = :sector_33_code')
       expression_attribute_values[':sector_33_code'] = {
         S: sector_33_code,
       }
     }
     if (market_code) {
-      key_condition_expressions.push('market_code = :market_code')
+      filter_expressions.push('market_code = :market_code')
       expression_attribute_values[':market_code'] = {
         S: market_code,
       }
@@ -77,7 +77,7 @@ export const listed_info_handler = async (event: APIGatewayEvent): Promise<APIGa
     const dynamodb = new AWS.DynamoDB()
     const params = {
       TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
-      KeyConditionExpression: key_condition_expressions.join(' AND '),
+      FilterExpression: filter_expressions.join(' AND '),
       ExpressionAttributeValues: expression_attribute_values,
     }
     const stocks = ((await dynamodb.query(params).promise()).Items || []).map((item) => unmarshall(item) as ListedInfoStruct)
