@@ -1,12 +1,10 @@
 /* 公開時のサブディレクトリ */
-const SUB_DIRECTORY = '/turnip';
+const SUB_DIRECTORY = '/turnip'
 
 /* 本番環境と開発環境の分岐用のフラグ */
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = process.env.NODE_ENV === 'production'
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
+module.exports = {
   basePath: isProd ? SUB_DIRECTORY : '',
   assetPrefix: isProd ? SUB_DIRECTORY : '',
   publicRuntimeConfig: {
@@ -14,5 +12,3 @@ const nextConfig = {
   },
   trailingSlash: true,
 }
-
-module.exports = nextConfig
