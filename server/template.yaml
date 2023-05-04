@@ -24,7 +24,7 @@ Resources:
       VersioningConfiguration:
         Status: Enabled
 
-  MyDynamoDBTable:
+  ListedInfoTable:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
@@ -34,7 +34,7 @@ Resources:
         - AttributeName: stock_code
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
-      TableName: !Sub ${AWS::StackName}-dynamodb-table
+      TableName: !Sub ${AWS::StackName}-listed-info
 
   MyLambdaRole:
     Type: AWS::IAM::Role
@@ -74,7 +74,7 @@ Resources:
                   - dynamodb:DeleteItem
                   - dynamodb:Query
                   - dynamodb:Scan
-                Resource: !GetAtt MyDynamoDBTable.Arn
+                Resource: !GetAtt ListedInfoTable.Arn
               - Sid: AllowCloudWatchLogs
                 Effect: Allow
                 Action:
@@ -222,6 +222,26 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: rate(20 hours)
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
+
+  ListedInfoFunctionUpdaterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-listed-info-updater
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.listed_info_updater_handler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 10 * * ? *)
     Metadata:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src

@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/require-await */
 import dotenv from 'dotenv'
-import { APIGatewayEvent } from 'aws-lambda'
+import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda'
+import { unmarshall } from '@aws-sdk/util-dynamodb'
 import JQuantsClient from './common/jquants_client'
 import ListedInfoStruct from './interface/jquants/listed_info'
 import { GetRefreshToken } from './common/get_id_token'
@@ -19,8 +21,7 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export const lambdaHandler = async () => {
+export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
   try {
     return {
       statusCode: 200,
@@ -43,13 +44,20 @@ export const lambdaHandler = async () => {
   }
 }
 
-export const listed_info_handler = async () => {
+export const listed_info_handler = async (): Promise<APIGatewayProxyResult> => {
   try {
-    const data = await JQuantsClient<{ info: ListedInfoStruct[] }>('/v1/listed/info')
+    // DynamoDBから銘柄情報を取得
+    const dynamodb = new AWS.DynamoDB()
+    const params = {
+      TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
+    }
+    const data = ((await dynamodb.scan(params).promise()).Items || []).map((item) => {
+      return unmarshall(item) as ListedInfoStruct
+    })
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(data.info),
+      body: JSON.stringify(data),
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -65,7 +73,7 @@ export const listed_info_handler = async () => {
   }
 }
 
-export const prices_daily_quotes_handler = async (event: APIGatewayEvent) => {
+export const prices_daily_quotes_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   try {
     const code = event.queryStringParameters?.code
     const date = event.queryStringParameters?.date
@@ -98,7 +106,7 @@ export const prices_daily_quotes_handler = async (event: APIGatewayEvent) => {
   }
 }
 
-export const slack_notify_handler = async () => {
+export const slack_notify_handler = async (): Promise<void> => {
   const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
     logLevel: LogLevel.DEBUG,
   })
@@ -110,7 +118,7 @@ export const slack_notify_handler = async () => {
   console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
 }
 
-export const refresh_token_updater_handler = async () => {
+export const refresh_token_updater_handler = async (): Promise<void> => {
   try {
     const refresh_token = await GetRefreshToken()
     const s3 = new AWS.S3()
@@ -139,7 +147,7 @@ export const refresh_token_updater_handler = async () => {
   }
 }
 
-export const id_token_updater_handler = async () => {
+export const id_token_updater_handler = async (): Promise<void> => {
   try {
     // S3からリフレッシュトークンを取得
     const bucket = GetProcessEnv('S3_BUCKET_NAME')
@@ -183,13 +191,55 @@ export const id_token_updater_handler = async () => {
   }
 }
 
+export const listed_info_updater_handler = async (): Promise<void> => {
+  try {
+    const { info: stocks } = await JQuantsClient<{ info: ListedInfoStruct[] }>('/v1/listed/info')
+    // DynamoDBに保存
+    const dynamoClient = new AWS.DynamoDB.DocumentClient()
+    const tableName = GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME')
+    for (const stock of stocks) {
+      const params = {
+        TableName: tableName,
+        Item: {
+          stock_code: stock.Code,
+          date: stock.Date,
+          company_name: stock.CompanyName,
+          company_name_english: stock.CompanyNameEnglish,
+          sector_17_code: stock.Sector17Code,
+          sector_17_code_name: stock.Sector17CodeName,
+          sector_33_code: stock.Sector33Code,
+          sector_33_code_name: stock.Sector33CodeName,
+          scale_category: stock.ScaleCategory,
+          market_code: stock.MarketCode,
+          market_code_name: stock.MarketCodeName,
+        },
+      }
+      await dynamoClient.put(params).promise()
+    }
+    // Slackに通知
+    const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
+      logLevel: LogLevel.DEBUG,
+    })
+    const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
+    const result = await slackClient.chat.postMessage({
+      text: `:tori::tori::tori: 銘柄情報を更新しました！ :tori::tori::tori:`,
+      channel,
+    })
+    console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
+  }
+}
+
 // テクニカル系のハンドラー
 
 /**
  * 前営業日からの終値の変化率が一定以上の銘柄を返す。
  */
 
-export const growth_rate_close_handler = async (event: APIGatewayEvent) => {
+export const growth_rate_close_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   // 閾値を取得
   const threshold = event.queryStringParameters?.threshold
 
