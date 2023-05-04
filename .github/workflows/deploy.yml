@@ -35,6 +35,9 @@ jobs:
       - name: Lint
         run: yarn lint
         working-directory: ${{ env.server-directory }}/src
+      - name: Prettier
+        run: yarn prettier:check
+        working-directory: ${{ env.server-directory }}/src
       - name: Test
         run: yarn test
         working-directory: ${{ env.server-directory }}/src
@@ -53,8 +56,10 @@ jobs:
       - name: Create dotenv file
         run: echo $'${{ secrets.LAMBDA_DOTENV }}' > ./src/.env
         working-directory: ${{ env.server-directory }}
-      - name: Add S3 Bucket name to dotenv file
-        run: echo "S3_BUCKET_NAME=${{ env.project-name }}-s3-bucket" >> ./src/.env
+      - name: Add Data name to dotenv file
+        run: |
+          echo "S3_BUCKET_NAME=${{ env.project-name }}-s3-bucket" >> ./src/.env
+          echo "LISTED_INFO_DYNAMODB_TABLE_NAME=${{ env.project-name }}-listed-info" >> ./src/.env
         working-directory: ${{ env.server-directory }}
       - run: sam build --use-container
         working-directory: ${{ env.server-directory }}
