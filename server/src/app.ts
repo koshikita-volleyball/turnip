@@ -80,7 +80,7 @@ export const listed_info_handler = async (event: APIGatewayEvent): Promise<APIGa
       FilterExpression: filter_expressions.join(' AND '),
       ExpressionAttributeValues: expression_attribute_values,
     }
-    const stocks = ((await dynamodb.query(params).promise()).Items || []).map((item) => unmarshall(item) as ListedInfoStruct)
+    const stocks = ((await dynamodb.scan(params).promise()).Items || []).map((item) => unmarshall(item) as ListedInfoStruct)
 
     // 銘柄名でフィルタリング
     const filtered_stocks = stocks.filter((stock) => {
