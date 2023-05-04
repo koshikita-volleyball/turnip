@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await */
 import dotenv from 'dotenv'
 import { APIGatewayEvent } from 'aws-lambda'
 import JQuantsClient from './common/jquants_client'
@@ -19,7 +20,6 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
-// eslint-disable-next-line @typescript-eslint/require-await
 export const lambdaHandler = async () => {
   try {
     return {
