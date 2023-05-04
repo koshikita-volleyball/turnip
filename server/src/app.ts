@@ -54,8 +54,12 @@ export const listed_info_handler = async (event: APIGatewayEvent): Promise<APIGa
     const market_code = event.queryStringParameters?.market_code
 
     // DynamoDBから銘柄情報を取得
-    const filter_expressions = []
-    const expression_attribute_values: ExpressionAttributeValueMap = {}
+    const filter_expressions = ['stock_code <> :stock_code']
+    const expression_attribute_values: ExpressionAttributeValueMap = {
+      ':stock_code': {
+        S: '0000',
+      },
+    }
     if (sector_17_code) {
       filter_expressions.push('sector_17_code = :sector_17_code')
       expression_attribute_values[':sector_17_code'] = {
