@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import useSWR from 'swr'
 import setting from '../setting'
@@ -25,6 +25,17 @@ export default function AboutPage() {
     revalidateOnFocus: false,
     dedupingInterval: 10000,
   })
+
+  useEffect(() => {
+    if (page === 1) return
+    window.history.pushState(null, '', `?page=${page}`)
+  }, [page])
+
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    const page = url.searchParams.get('page')
+    if (page) setPage(parseInt(page))
+  }, [])
 
   return (
     <Layout>
