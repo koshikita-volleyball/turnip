@@ -24,7 +24,7 @@ Resources:
       VersioningConfiguration:
         Status: Enabled
 
-  MyDynamoDBTable:
+  ListedInfoTable:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
@@ -34,7 +34,7 @@ Resources:
         - AttributeName: stock_code
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
-      TableName: !Sub ${AWS::StackName}-dynamodb-table
+      TableName: !Sub ${AWS::StackName}-listed-info
 
   MyLambdaRole:
     Type: AWS::IAM::Role
