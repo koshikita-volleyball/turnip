@@ -45,7 +45,9 @@ export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
   }
 }
 
-export const listed_info_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+export const listed_info_handler = async (
+  event: APIGatewayEvent,
+): Promise<APIGatewayProxyResult> => {
   try {
     // パラメタを取得
     const company_name = event.queryStringParameters?.company_name
@@ -84,10 +86,12 @@ export const listed_info_handler = async (event: APIGatewayEvent): Promise<APIGa
       FilterExpression: filter_expressions.join(' AND '),
       ExpressionAttributeValues: expression_attribute_values,
     }
-    const stocks = ((await dynamodb.scan(params).promise()).Items || []).map((item) => unmarshall(item) as ListedInfoStruct)
+    const stocks = ((await dynamodb.scan(params).promise()).Items || []).map(
+      item => unmarshall(item) as ListedInfoStruct,
+    )
 
     // 銘柄名でフィルタリング
-    const filtered_stocks = stocks.filter((stock) => {
+    const filtered_stocks = stocks.filter(stock => {
       return company_name ? stock.CompanyName.includes(company_name) : true
     })
 
