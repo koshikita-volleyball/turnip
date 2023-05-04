@@ -17,6 +17,7 @@
   },
   "scripts": {
     "lint": "eslint .",
+    "prettier": "prettier --write .",
     "console": "ts-node console.ts",
     "test": "tsc && mocha tests/unit/"
   },
