@@ -10,10 +10,9 @@ const fetcher = (url) => fetch(url).then((r) => r.json())
 export default function AboutPage() {
   const [page, setPage] = useState(1)
 
-  const { data, error, mutate }: {
+  const { data, error }: {
     data: ListedInfoStruct[],
     error: any,
-    mutate: any
   } = useSWR(`${setting.apiPath}/api/listed_info?page=${page}`, fetcher, {
     revalidateOnFocus: false,
     dedupingInterval: 10000,
