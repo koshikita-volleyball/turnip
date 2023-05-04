@@ -36,6 +36,22 @@ Resources:
       BillingMode: PAY_PER_REQUEST
       TableName: !Sub ${AWS::StackName}-listed-info
 
+  PricesDailyQuotesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Code
+          AttributeType: S
+        - AttributeName: Date
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Code
+          KeyType: HASH
+        - AttributeName: Date
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      TableName: !Sub ${AWS::StackName}-prices-daily-quotes
+
   MyLambdaRole:
     Type: AWS::IAM::Role
     Properties:
