@@ -74,7 +74,7 @@ Resources:
                   - dynamodb:DeleteItem
                   - dynamodb:Query
                   - dynamodb:Scan
-                Resource: !GetAtt MyDynamoDBTable.Arn
+                Resource: !GetAtt ListedInfoTable.Arn
               - Sid: AllowCloudWatchLogs
                 Effect: Allow
                 Action:
