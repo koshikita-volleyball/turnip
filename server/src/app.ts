@@ -202,7 +202,7 @@ export const id_token_updater_handler = async (event: any, context: any) => {
     const refreshToken = data.Body?.toString('utf-8');
     if (refreshToken) {
       // リフレッシュトークンを使ってIDトークンを更新
-      const id_token = GetIdToken(refreshToken);
+      const id_token = await GetIdToken(refreshToken);
       // S3にIDトークンを保存
       const params = {
         Bucket: process.env.S3_BUCKET_NAME!,
