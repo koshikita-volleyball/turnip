@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 global.fetch = require('node-fetch')
 
 const func = require('./app')
