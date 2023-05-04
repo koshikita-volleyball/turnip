@@ -12,6 +12,7 @@ import { WebClient, LogLevel } from '@slack/web-api'
 import AWS from './common/aws'
 import GetIdToken from './common/get_id_token'
 import GetProcessEnv from './common/process_env'
+import { ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
 
 dotenv.config()
 
@@ -44,20 +45,52 @@ export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
   }
 }
 
-export const listed_info_handler = async (): Promise<APIGatewayProxyResult> => {
+export const listed_info_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   try {
+    // パラメタを取得
+    const company_name = event.queryStringParameters?.company_name
+    const sector_17_code = event.queryStringParameters?.sector_17_code
+    const sector_33_code = event.queryStringParameters?.sector_33_code
+    const market_code = event.queryStringParameters?.market_code
+
     // DynamoDBから銘柄情報を取得
+    const key_condition_expressions = []
+    const expression_attribute_values: ExpressionAttributeValueMap = {}
+    if (sector_17_code) {
+      key_condition_expressions.push('#sector_17_code = :sector_17_code')
+      expression_attribute_values[':sector_17_code'] = {
+        S: sector_17_code,
+      }
+    }
+    if (sector_33_code) {
+      key_condition_expressions.push('#sector_33_code = :sector_33_code')
+      expression_attribute_values[':sector_33_code'] = {
+        S: sector_33_code,
+      }
+    }
+    if (market_code) {
+      key_condition_expressions.push('#market_code = :market_code')
+      expression_attribute_values[':market_code'] = {
+        S: market_code,
+      }
+    }
     const dynamodb = new AWS.DynamoDB()
     const params = {
       TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
+      KeyConditionExpression: key_condition_expressions.join(' AND '),
+      ExpressionAttributeValues: expression_attribute_values,
     }
-    const data = ((await dynamodb.scan(params).promise()).Items || []).map((item) => {
-      return unmarshall(item) as ListedInfoStruct
+    const stocks = ((await dynamodb.query(params).promise()).Items || []).map((item) => unmarshall(item) as ListedInfoStruct)
+
+    // 銘柄名でフィルタリング
+    const filtered_stocks = stocks.filter((stock) => {
+      return company_name ? stock.CompanyName.includes(company_name) : true
     })
+
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(data),
+      body: JSON.stringify(filtered_stocks),
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -73,7 +106,9 @@ export const listed_info_handler = async (): Promise<APIGatewayProxyResult> => {
   }
 }
 
-export const prices_daily_quotes_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+export const prices_daily_quotes_handler = async (
+  event: APIGatewayEvent,
+): Promise<APIGatewayProxyResult> => {
   try {
     const code = event.queryStringParameters?.code
     const date = event.queryStringParameters?.date
@@ -239,7 +274,9 @@ export const listed_info_updater_handler = async (): Promise<void> => {
  * 前営業日からの終値の変化率が一定以上の銘柄を返す。
  */
 
-export const growth_rate_close_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+export const growth_rate_close_handler = async (
+  event: APIGatewayEvent,
+): Promise<APIGatewayProxyResult> => {
   // 閾値を取得
   const threshold = event.queryStringParameters?.threshold
 
