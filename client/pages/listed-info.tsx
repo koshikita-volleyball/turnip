@@ -18,6 +18,11 @@ export default function AboutPage() {
     dedupingInterval: 10000,
   });
 
+  useSWR(`${setting.apiPath}/api/listed_info?page=${page + 1}`, fetcher, {
+    revalidateOnFocus: false,
+    dedupingInterval: 10000,
+  });
+
   return (
     <Layout>
       <div id="ListedInfo">
