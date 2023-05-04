@@ -16,6 +16,7 @@ export default function AboutPage() {
   const [useCondition, setUseCondition] = useState(true)
   const [company_name, setCompanyName] = useState('')
   const [market_code, setMarketCode] = useState<string>('')
+  const [sector_17_code, setSector17Code] = useState<string>('')
 
   const {
     data,
@@ -29,6 +30,7 @@ export default function AboutPage() {
     + `?page=${page}`
     + `${useCondition === false ? '' : company_name !== '' ? `&company_name=${company_name}` : ''}`
     + `${useCondition === false ? '' : market_code !== '' ? `&market_code=${market_code}` : ''}`
+    + `${useCondition === false ? '' : sector_17_code !== '' ? `&sector_17_code=${sector_17_code}` : ''}`
   , fetcher, {
     revalidateOnFocus: false,
     dedupingInterval: 10000,
@@ -39,6 +41,7 @@ export default function AboutPage() {
     + `?page=${page + 1}`
     + `${useCondition === false ? '' : company_name !== '' ? `&company_name=${company_name}` : ''}`
     + `${useCondition === false ? '' : market_code !== '' ? `&market_code=${market_code}` : ''}`
+    + `${useCondition === false ? '' : sector_17_code !== '' ? `&sector_17_code=${sector_17_code}` : ''}`
   , fetcher, {
     revalidateOnFocus: false,
     dedupingInterval: 10000,
@@ -52,6 +55,8 @@ export default function AboutPage() {
     if (company_name) setCompanyName(company_name)
     const market_code = url.searchParams.get('market_code')
     if (market_code) setMarketCode(market_code)
+    const sector_17_code = url.searchParams.get('sector_17_code')
+    if (sector_17_code) setSector17Code(sector_17_code)
   }, [])
 
   useEffect(() => {
@@ -60,8 +65,9 @@ export default function AboutPage() {
       + `?page=${page === 0 ? 1 : page}`
       + `${useCondition === false ? '' : company_name !== '' ? `&company_name=${company_name}` : ''}`
       + `${useCondition === false ? '' : market_code !== '' ? `&market_code=${market_code}` : ''}`
+      + `${useCondition === false ? '' : sector_17_code !== '' ? `&sector_17_code=${sector_17_code}` : ''}`
     )
-  }, [company_name, market_code, page, useCondition])
+  }, [company_name, market_code, page, sector_17_code, useCondition])
 
   return (
     <Layout>
@@ -158,6 +164,21 @@ export default function AboutPage() {
                 <option value=''>指定しない</option>
                 {
                   MarketInfo.map((item) => (
+                    <option key={item.code} value={item.code}>{item.name}</option>
+                  ))
+                }
+              </Form.Control>
+            </Form.Group>
+            <Form.Group className='mt-3'>
+              <Form.Label>17業種</Form.Label>
+              <Form.Control as="select" onChange={(e) => {
+                const value = e.target.value
+                setSector17Code(value)
+                setPage(1)
+              }} value={sector_17_code}>
+                <option value=''>指定しない</option>
+                {
+                  Sector17Info.map((item) => (
                     <option key={item.code} value={item.code}>{item.name}</option>
                   ))
                 }
