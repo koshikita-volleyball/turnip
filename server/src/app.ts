@@ -51,7 +51,7 @@ export const listed_info_handler = async (): Promise<APIGatewayProxyResult> => {
     const params = {
       TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
     }
-    const data = ((await dynamodb.scan(params).promise()).Items || []).map((item) => {
+    const data = ((await dynamodb.scan(params).promise()).Items || []).map(item => {
       return unmarshall(item) as ListedInfoStruct
     })
     return {
@@ -73,7 +73,9 @@ export const listed_info_handler = async (): Promise<APIGatewayProxyResult> => {
   }
 }
 
-export const prices_daily_quotes_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+export const prices_daily_quotes_handler = async (
+  event: APIGatewayEvent,
+): Promise<APIGatewayProxyResult> => {
   try {
     const code = event.queryStringParameters?.code
     const date = event.queryStringParameters?.date
@@ -239,7 +241,9 @@ export const listed_info_updater_handler = async (): Promise<void> => {
  * 前営業日からの終値の変化率が一定以上の銘柄を返す。
  */
 
-export const growth_rate_close_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+export const growth_rate_close_handler = async (
+  event: APIGatewayEvent,
+): Promise<APIGatewayProxyResult> => {
   // 閾値を取得
   const threshold = event.queryStringParameters?.threshold
 
