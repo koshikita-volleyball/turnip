@@ -16,7 +16,7 @@
     "typescript": "^5.0.4"
   },
   "scripts": {
-    "lint": "echo \"Linter not implemented yet...\" && exit 0",
+    "lint": "eslint .",
     "console": "ts-node console.ts",
     "test": "tsc && mocha tests/unit/"
   },
