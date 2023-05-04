@@ -54,27 +54,27 @@ export const listed_info_handler = async (event: APIGatewayEvent): Promise<APIGa
     const market_code = event.queryStringParameters?.market_code
 
     // DynamoDBから銘柄情報を取得
-    const filter_expressions = ['stock_code <> :stock_code']
+    const filter_expressions = ['Code <> :Code']
     const expression_attribute_values: ExpressionAttributeValueMap = {
       ':stock_code': {
         S: '0000',
       },
     }
     if (sector_17_code) {
-      filter_expressions.push('sector_17_code = :sector_17_code')
-      expression_attribute_values[':sector_17_code'] = {
+      filter_expressions.push('Sector17Code = :Sector17Code')
+      expression_attribute_values[':Sector17Code'] = {
         S: sector_17_code,
       }
     }
     if (sector_33_code) {
-      filter_expressions.push('sector_33_code = :sector_33_code')
-      expression_attribute_values[':sector_33_code'] = {
+      filter_expressions.push('Sector33Code = :Sector33Code')
+      expression_attribute_values[':Sector33Code'] = {
         S: sector_33_code,
       }
     }
     if (market_code) {
-      filter_expressions.push('market_code = :market_code')
-      expression_attribute_values[':market_code'] = {
+      filter_expressions.push('MarketCode = :MarketCode')
+      expression_attribute_values[':MarketCode'] = {
         S: market_code,
       }
     }
@@ -240,17 +240,17 @@ export const listed_info_updater_handler = async (): Promise<void> => {
       const params = {
         TableName: tableName,
         Item: {
-          stock_code: stock.Code,
-          date: stock.Date,
-          company_name: stock.CompanyName,
-          company_name_english: stock.CompanyNameEnglish,
-          sector_17_code: stock.Sector17Code,
-          sector_17_code_name: stock.Sector17CodeName,
-          sector_33_code: stock.Sector33Code,
-          sector_33_code_name: stock.Sector33CodeName,
-          scale_category: stock.ScaleCategory,
-          market_code: stock.MarketCode,
-          market_code_name: stock.MarketCodeName,
+          Code: stock.Code,
+          Date: stock.Date,
+          CompanyName: stock.CompanyName,
+          CompanyNameEnglish: stock.CompanyNameEnglish,
+          Sector17Code: stock.Sector17Code,
+          Sector17CodeName: stock.Sector17CodeName,
+          Sector33Code: stock.Sector33Code,
+          Sector33CodeName: stock.Sector33CodeName,
+          ScaleCategory: stock.ScaleCategory,
+          MarketCode: stock.MarketCode,
+          MarketCodeName: stock.MarketCodeName,
         },
       }
       await dynamoClient.put(params).promise()
