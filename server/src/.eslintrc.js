@@ -18,5 +18,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'prettier',
   ],
-  rules: {},
+  rules: {
+    '@typescript-eslint/no-non-null-assertion': 'off',
+  },
 }

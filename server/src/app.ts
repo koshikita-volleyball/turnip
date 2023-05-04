@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import { Context, APIGatewayEvent } from 'aws-lambda'
+import { APIGatewayEvent } from 'aws-lambda'
 import JQuantsClient from './common/jquants_client'
 import ListedInfoStruct from './interface/jquants/listed_info'
 import { GetRefreshToken } from './common/get_id_token'
@@ -9,7 +9,6 @@ import { getBusinessDays } from './analysis/utils'
 import { WebClient, LogLevel } from '@slack/web-api'
 import AWS from './common/aws'
 import GetIdToken from './common/get_id_token'
-import LambdaEventStruct from './interface/common/lambda_event'
 
 dotenv.config()
 
@@ -19,7 +18,7 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
-export const lambdaHandler = async (event: APIGatewayEvent, context: any) => {
+export const lambdaHandler = () => {
   try {
     return {
       statusCode: 200,
@@ -34,7 +33,7 @@ export const lambdaHandler = async (event: APIGatewayEvent, context: any) => {
   }
 }
 
-export const listed_info_handler = async (event: APIGatewayEvent, context: any) => {
+export const listed_info_handler = async () => {
   try {
     const data = await JQuantsClient<{ info: ListedInfoStruct[] }>('/v1/listed/info')
     return {
@@ -42,8 +41,10 @@ export const listed_info_handler = async (event: APIGatewayEvent, context: any) 
       headers: CORS_HEADERS,
       body: JSON.stringify(data.info),
     }
-  } catch (err) {
-    console.error(`[ERROR] ${err}`)
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
     return {
       statusCode: 500,
       headers: CORS_HEADERS,
@@ -54,7 +55,7 @@ export const listed_info_handler = async (event: APIGatewayEvent, context: any) 
   }
 }
 
-export const prices_daily_quotes_handler = async (event: APIGatewayEvent, context: any) => {
+export const prices_daily_quotes_handler = async (event: APIGatewayEvent) => {
   try {
     const code = event.queryStringParameters?.code
     const date = event.queryStringParameters?.date
@@ -74,7 +75,9 @@ export const prices_daily_quotes_handler = async (event: APIGatewayEvent, contex
       body: JSON.stringify(data.daily_quotes),
     }
   } catch (err) {
-    console.error(`[ERROR] ${err}`)
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
     return {
       statusCode: 500,
       headers: CORS_HEADERS,
@@ -85,7 +88,7 @@ export const prices_daily_quotes_handler = async (event: APIGatewayEvent, contex
   }
 }
 
-export const slack_notify_handler = async (event: APIGatewayEvent, context: any) => {
+export const slack_notify_handler = async () => {
   const slackClient = new WebClient(process.env.SLACK_API_TOKEN, {
     logLevel: LogLevel.DEBUG,
   })
@@ -94,10 +97,10 @@ export const slack_notify_handler = async (event: APIGatewayEvent, context: any)
     text: '朝７時だよ :tori:',
     channel,
   })
-  console.log(`Successfully send message ${result.ts} in conversation ${channel}`)
+  console.log(`Successfully send message ${result.ts!} in conversation ${channel}`)
 }
 
-export const refresh_token_updater_handler = async (event: APIGatewayEvent, context: any) => {
+export const refresh_token_updater_handler = async () => {
   try {
     const refresh_token = await GetRefreshToken()
     const s3 = new AWS.S3()
@@ -119,13 +122,15 @@ export const refresh_token_updater_handler = async (event: APIGatewayEvent, cont
       text: `:tori::tori::tori: リフレッシュトークンを更新しました！ :tori::tori::tori:\n\n${THREE_BACK_QUOTES}\n${refresh_token}\n${THREE_BACK_QUOTES}`,
       channel,
     })
-    console.log(`Successfully send message ${result.ts} in conversation ${channel}`)
-  } catch (err) {
-    console.error(`[ERROR] ${err}`)
+    console.log(`Successfully send message ${result.ts!} in conversation ${channel}`)
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
   }
 }
 
-export const id_token_updater_handler = async (event: APIGatewayEvent, context: any) => {
+export const id_token_updater_handler = async () => {
   try {
     // S3からリフレッシュトークンを取得
     const s3 = new AWS.S3()
@@ -157,12 +162,14 @@ export const id_token_updater_handler = async (event: APIGatewayEvent, context: 
         text: `:tori::tori::tori: IDトークンを更新しました :tori::tori::tori:\n\n${THREE_BACK_QUOTE}${id_token}${THREE_BACK_QUOTE}`,
         channel,
       })
-      console.log(`Successfully send message ${result.ts} in conversation ${channel}`)
+      console.log(`Successfully send message ${result.ts!} in conversation ${channel}`)
     } else {
       console.log('refresh_token.txt is empty')
     }
-  } catch (err) {
-    console.error(`[ERROR] ${err}`)
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
   }
 }
 
@@ -172,7 +179,7 @@ export const id_token_updater_handler = async (event: APIGatewayEvent, context: 
  * 前営業日からの終値の変化率が一定以上の銘柄を返す。
  */
 
-export const growth_rate_close_handler = async (event: APIGatewayEvent, context: Context) => {
+export const growth_rate_close_handler = async (event: APIGatewayEvent) => {
   // 閾値を取得
   const threshold = event.queryStringParameters?.threshold
 

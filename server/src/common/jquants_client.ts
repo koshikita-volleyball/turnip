@@ -18,7 +18,7 @@ async function JQuantsClient<T>(
   if (!refreshToken) {
     return Promise.reject('refresh_token.txt is empty')
   }
-  const id_token = await GetIdToken(refreshToken!)
+  const id_token = await GetIdToken(refreshToken)
   const query_string = params
     ? '?' +
       Object.keys(params)
