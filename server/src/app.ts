@@ -97,6 +97,11 @@ export const listed_info_handler = async (
       return company_name ? stock.CompanyName.includes(company_name) : true
     })
 
+    // 銘柄コードでソート
+    filtered_stocks.sort((a, b) => {
+      return a.Code.localeCompare(b.Code)
+    })
+
     // ページング
     const start = (page - 1) * per_page
     const end = start + per_page
