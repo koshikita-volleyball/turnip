@@ -183,6 +183,48 @@ export const id_token_updater_handler = async () => {
   }
 }
 
+export const listed_info_updater_handler = async () => {
+  try {
+    const { info: stocks } = await JQuantsClient<{ info: ListedInfoStruct[] }>('/v1/listed/info')
+    // DynamoDBに保存
+    const dynamoClient = new AWS.DynamoDB.DocumentClient()
+    const tableName = GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME')
+    for (const stock of stocks) {
+      const params = {
+        TableName: tableName,
+        Item: {
+          stock_code: stock.Code,
+          date: stock.Date,
+          company_name: stock.CompanyName,
+          company_name_english: stock.CompanyNameEnglish,
+          sector_17_code: stock.Sector17Code,
+          sector_17_code_name: stock.Sector17CodeName,
+          sector_33_code: stock.Sector33Code,
+          sector_33_code_name: stock.Sector33CodeName,
+          scale_category: stock.ScaleCategory,
+          market_code: stock.MarketCode,
+          market_code_name: stock.MarketCodeName,
+        },
+      }
+      await dynamoClient.put(params).promise()
+    }
+    // Slackに通知
+    const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
+      logLevel: LogLevel.DEBUG,
+    })
+    const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
+    const result = await slackClient.chat.postMessage({
+      text: `:tori::tori::tori: 銘柄情報を更新しました :tori::tori::tori:`,
+      channel,
+    })
+    console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
+  }
+}
+
 // テクニカル系のハンドラー
 
 /**
