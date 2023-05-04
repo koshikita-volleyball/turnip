@@ -4,6 +4,7 @@
   "repository": "https://github.com/koshikita-volleyball/turnip.git",
   "author": "koshikita-volleyball",
   "license": "Apache-2.0",
+  "type": "module",
   "scripts": {
     "dev": "ts-node ./src/index.ts",
     "start": "nodemon --exec ts-node ./src/index.ts",
