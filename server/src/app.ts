@@ -58,7 +58,7 @@ export const listed_info_handler = async (
     // DynamoDBから銘柄情報を取得
     const filter_expressions = ['Code <> :Code']
     const expression_attribute_values: ExpressionAttributeValueMap = {
-      ':stock_code': {
+      ':Code': {
         S: '0000',
       },
     }
