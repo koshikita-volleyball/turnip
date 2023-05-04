@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Layout from '../components/Layout'
 import useSWR from 'swr'
 import setting from '../setting'
-import { Button, Table } from 'react-bootstrap'
+import { Alert, Button, Spinner, Table } from 'react-bootstrap'
 import ListedInfoStruct from '../interface/listed_info'
 
 const fetcher = (url) => fetch(url).then((r) => r.json())
@@ -23,10 +23,20 @@ export default function AboutPage() {
       <div id="ListedInfo">
         {
           error ? <p>failed to load</p> :
-          !data ? <p>loading...</p> :
+          !data ? <div className='mt-3 d-flex justify-content-between'>
+            <Spinner animation="grow" variant="primary" />
+            <Spinner animation="grow" variant="secondary" />
+            <Spinner animation="grow" variant="success" />
+            <Spinner animation="grow" variant="danger" />
+            <Spinner animation="grow" variant="warning" />
+            <Spinner animation="grow" variant="info" />
+            <Spinner animation="grow" variant="light" />
+            <Spinner animation="grow" variant="dark" />
+          </div> :
           <>
-            <div className='d-flex justify-content-between mt-3'>
+            <div className='d-flex justify-content-between align-items-center mt-3'>
               <Button variant="primary" onClick={() => setPage(page - 1)} disabled={page === 1}>前へ</Button>
+              <Alert variant='info' className='text-center mx-1 my-0 px-3 py-1'>Page {page}</Alert>
               <Button variant="primary" onClick={() => setPage(page + 1)} disabled={data.length === 0}>次へ</Button>
             </div>
             <Table className="table table-striped table-hover mt-3">
