@@ -13,6 +13,7 @@ import AWS from './common/aws'
 import GetIdToken from './common/get_id_token'
 import GetProcessEnv from './common/process_env'
 import { ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
+import { per_page } from './common/const'
 
 dotenv.config()
 
@@ -50,6 +51,7 @@ export const listed_info_handler = async (
 ): Promise<APIGatewayProxyResult> => {
   try {
     // パラメタを取得
+    const page = parseInt(event.queryStringParameters?.page ?? '1')
     const company_name = event.queryStringParameters?.company_name
     const sector_17_code = event.queryStringParameters?.sector_17_code
     const sector_33_code = event.queryStringParameters?.sector_33_code
@@ -95,10 +97,15 @@ export const listed_info_handler = async (
       return company_name ? stock.CompanyName.includes(company_name) : true
     })
 
+    // ページング
+    const start = (page - 1) * per_page
+    const end = start + per_page
+    const paged_stocks = filtered_stocks.slice(start, end)
+
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(filtered_stocks),
+      body: JSON.stringify(paged_stocks),
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
