@@ -5,7 +5,7 @@ import setting from '../setting'
 import { Alert, Button, Spinner, Table } from 'react-bootstrap'
 import ListedInfoStruct from '../interface/listed_info'
 
-const fetcher = (url) => fetch(url).then((r) => r.json())
+const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 export default function AboutPage() {
   const [page, setPage] = useState(1)
