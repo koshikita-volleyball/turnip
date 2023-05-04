@@ -207,22 +207,17 @@ export const listed_info_updater_handler = async () => {
         },
       }
       await dynamoClient.put(params).promise()
-
-      // Slackに通知
-      const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
-        logLevel: LogLevel.DEBUG,
-      })
-      const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
-      const result = await slackClient.chat.postMessage({
-        text: `:tori::tori::tori: 銘柄情報を更新しました :tori::tori::tori:\n\n${JSON.stringify(
-          stock,
-          null,
-          2,
-        )}`,
-        channel,
-      })
-      console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
     }
+    // Slackに通知
+    const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
+      logLevel: LogLevel.DEBUG,
+    })
+    const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
+    const result = await slackClient.chat.postMessage({
+      text: `:tori::tori::tori: 銘柄情報を更新しました :tori::tori::tori:`,
+      channel,
+    })
+    console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.error(`[ERROR] ${err.message}`)
