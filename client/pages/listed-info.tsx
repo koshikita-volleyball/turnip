@@ -12,7 +12,7 @@ import Sector33Info from '../data/Sector33Info'
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 export default function AboutPage() {
-  const [page, setPage] = useState(0)
+  const [page, setPage] = useState(1)
   const [useCondition, setUseCondition] = useState(true)
   const [company_name, setCompanyName] = useState('')
   const [market_code, setMarketCode] = useState<string>('')
@@ -20,14 +20,13 @@ export default function AboutPage() {
   const {
     data,
     error,
-    mutate,
   }: {
     data: ListedInfoStruct[]
     error: any
     mutate: any
   } = useSWR(
     `${setting.apiPath}/api/listed_info`
-    + `?page=${page === 0 ? 1 : page}`
+    + `?page=${page}`
     + `${useCondition === false ? '' : company_name !== '' ? `&company_name=${company_name}` : ''}`
     + `${useCondition === false ? '' : market_code !== '' ? `&market_code=${market_code}` : ''}`
   , fetcher, {
@@ -56,7 +55,6 @@ export default function AboutPage() {
   }, [])
 
   useEffect(() => {
-    // if (page === 0) return
     window.history.pushState(null, '',
       `${window.location.pathname}`
       + `?page=${page === 0 ? 1 : page}`
@@ -87,7 +85,7 @@ export default function AboutPage() {
               <Button
                 variant="primary"
                 onClick={() => setPage(page - 1)}
-                disabled={page < 0}
+                disabled={page === 1}
               >
                 前へ
               </Button>
@@ -131,11 +129,11 @@ export default function AboutPage() {
           useCondition
           ? <Button variant="secondary" size='sm' onClick={() => {
             setUseCondition(false)
-            setPage(0)
+            setPage(1)
           }}>条件を指定しない</Button>
           : <Button variant="secondary" size='sm' onClick={() => {
             setUseCondition(true)
-            setPage(0)
+            setPage(1)
           }}>条件を指定して検索</Button>
         }
         </div>
