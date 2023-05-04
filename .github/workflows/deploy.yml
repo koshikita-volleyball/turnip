@@ -1,4 +1,4 @@
-name: deploy
+name: Deploy
 
 on:
   workflow_dispatch:
@@ -58,13 +58,13 @@ jobs:
         working-directory: ${{ env.server-directory }}
       - name: Add Data name to dotenv file
         run: |
-          echo "S3_BUCKET_NAME=${{ env.project-name }}-s3-bucket" >> ./src/.env
-          echo "LISTED_INFO_DYNAMODB_TABLE_NAME=${{ env.project-name }}-listed-info" >> ./src/.env
+          echo "S3_BUCKET_NAME=${{ env.project-name }}-production-s3-bucket" >> ./src/.env
+          echo "LISTED_INFO_DYNAMODB_TABLE_NAME=${{ env.project-name }}-production-listed-info" >> ./src/.env
         working-directory: ${{ env.server-directory }}
       - run: sam build --use-container
         working-directory: ${{ env.server-directory }}
       - name: Deploy Lambda
-        run: sam deploy --stack-name ${{ env.project-name }}
+        run: sam deploy --stack-name ${{ env.project-name }}-production
         working-directory: ${{ env.server-directory }}
   nextjs-check:
     runs-on: ubuntu-latest
@@ -95,7 +95,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Get API Gateway URL
         run: |
-          API_GATEWAY_URL=$(aws cloudformation describe-stacks --stack-name ${{ env.project-name }} --query "Stacks[0].Outputs[?OutputKey=='MyApiGateway'].OutputValue" --output text --no-cli-pager)
+          API_GATEWAY_URL=$(aws cloudformation describe-stacks --stack-name ${{ env.project-name }}-production --query "Stacks[0].Outputs[?OutputKey=='MyApiGateway'].OutputValue" --output text --no-cli-pager)
           echo "API_GATEWAY_URL=$API_GATEWAY_URL" >> $GITHUB_ENV
       - name: API Gateway URL empty guard
         run: |
