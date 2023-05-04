@@ -9,15 +9,15 @@ module.exports = {
     sourceType: 'module',
     ecmaVersion: 13,
     tsconfigRootDir: __dirname,
-    project: ['./tsconfig.eslint.json']
+    project: ['./tsconfig.eslint.json'],
   },
-  plugins: [
-    '@typescript-eslint',
-  ],
+  plugins: ['@typescript-eslint'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'prettier',
+    'prettier/@typescript-eslint',
   ],
   rules: {},
 };
