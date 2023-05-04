@@ -1,60 +1,55 @@
 import dotenv from 'dotenv';
 import JQuantsClient from './common/jquants_client';
-import ListedInfoStruct from './interface/listed_info';
+import ListedInfoStruct from './interface/jquants/listed_info';
 import { GetRefreshToken } from './common/get_id_token';
-import PricesDailyQuotesStruct from './interface/prices_daily_quotes';
-import { base_uri } from './common/const';
+import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes';
+import { APIGatewayEvent, Context } from 'aws-lambda';
 import { getBusinessDays } from './analysis/utils';
 import { WebClient, LogLevel } from '@slack/web-api';
 import AWS from 'aws-sdk';
 import GetIdToken from './common/get_id_token';
+import GrowthRateClose from './interface/turnip/growth_rate_close';
 
-dotenv.config();
-AWS.config.update({ region: process.env.AWS_REGION });
-AWS.config.apiVersions = {
-  s3: "2006-03-01",
-};
+dotenv.config()
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS,PATCH',
-  'Access-Control-Allow-Headers': 'Content-Type'
-};
+  'Access-Control-Allow-Headers': 'Content-Type',
+}
 
 export const lambdaHandler = async (event: any, context: any) => {
   try {
     return {
-      'statusCode': 200,
+      statusCode: 200,
       headers: CORS_HEADERS,
-      'body': JSON.stringify({
+      body: JSON.stringify({
         message: 'hello world',
-      })
+      }),
     }
   } catch (err) {
-    console.log(err);
-    return err;
+    console.log(err)
+    return err
   }
-};
+}
 
 export const listed_info_handler = async (event: any, context: any) => {
   try {
-    const data = await JQuantsClient<{info: ListedInfoStruct[]}>("/v1/listed/info")
+    const data = await JQuantsClient<{ info: ListedInfoStruct[] }>('/v1/listed/info')
     return {
-      'statusCode': 200,
+      statusCode: 200,
       headers: CORS_HEADERS,
-      'body': JSON.stringify(
-        data.info,
-      ),
+      body: JSON.stringify(data.info),
     }
   } catch (err) {
-    console.log(err);
+    console.error(`[ERROR] ${err}`)
     return {
-      'statusCode': 500,
+      statusCode: 500,
       headers: CORS_HEADERS,
-      'body': JSON.stringify({
+      body: JSON.stringify({
         message: err,
-      })
-    };
+      }),
+    }
   }
 }
 
@@ -64,28 +59,28 @@ export const prices_daily_quotes_handler = async (event: any, context: any) => {
     const date = event.queryStringParameters?.date
     const from = event.queryStringParameters?.from
     const to = event.queryStringParameters?.to
-    const params: {[key: string]: string} = {}
+    const params: { [key: string]: string } = {}
     if (code) params['code'] = code
     if (date) params['date'] = date
     if (from) params['from'] = from
     if (to) params['to'] = to
-    const data = await JQuantsClient<{daily_quotes: PricesDailyQuotesStruct[]}>("/v1/prices/daily_quotes", params)
+    const data = await JQuantsClient<{
+      daily_quotes: PricesDailyQuotesStruct[]
+    }>('/v1/prices/daily_quotes', params)
     return {
-      'statusCode': 200,
+      statusCode: 200,
       headers: CORS_HEADERS,
-      'body': JSON.stringify(
-        data.daily_quotes,
-      ),
+      body: JSON.stringify(data.daily_quotes),
     }
   } catch (err) {
-    console.log(err);
+    console.error(`[ERROR] ${err}`)
     return {
-      'statusCode': 500,
+      statusCode: 500,
       headers: CORS_HEADERS,
-      'body': JSON.stringify({
+      body: JSON.stringify({
         message: err,
-      })
-    };
+      }),
+    }
   }
 }
 
@@ -99,66 +94,57 @@ export const slack_notify_handler = async (event: any, context: any) => {
   const result = await slackClient.chat.postMessage({
     text: '朝７時だよ :tori:',
     channel,
-  });
-
-  console.log(`Successfully send message ${result.ts} in conversation ${channel}`);
+  })
+  console.log(`Successfully send message ${result.ts} in conversation ${channel}`)
 }
 
 // テクニカル系のハンドラー
 
-// TODO: レスポンスの型をまとめたい
-type ResponseGrowthRateClose = {
-  code: string,
-  growth_rate: number,
-  daily_quotes: {
-    before: PricesDailyQuotesStruct,
-    after: PricesDailyQuotesStruct,
-  }
-}
-
 /**
  * 前営業日からの終値の変化率が一定以上の銘柄を返す。
  */
-export const growth_rate_close_handler = async (event: any, context: any) => {
 
+export const growth_rate_close_handler = async (event: APIGatewayEvent, context: Context) => {
   // 閾値を取得
-  const threshold = parseFloat(event.queryStringParameters?.threshold)
+  const threshold = event.queryStringParameters?.threshold
 
-  const res : ResponseGrowthRateClose[]  = []
+  const res: GrowthRateClose[] = []
 
   const dates = await getBusinessDays()
-  const { daily_quotes:daily_quotes_before } = await JQuantsClient<{daily_quotes: PricesDailyQuotesStruct[]}>("/v1/prices/daily_quotes", {
+  const { daily_quotes: daily_quotes_before } = await JQuantsClient<{
+    daily_quotes: PricesDailyQuotesStruct[]
+  }>('/v1/prices/daily_quotes', {
     date: dates[dates.length - 2].format('YYYY-MM-DD'),
   })
 
-  const { daily_quotes:daily_quotes_after } = await JQuantsClient<{daily_quotes: PricesDailyQuotesStruct[]}>("/v1/prices/daily_quotes", {
+  const { daily_quotes: daily_quotes_after } = await JQuantsClient<{
+    daily_quotes: PricesDailyQuotesStruct[]
+  }>('/v1/prices/daily_quotes', {
     date: dates[dates.length - 1].format('YYYY-MM-DD'),
   })
 
-  // prices_beforeをfor文で回して、prices_afterの中にある銘柄を探す
-  for(const dq_before of daily_quotes_before) {
-
+  for (const dq_before of daily_quotes_before) {
     const dq_after = daily_quotes_after.find(dq => dq.Code === dq_before.Code)
     if (!dq_after || !dq_before.Close || !dq_after.Close) continue
 
     const growth_rate = (dq_after.Close - dq_before.Close) / dq_before.Close
-    if (!threshold || growth_rate > threshold) {
+    if (!threshold || growth_rate > parseFloat(threshold)) {
       res.push({
         code: dq_before.Code,
         growth_rate,
         daily_quotes: {
           before: dq_before,
           after: dq_after,
-        }
+        },
       })
     }
   }
   res.sort((a, b) => b.growth_rate - a.growth_rate)
 
   return {
-    'statusCode': 200,
+    statusCode: 200,
     headers: CORS_HEADERS,
-    'body': JSON.stringify(res),
+    body: JSON.stringify(res),
   }
 }
 
