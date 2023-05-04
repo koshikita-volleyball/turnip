@@ -1,15 +1,10 @@
 import dotenv from 'dotenv';
+import { Context, APIGatewayEvent } from 'aws-lambda';
 import JQuantsClient from './common/jquants_client';
 import ListedInfoStruct from './interface/jquants/listed_info';
 import { GetRefreshToken } from './common/get_id_token';
-import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes';
-import { base_uri } from './common/const';
-import { getBusinessDays } from './analysis/utils';
-import { WebClient, LogLevel } from '@slack/web-api';
-import AWS from 'aws-sdk';
 import GrowthRateClose  from './interface/turnip/growth_rate_close';
-import {Context, APIGatewayEvent, Handler} from 'aws-lambda';
-import PricesDailyQuotesStruct from './interface/prices_daily_quotes';
+import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes';
 import { getBusinessDays } from './analysis/utils';
 import { WebClient, LogLevel } from '@slack/web-api';
 import AWS from './common/aws';
@@ -179,12 +174,12 @@ export const id_token_updater_handler = async (event: any, context: any) => {
  */
 
 export const growth_rate_close_handler = async (event: APIGatewayEvent, context: Context)  => {
-   
+
    // 閾値を取得
   const threshold = event.queryStringParameters?.threshold
 
   const res : GrowthRateClose[]  = []
-  
+
   const dates = await getBusinessDays()
   const { daily_quotes:daily_quotes_before } = await JQuantsClient<{daily_quotes: PricesDailyQuotesStruct[]}>("/v1/prices/daily_quotes", {
     date: dates[dates.length - 2].format('YYYY-MM-DD'),
