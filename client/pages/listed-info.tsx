@@ -27,8 +27,15 @@ export default function AboutPage() {
   })
 
   useEffect(() => {
+    if (page === 1) return
     window.history.pushState(null, '', `?page=${page}`)
   }, [page])
+
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    const page = url.searchParams.get('page')
+    if (page) setPage(parseInt(page))
+  }, [])
 
   return (
     <Layout>
