@@ -25,13 +25,13 @@ $footer_height: 5; // rem
 main {
   margin: #{$main_vertical_margin}px 0;
   padding: 1rem;
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(xxl) {
     margin-left: 200px;
   }
-  @include media-breakpoint-up(xl) {
+  @include media-breakpoint-up(xxl) {
     margin-left: auto;
     margin-right: auto;
-    max-width: 800px;
+    max-width: 900px;
     min-height: calc(
       100vh - #{$main_vertical_margin * 2}px - #{$footer_height}rem
     );

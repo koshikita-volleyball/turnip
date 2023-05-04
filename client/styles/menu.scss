@@ -7,7 +7,7 @@
   margin: 0;
   background-color: RGBA(33, 37, 41, var(--bs-bg-opacity, 1));
   z-index: 99;
-  @include media-breakpoint-down(md) {
+  @include media-breakpoint-down(xxl) {
     margin: 0;
     &.on {
       width: 100%;
@@ -18,7 +18,7 @@
       display: none;
     }
   }
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(xxl) {
     width: 250px;
     height: 100%;
     margin: 0;
@@ -35,7 +35,7 @@
 }
 
 #ToMenu {
-  @include media-breakpoint-down(md) {
+  @include media-breakpoint-down(xxl) {
     #Opener {
       position: fixed;
       top: 0.5rem;
@@ -55,7 +55,7 @@
       }
     }
   }
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(xxl) {
     display: none;
     button {
       position: absolute;
