@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import useSWR from 'swr'
 import setting from '../setting'
@@ -25,6 +25,10 @@ export default function AboutPage() {
     revalidateOnFocus: false,
     dedupingInterval: 10000,
   })
+
+  useEffect(() => {
+    window.history.pushState(null, '', `?page=${page}`)
+  }, [page])
 
   return (
     <Layout>
