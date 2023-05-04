@@ -21,6 +21,7 @@
     "test": "tsc && mocha tests/unit/"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.115",
     "@types/chai": "^4.3.5",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.16.3",
