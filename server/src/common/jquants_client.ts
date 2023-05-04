@@ -1,5 +1,6 @@
 import GetIdToken from './get_id_token'
 import { base_uri } from './const'
+import { S3_BUCKET_NAME } from './process_env'
 import AWS from './aws'
 
 async function JQuantsClient<T>(
@@ -10,7 +11,7 @@ async function JQuantsClient<T>(
   const s3 = new AWS.S3()
   const data = await s3
     .getObject({
-      Bucket: process.env.S3_BUCKET_NAME!,
+      Bucket: S3_BUCKET_NAME,
       Key: 'refresh_token.txt',
     })
     .promise()
@@ -18,7 +19,7 @@ async function JQuantsClient<T>(
   if (!refreshToken) {
     return Promise.reject('refresh_token.txt is empty')
   }
-  const id_token = await GetIdToken(refreshToken!)
+  const id_token = await GetIdToken(refreshToken)
   const query_string = params
     ? '?' +
       Object.keys(params)
