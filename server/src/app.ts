@@ -45,11 +45,16 @@ export const lambdaHandler = async () => {
 
 export const listed_info_handler = async () => {
   try {
-    const data = await JQuantsClient<{ info: ListedInfoStruct[] }>('/v1/listed/info')
+    // DynamoDBから銘柄情報を取得
+    const dynamodb = new AWS.DynamoDB()
+    const params = {
+      TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
+    }
+    const data = await dynamodb.scan(params).promise()
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(data.info),
+      body: JSON.stringify(data.Items),
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
