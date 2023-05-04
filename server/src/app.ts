@@ -214,7 +214,7 @@ export const listed_info_updater_handler = async () => {
     })
     const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
     const result = await slackClient.chat.postMessage({
-      text: `:tori::tori::tori: 銘柄情報を更新しました :tori::tori::tori:`,
+      text: `:tori::tori::tori: 銘柄情報を更新しました！ :tori::tori::tori:`,
       channel,
     })
     console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
