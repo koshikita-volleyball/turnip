@@ -12,6 +12,7 @@ import { WebClient, LogLevel } from '@slack/web-api'
 import AWS from './common/aws'
 import GetIdToken from './common/get_id_token'
 import GetProcessEnv from './common/process_env'
+import { ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
 
 dotenv.config()
 
@@ -44,20 +45,56 @@ export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
   }
 }
 
-export const listed_info_handler = async (): Promise<APIGatewayProxyResult> => {
+export const listed_info_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   try {
+    // パラメタを取得
+    const company_name = event.queryStringParameters?.company_name
+    const sector_17_code = event.queryStringParameters?.sector_17_code
+    const sector_33_code = event.queryStringParameters?.sector_33_code
+    const market_code = event.queryStringParameters?.market_code
+
     // DynamoDBから銘柄情報を取得
+    const filter_expressions = ['Code <> :Code']
+    const expression_attribute_values: ExpressionAttributeValueMap = {
+      ':stock_code': {
+        S: '0000',
+      },
+    }
+    if (sector_17_code) {
+      filter_expressions.push('Sector17Code = :Sector17Code')
+      expression_attribute_values[':Sector17Code'] = {
+        S: sector_17_code,
+      }
+    }
+    if (sector_33_code) {
+      filter_expressions.push('Sector33Code = :Sector33Code')
+      expression_attribute_values[':Sector33Code'] = {
+        S: sector_33_code,
+      }
+    }
+    if (market_code) {
+      filter_expressions.push('MarketCode = :MarketCode')
+      expression_attribute_values[':MarketCode'] = {
+        S: market_code,
+      }
+    }
     const dynamodb = new AWS.DynamoDB()
     const params = {
       TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
+      FilterExpression: filter_expressions.join(' AND '),
+      ExpressionAttributeValues: expression_attribute_values,
     }
-    const data = ((await dynamodb.scan(params).promise()).Items || []).map(item => {
-      return unmarshall(item) as ListedInfoStruct
+    const stocks = ((await dynamodb.scan(params).promise()).Items || []).map((item) => unmarshall(item) as ListedInfoStruct)
+
+    // 銘柄名でフィルタリング
+    const filtered_stocks = stocks.filter((stock) => {
+      return company_name ? stock.CompanyName.includes(company_name) : true
     })
+
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(data),
+      body: JSON.stringify(filtered_stocks),
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -203,17 +240,17 @@ export const listed_info_updater_handler = async (): Promise<void> => {
       const params = {
         TableName: tableName,
         Item: {
-          stock_code: stock.Code,
-          date: stock.Date,
-          company_name: stock.CompanyName,
-          company_name_english: stock.CompanyNameEnglish,
-          sector_17_code: stock.Sector17Code,
-          sector_17_code_name: stock.Sector17CodeName,
-          sector_33_code: stock.Sector33Code,
-          sector_33_code_name: stock.Sector33CodeName,
-          scale_category: stock.ScaleCategory,
-          market_code: stock.MarketCode,
-          market_code_name: stock.MarketCodeName,
+          Code: stock.Code,
+          Date: stock.Date,
+          CompanyName: stock.CompanyName,
+          CompanyNameEnglish: stock.CompanyNameEnglish,
+          Sector17Code: stock.Sector17Code,
+          Sector17CodeName: stock.Sector17CodeName,
+          Sector33Code: stock.Sector33Code,
+          Sector33CodeName: stock.Sector33CodeName,
+          ScaleCategory: stock.ScaleCategory,
+          MarketCode: stock.MarketCode,
+          MarketCodeName: stock.MarketCodeName,
         },
       }
       await dynamoClient.put(params).promise()
