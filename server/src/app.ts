@@ -1,14 +1,14 @@
-import dotenv from 'dotenv';
-import { Context, APIGatewayEvent } from 'aws-lambda';
-import JQuantsClient from './common/jquants_client';
-import ListedInfoStruct from './interface/jquants/listed_info';
-import { GetRefreshToken } from './common/get_id_token';
-import GrowthRateClose  from './interface/turnip/growth_rate_close';
-import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes';
-import { getBusinessDays } from './analysis/utils';
-import { WebClient, LogLevel } from '@slack/web-api';
-import AWS from './common/aws';
-import GetIdToken from './common/get_id_token';
+import dotenv from 'dotenv'
+import { Context, APIGatewayEvent } from 'aws-lambda'
+import JQuantsClient from './common/jquants_client'
+import ListedInfoStruct from './interface/jquants/listed_info'
+import { GetRefreshToken } from './common/get_id_token'
+import GrowthRateClose from './interface/turnip/growth_rate_close'
+import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
+import { getBusinessDays } from './analysis/utils'
+import { WebClient, LogLevel } from '@slack/web-api'
+import AWS from './common/aws'
+import GetIdToken from './common/get_id_token'
 
 dotenv.config()
 
@@ -171,12 +171,11 @@ export const id_token_updater_handler = async (event: any, context: any) => {
  * 前営業日からの終値の変化率が一定以上の銘柄を返す。
  */
 
-export const growth_rate_close_handler = async (event: APIGatewayEvent, context: Context)  => {
-
-   // 閾値を取得
+export const growth_rate_close_handler = async (event: APIGatewayEvent, context: Context) => {
+  // 閾値を取得
   const threshold = event.queryStringParameters?.threshold
 
-  const res : GrowthRateClose[]  = []
+  const res: GrowthRateClose[] = []
 
   const dates = await getBusinessDays()
   const { daily_quotes: daily_quotes_before } = await JQuantsClient<{
