@@ -27,6 +27,7 @@
     "typescript": "*"
   },
   "dependencies": {
+    "aws-sdk": "^2.1372.0",
     "eslint-config-prettier": "^8.6.0"
   }
 }
