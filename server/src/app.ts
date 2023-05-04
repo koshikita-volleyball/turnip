@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/require-await */
 import dotenv from 'dotenv'
 import { APIGatewayEvent } from 'aws-lambda'
+import { unmarshall } from '@aws-sdk/util-dynamodb'
 import JQuantsClient from './common/jquants_client'
 import ListedInfoStruct from './interface/jquants/listed_info'
 import { GetRefreshToken } from './common/get_id_token'
@@ -50,11 +51,13 @@ export const listed_info_handler = async () => {
     const params = {
       TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
     }
-    const data = await dynamodb.scan(params).promise()
+    const data = ((await dynamodb.scan(params).promise()).Items || []).map((item) => {
+      return unmarshall(item) as ListedInfoStruct
+    })
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(data.Items),
+      body: JSON.stringify(data),
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
