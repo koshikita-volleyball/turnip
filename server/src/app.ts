@@ -9,6 +9,7 @@ import { getBusinessDays } from './analysis/utils'
 import { WebClient, LogLevel } from '@slack/web-api'
 import AWS from './common/aws'
 import GetIdToken from './common/get_id_token'
+import { SLACK_API_TOKEN, SLACK_NOTICE_CHANNEL, S3_BUCKET_NAME } from './common/process_env'
 
 dotenv.config()
 
@@ -27,9 +28,17 @@ export const lambdaHandler = () => {
         message: 'hello world',
       }),
     }
-  } catch (err) {
-    console.log(err)
-    return err
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
+    return {
+      statusCode: 500,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        message: err,
+      }),
+    }
   }
 }
 
@@ -89,22 +98,21 @@ export const prices_daily_quotes_handler = async (event: APIGatewayEvent) => {
 }
 
 export const slack_notify_handler = async () => {
-  const slackClient = new WebClient(process.env.SLACK_API_TOKEN, {
+  const slackClient = new WebClient(SLACK_API_TOKEN, {
     logLevel: LogLevel.DEBUG,
   })
-  const channel = process.env.SLACK_NOTICE_CHANNEL!
   const result = await slackClient.chat.postMessage({
-    text: '朝７時だよ :tori:',
-    channel,
+    text: '朝７時だよ！ :tori:',
+    channel: SLACK_NOTICE_CHANNEL,
   })
-  console.log(`Successfully send message ${result.ts!} in conversation ${channel}`)
+  console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${SLACK_NOTICE_CHANNEL}.`)
 }
 
 export const refresh_token_updater_handler = async () => {
   try {
     const refresh_token = await GetRefreshToken()
     const s3 = new AWS.S3()
-    const bucket = process.env.S3_BUCKET_NAME!
+    const bucket = S3_BUCKET_NAME
     const key = 'refresh_token.txt'
     const params = {
       Bucket: bucket,
@@ -115,14 +123,12 @@ export const refresh_token_updater_handler = async () => {
     const slackClient = new WebClient(process.env.SLACK_API_TOKEN, {
       logLevel: LogLevel.DEBUG,
     })
-
-    const channel = process.env.SLACK_NOTICE_CHANNEL!
     const THREE_BACK_QUOTES = '```'
     const result = await slackClient.chat.postMessage({
       text: `:tori::tori::tori: リフレッシュトークンを更新しました！ :tori::tori::tori:\n\n${THREE_BACK_QUOTES}\n${refresh_token}\n${THREE_BACK_QUOTES}`,
-      channel,
+      channel: SLACK_NOTICE_CHANNEL,
     })
-    console.log(`Successfully send message ${result.ts!} in conversation ${channel}`)
+    console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${SLACK_NOTICE_CHANNEL}.`)
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.error(`[ERROR] ${err.message}`)
@@ -135,7 +141,7 @@ export const id_token_updater_handler = async () => {
     // S3からリフレッシュトークンを取得
     const s3 = new AWS.S3()
     const params = {
-      Bucket: process.env.S3_BUCKET_NAME!,
+      Bucket: S3_BUCKET_NAME,
       Key: 'refresh_token.txt',
     }
     const data = await s3.getObject(params).promise()
@@ -146,7 +152,7 @@ export const id_token_updater_handler = async () => {
       const id_token = await GetIdToken(refreshToken)
       // S3にIDトークンを保存
       const params = {
-        Bucket: process.env.S3_BUCKET_NAME!,
+        Bucket: S3_BUCKET_NAME,
         Key: 'id_token.txt',
         Body: id_token,
       }
@@ -156,13 +162,12 @@ export const id_token_updater_handler = async () => {
       const slackClient = new WebClient(process.env.SLACK_API_TOKEN, {
         logLevel: LogLevel.DEBUG,
       })
-      const channel = process.env.SLACK_NOTICE_CHANNEL!
       const THREE_BACK_QUOTE = '```'
       const result = await slackClient.chat.postMessage({
         text: `:tori::tori::tori: IDトークンを更新しました :tori::tori::tori:\n\n${THREE_BACK_QUOTE}${id_token}${THREE_BACK_QUOTE}`,
-        channel,
+        channel: SLACK_NOTICE_CHANNEL,
       })
-      console.log(`Successfully send message ${result.ts!} in conversation ${channel}`)
+      console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${SLACK_NOTICE_CHANNEL}.`)
     } else {
       console.log('refresh_token.txt is empty')
     }
