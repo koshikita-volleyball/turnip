@@ -19,7 +19,8 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
-export const lambdaHandler = () => {
+// eslint-disable-next-line @typescript-eslint/require-await
+export const lambdaHandler = async () => {
   try {
     return {
       statusCode: 200,
