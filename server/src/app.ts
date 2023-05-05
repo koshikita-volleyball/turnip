@@ -14,6 +14,7 @@ import GetIdToken from './common/get_id_token'
 import GetProcessEnv from './common/process_env'
 import { ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
 import { per_page } from './common/const'
+import dayjs from './common/dayjs'
 
 dotenv.config()
 
@@ -133,7 +134,7 @@ export const prices_daily_quotes_handler = async (
   try {
     const code = event.queryStringParameters?.code
     const from = event.queryStringParameters?.from
-    const to = event.queryStringParameters?.to
+    const to = event.queryStringParameters?.to || dayjs(new Date()).format('YYYY-MM-DD')
 
     if (!code) {
       return {
@@ -146,22 +147,18 @@ export const prices_daily_quotes_handler = async (
     }
 
     // DynamoDBから銘柄情報を取得
-    const filter_expressions = ['Code = :Code']
-    const expression_attribute_values: ExpressionAttributeValueMap = {
-      ':Code': {
-        S: code,
-      },
-    }
+    const key_condition_expressions = ['Code = :Code']
+    const expression_attribute_values: ExpressionAttributeValueMap = {}
 
     if (from) {
-      filter_expressions.push('Date >= :From')
+      key_condition_expressions.push('Date >= :From')
       expression_attribute_values[':From'] = {
         S: from,
       }
     }
 
     if (to) {
-      filter_expressions.push('Date <= :To')
+      key_condition_expressions.push('Date <= :To')
       expression_attribute_values[':To'] = {
         S: to,
       }
@@ -170,11 +167,11 @@ export const prices_daily_quotes_handler = async (
     const dynamodb = new AWS.DynamoDB()
     const params = {
       TableName: GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
-      FilterExpression: filter_expressions.join(' AND '),
+      KeyConditionExpression: key_condition_expressions.join(' AND '),
       ExpressionAttributeValues: expression_attribute_values,
     }
 
-    const prices = ((await dynamodb.scan(params).promise()).Items || []).map(
+    const prices = ((await dynamodb.query(params).promise()).Items || []).map(
       item => unmarshall(item) as PricesDailyQuotesStruct,
     )
 
