@@ -192,8 +192,6 @@ Resources:
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
-      MemorySize: 2048
-      Timeout: 900
     Metadata:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
