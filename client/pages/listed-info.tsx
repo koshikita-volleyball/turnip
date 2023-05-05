@@ -210,7 +210,11 @@ export default function AboutPage() {
               <tbody>
                 {data.map((item) => (
                   <tr key={item.Code}>
-                    <td><Link href={`/company?code=${item.Code}`}>{item.Code}</Link></td>
+                    <td>
+                      <Link href={`/company?code=${item.Code}`}>
+                        {item.Code}
+                      </Link>
+                    </td>
                     <td>{item.CompanyName}</td>
                     <td>{item.Sector17CodeName}</td>
                     <td>{item.Sector33CodeName}</td>

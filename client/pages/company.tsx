@@ -10,23 +10,24 @@ import PricesDailyQuotesStruct from '../interface/prices_daily_quotes'
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 export default function Company() {
-
   const [code, setCode] = useState<string>('')
 
-  const { data: info, error: info_error }: {
-    data: ListedInfoStruct[],
+  const {
+    data: info,
+    error: info_error,
+  }: {
+    data: ListedInfoStruct[]
     error: any
-  } = useSWR(
-    `${setting.apiPath}/api/listed_info?code=${code}`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 10000,
-    }
-  )
+  } = useSWR(`${setting.apiPath}/api/listed_info?code=${code}`, fetcher, {
+    revalidateOnFocus: false,
+    dedupingInterval: 10000,
+  })
 
-  const { data: prices, prices_error }: {
-    data: PricesDailyQuotesStruct[],
+  const {
+    data: prices,
+    prices_error,
+  }: {
+    data: PricesDailyQuotesStruct[]
     error: any
   } = useSWR(
     `${setting.apiPath}/api/prices-daily-quotes?code=${code}`,
@@ -34,7 +35,7 @@ export default function Company() {
     {
       revalidateOnFocus: false,
       dedupingInterval: 10000,
-    }
+    },
   )
 
   useEffect(() => {
@@ -45,11 +46,10 @@ export default function Company() {
     }
   }, [])
 
-
   return (
     <Layout>
       <div id="Company">
-      {info_error ? (
+        {info_error ? (
           <Alert variant="danger">Failed to load...</Alert>
         ) : !info ? (
           <div className="mt-3 d-flex justify-content-between">
@@ -67,11 +67,11 @@ export default function Company() {
         ) : (
           <div>
             <h2>Company Detail</h2>
-            {
-              (() => {
-                const company = info[0]
-                return <>
-                  <Table className='mt-3'>
+            {(() => {
+              const company = info[0]
+              return (
+                <>
+                  <Table className="mt-3">
                     <tbody>
                       <tr>
                         <th>銘柄コード</th>
@@ -96,12 +96,11 @@ export default function Company() {
                     </tbody>
                   </Table>
                 </>
-              })()
-            }
+              )
+            })()}
             {prices && <CompanyPriceChart prices={prices} />}
           </div>
-        )
-      }
+        )}
       </div>
     </Layout>
   )
