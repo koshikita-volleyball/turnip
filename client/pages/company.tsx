@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Link from 'next/link'
 import Layout from '../components/Layout'
-import pages from '../pages'
 import setting from '../setting'
 import useSWR from 'swr'
 import ListedInfoStruct from '../interface/listed_info'
