@@ -137,7 +137,6 @@ export const listed_info_handler = async (
         body: JSON.stringify(paged_stocks),
       }
     }
-
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.error(`[ERROR] ${err.message}`)
