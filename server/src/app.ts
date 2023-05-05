@@ -151,14 +151,14 @@ export const prices_daily_quotes_handler = async (
     const expression_attribute_values: ExpressionAttributeValueMap = {}
 
     if (from) {
-      key_condition_expressions.push('Date >= :From')
+      key_condition_expressions.push('#Date >= :From')
       expression_attribute_values[':From'] = {
         S: from,
       }
     }
 
     if (to) {
-      key_condition_expressions.push('Date <= :To')
+      key_condition_expressions.push('#Date <= :To')
       expression_attribute_values[':To'] = {
         S: to,
       }
@@ -169,6 +169,9 @@ export const prices_daily_quotes_handler = async (
       TableName: GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
       KeyConditionExpression: key_condition_expressions.join(' AND '),
       ExpressionAttributeValues: expression_attribute_values,
+      ExpressionAttributeNames: {
+        '#Date': 'Date',
+      },
     }
 
     const prices = ((await dynamodb.query(params).promise()).Items || []).map(
