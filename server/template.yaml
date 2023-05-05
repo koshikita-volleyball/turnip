@@ -81,7 +81,7 @@ Resources:
                 Action:
                   - s3:ListBucket
                 Resource: !Sub "arn:aws:s3:::${MyBucket}"
-              - Sid: AllowDynamoDBTable
+              - Sid: AllowListedInfoTable
                 Effect: Allow
                 Action:
                   - dynamodb:GetItem
@@ -91,6 +91,16 @@ Resources:
                   - dynamodb:Query
                   - dynamodb:Scan
                 Resource: !GetAtt ListedInfoTable.Arn
+              - Sid: AllowPricesDailyQuotesTable
+                Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource: !GetAtt PricesDailyQuotesTable.Arn
               - Sid: AllowCloudWatchLogs
                 Effect: Allow
                 Action:
@@ -196,7 +206,7 @@ Resources:
         MyApiGateway:
           Type: Api
           Properties:
-            Path: /api/prices-daily_quotes
+            Path: /api/prices-daily-quotes
             Method: get
     Metadata:
       DockerTag: nodejs18.x-v1

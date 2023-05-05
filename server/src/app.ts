@@ -15,6 +15,7 @@ import GetProcessEnv from './common/process_env'
 import { ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
 import { per_page } from './common/const'
 import { notify } from './common/slack'
+import dayjs from './common/dayjs'
 
 dotenv.config()
 
@@ -86,65 +87,89 @@ export const listed_info_handler = async (
   try {
     // パラメタを取得
     const page = parseInt(event.queryStringParameters?.page ?? '1')
+    const code = event.queryStringParameters?.code
     const company_name = event.queryStringParameters?.company_name
     const sector_17_code = event.queryStringParameters?.sector_17_code
     const sector_33_code = event.queryStringParameters?.sector_33_code
     const market_code = event.queryStringParameters?.market_code
 
     // DynamoDBから銘柄情報を取得
-    const filter_expressions = ['Code <> :Code']
-    const expression_attribute_values: ExpressionAttributeValueMap = {
-      ':Code': {
-        S: '0000',
-      },
-    }
-    if (sector_17_code) {
-      filter_expressions.push('Sector17Code = :Sector17Code')
-      expression_attribute_values[':Sector17Code'] = {
-        S: sector_17_code,
-      }
-    }
-    if (sector_33_code) {
-      filter_expressions.push('Sector33Code = :Sector33Code')
-      expression_attribute_values[':Sector33Code'] = {
-        S: sector_33_code,
-      }
-    }
-    if (market_code) {
-      filter_expressions.push('MarketCode = :MarketCode')
-      expression_attribute_values[':MarketCode'] = {
-        S: market_code,
-      }
-    }
     const dynamodb = new AWS.DynamoDB()
-    const params = {
-      TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
-      FilterExpression: filter_expressions.join(' AND '),
-      ExpressionAttributeValues: expression_attribute_values,
-    }
-    const stocks = ((await dynamodb.scan(params).promise()).Items || []).map(
-      item => unmarshall(item) as ListedInfoStruct,
-    )
 
-    // 銘柄名でフィルタリング
-    const filtered_stocks = stocks.filter(stock => {
-      return company_name ? stock.CompanyName.includes(company_name) : true
-    })
+    if (code) {
+      const params = {
+        TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
+        KeyConditionExpression: 'Code = :Code',
+        ExpressionAttributeValues: {
+          ':Code': {
+            S: code,
+          },
+        },
+      }
+      const stocks = ((await dynamodb.query(params).promise()).Items || []).map(
+        item => unmarshall(item) as ListedInfoStruct,
+      )
+      return {
+        statusCode: 200,
+        headers: CORS_HEADERS,
+        body: JSON.stringify(stocks),
+      }
+    } else {
+      // 全件スキャン
+      // ひとつ以上のフィルターを指定する必要があるため、ダミーのフィルター(銘柄コードが0000以外 | 全て)を指定しておく。
+      const filter_expressions = ['Code <> :Code']
+      const expression_attribute_values: ExpressionAttributeValueMap = {
+        ':Code': {
+          S: '0000',
+        },
+      }
+      if (sector_17_code) {
+        filter_expressions.push('Sector17Code = :Sector17Code')
+        expression_attribute_values[':Sector17Code'] = {
+          S: sector_17_code,
+        }
+      }
+      if (sector_33_code) {
+        filter_expressions.push('Sector33Code = :Sector33Code')
+        expression_attribute_values[':Sector33Code'] = {
+          S: sector_33_code,
+        }
+      }
+      if (market_code) {
+        filter_expressions.push('MarketCode = :MarketCode')
+        expression_attribute_values[':MarketCode'] = {
+          S: market_code,
+        }
+      }
+      const params = {
+        TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
+        FilterExpression: filter_expressions.join(' AND '),
+        ExpressionAttributeValues: expression_attribute_values,
+      }
+      const stocks = ((await dynamodb.scan(params).promise()).Items || []).map(
+        item => unmarshall(item) as ListedInfoStruct,
+      )
 
-    // 銘柄コードでソート
-    filtered_stocks.sort((a, b) => {
-      return a.Code.localeCompare(b.Code)
-    })
+      // 銘柄名でフィルタリング
+      const filtered_stocks = stocks.filter(stock => {
+        return company_name ? stock.CompanyName.includes(company_name) : true
+      })
 
-    // ページング
-    const start = (page - 1) * per_page
-    const end = start + per_page
-    const paged_stocks = filtered_stocks.slice(start, end)
+      // 銘柄コードでソート
+      filtered_stocks.sort((a, b) => {
+        return a.Code.localeCompare(b.Code)
+      })
 
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify(paged_stocks),
+      // ページング
+      const start = (page - 1) * per_page
+      const end = start + per_page
+      const paged_stocks = filtered_stocks.slice(start, end)
+
+      return {
+        statusCode: 200,
+        headers: CORS_HEADERS,
+        body: JSON.stringify(paged_stocks),
+      }
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -165,21 +190,59 @@ export const prices_daily_quotes_handler = async (
 ): Promise<APIGatewayProxyResult> => {
   try {
     const code = event.queryStringParameters?.code
-    const date = event.queryStringParameters?.date
     const from = event.queryStringParameters?.from
-    const to = event.queryStringParameters?.to
-    const params: { [key: string]: string } = {}
-    if (code) params['code'] = code
-    if (date) params['date'] = date
-    if (from) params['from'] = from
-    if (to) params['to'] = to
-    const data = await JQuantsClient<{
-      daily_quotes: PricesDailyQuotesStruct[]
-    }>('/v1/prices/daily_quotes', params)
+    const to = event.queryStringParameters?.to || dayjs(new Date()).format('YYYY-MM-DD')
+
+    if (!code) {
+      return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({
+          message: 'code is required',
+        }),
+      }
+    }
+
+    // DynamoDBから銘柄情報を取得
+    const key_condition_expressions = ['Code = :Code']
+    const expression_attribute_values: ExpressionAttributeValueMap = {
+      ':Code': {
+        S: code,
+      },
+    }
+
+    if (from) {
+      key_condition_expressions.push('#Date >= :From')
+      expression_attribute_values[':From'] = {
+        S: from,
+      }
+    }
+
+    if (to) {
+      key_condition_expressions.push('#Date <= :To')
+      expression_attribute_values[':To'] = {
+        S: to,
+      }
+    }
+
+    const dynamodb = new AWS.DynamoDB()
+    const params = {
+      TableName: GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
+      KeyConditionExpression: key_condition_expressions.join(' AND '),
+      ExpressionAttributeValues: expression_attribute_values,
+      ExpressionAttributeNames: {
+        '#Date': 'Date',
+      },
+    }
+
+    const prices = ((await dynamodb.query(params).promise()).Items || []).map(
+      item => unmarshall(item) as PricesDailyQuotesStruct,
+    )
+
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(data.daily_quotes),
+      body: JSON.stringify(prices),
     }
   } catch (err) {
     if (err instanceof Error) {
