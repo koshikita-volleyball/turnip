@@ -52,16 +52,17 @@ export const listed_info_handler = async (
   try {
     // パラメタを取得
     const page = parseInt(event.queryStringParameters?.page ?? '1')
+    const code = event.queryStringParameters?.code
     const company_name = event.queryStringParameters?.company_name
     const sector_17_code = event.queryStringParameters?.sector_17_code
     const sector_33_code = event.queryStringParameters?.sector_33_code
     const market_code = event.queryStringParameters?.market_code
 
     // DynamoDBから銘柄情報を取得
-    const filter_expressions = ['Code <> :Code']
+    const filter_expressions = [code ? 'Code = :Code' : 'Code <> :Code']
     const expression_attribute_values: ExpressionAttributeValueMap = {
       ':Code': {
-        S: '0000',
+        S: code ?? '0000',
       },
     }
     if (sector_17_code) {
