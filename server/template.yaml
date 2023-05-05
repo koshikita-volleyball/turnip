@@ -182,21 +182,6 @@ Resources:
       DockerContext: ./src
       Dockerfile: Dockerfile
 
-  WorkStockPricesImporterToDynamoDBFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-work-stock-prices-importer-to-dynamodb
-      PackageType: Image
-      ImageConfig:
-        Command: [ "work.work_stock_prices_importer_to_dynamodb_handler" ]
-      Role: !GetAtt MyLambdaRole.Arn
-      Architectures:
-      - x86_64
-    Metadata:
-      DockerTag: nodejs18.x-v1
-      DockerContext: ./src
-      Dockerfile: Dockerfile
-
   TechnicalGrowthRateFunction:
     Type: AWS::Serverless::Function
     Properties:
