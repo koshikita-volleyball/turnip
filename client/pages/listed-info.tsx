@@ -8,6 +8,7 @@ import ListedInfoStruct from '../interface/listed_info'
 import MarketInfo from '../data/MarketInfo'
 import Sector17Info from '../data/Sector17Info'
 import Sector33Info from '../data/Sector33Info'
+import Link from 'next/link'
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
@@ -163,7 +164,7 @@ export default function AboutPage() {
     <Layout>
       <div id="ListedInfo">
         {error ? (
-          <p>failed to load</p>
+          <Alert variant="danger">Failed to load</Alert>
         ) : !data ? (
           <div className="mt-3 d-flex justify-content-between">
             <Spinner animation="grow" variant="primary" />
@@ -209,7 +210,7 @@ export default function AboutPage() {
               <tbody>
                 {data.map((item) => (
                   <tr key={item.Code}>
-                    <td>{item.Code}</td>
+                    <td><Link href={`/company?code=${item.Code}`}>{item.Code}</Link></td>
                     <td>{item.CompanyName}</td>
                     <td>{item.Sector17CodeName}</td>
                     <td>{item.Sector33CodeName}</td>
