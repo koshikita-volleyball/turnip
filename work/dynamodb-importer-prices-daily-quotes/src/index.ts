@@ -73,7 +73,13 @@ fs.writeFile(file_name, csv_header, (err) => {
   if (err) console.error(err)
 })
 
-for (const stock of stocks) {
+const sorted_stocks = stocks.sort((a, b) => {
+  if (a.Code < b.Code) return -1
+  if (a.Code > b.Code) return 1
+  return 0
+})
+
+for (const stock of sorted_stocks) {
   n++
   console.log(
     `★★★ [${n}/${stocks.length}] ${stock.Code} - ${stock.CompanyName}`,
