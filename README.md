@@ -94,3 +94,27 @@ sam delete --stack-name <プロジェクト名>-staging-***
 ```
 
 AWSコンソールでひとつひとつリソースを削除すると消し忘れが発生する危険性があるため、原則としてこのコマンドを使用してください。  
+
+## 使用している技術
+
+- GitHub
+  - GitHub Repository
+  - GitHub Actions
+  - GitHub Pages
+- Next.js
+  - TypeScript
+  - ESLint
+  - Bootstrap
+  - React
+- Lambda
+  - TypeScript
+  - Serverless Application Model
+  - CloudFormation
+- AWS
+  - Lambda
+  - S3
+  - DynamoDB
+  - API Gateway
+  - CloudWatch
+- Docker
+- Slack API
