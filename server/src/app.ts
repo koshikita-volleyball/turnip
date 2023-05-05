@@ -7,13 +7,14 @@ import ListedInfoStruct from './interface/jquants/listed_info'
 import { GetRefreshToken } from './common/get_id_token'
 import GrowthRateClose from './interface/turnip/growth_rate_close'
 import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
-import { getBusinessDays } from './analysis/utils'
+import { getBusinessDays, updateBusinessDays } from './analysis/jpx_business_day'
 import { WebClient, LogLevel } from '@slack/web-api'
 import AWS from './common/aws'
 import GetIdToken from './common/get_id_token'
 import GetProcessEnv from './common/process_env'
 import { ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
 import { per_page } from './common/const'
+import { notify } from './common/slack'
 import dayjs from './common/dayjs'
 
 dotenv.config()
@@ -43,6 +44,39 @@ export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
       body: JSON.stringify({
         message: err,
       }),
+    }
+  }
+}
+
+export const business_day_handler = async (): Promise<APIGatewayProxyResult> => {
+  try {
+    const dates = await getBusinessDays()
+    return {
+      statusCode: 200,
+      headers: CORS_HEADERS,
+      body: JSON.stringify(dates.map(d => d.format('YYYY-MM-DD'))),
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
+    return {
+      statusCode: 500,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        message: err,
+      }),
+    }
+  }
+}
+
+export const business_day_update_handler = async (): Promise<void> => {
+  try {
+    await updateBusinessDays()
+    await notify('営業日情報を更新しました :spiral_calendar_pad:')
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
     }
   }
 }
