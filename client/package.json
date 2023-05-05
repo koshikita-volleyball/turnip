@@ -20,7 +20,7 @@
     "test": "jest",
     "start": "next start",
     "type-check": "tsc",
-    "lint": "eslint --ext .ts . --fix --max-warnings 0",
+    "lint": "eslint .",
     "prettify": "prettier --write ."
   },
   "dependencies": {

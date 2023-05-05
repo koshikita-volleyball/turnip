@@ -25,7 +25,7 @@ export default function Company() {
 
   const {
     data: prices,
-    prices_error,
+    error: prices_error,
   }: {
     data: PricesDailyQuotesStruct[]
     error: any
@@ -98,7 +98,13 @@ export default function Company() {
                 </>
               )
             })()}
-            {prices && <CompanyPriceChart prices={prices} />}
+            {
+              prices_error ? (
+                <Alert variant="danger">Failed to load...</Alert>
+              ) : (
+                prices && <CompanyPriceChart prices={prices} />
+              )
+            }
           </div>
         )}
       </div>
