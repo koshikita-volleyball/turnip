@@ -4,6 +4,8 @@ import setting from '../setting'
 import useSWR from 'swr'
 import ListedInfoStruct from '../interface/listed_info'
 import { Alert, Spinner, Table } from 'react-bootstrap'
+import CompanyPriceChart from '../components/CompanyPriceChart'
+import PricesDailyQuotesStruct from '../interface/prices_daily_quotes'
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
@@ -11,11 +13,23 @@ export default function Company() {
 
   const [code, setCode] = useState<string>('')
 
-  const { data, error }: {
+  const { data: info, error: info_error }: {
     data: ListedInfoStruct[],
     error: any
   } = useSWR(
     `${setting.apiPath}/api/listed_info?code=${code}`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 10000,
+    }
+  )
+
+  const { data: prices, prices_error }: {
+    data: PricesDailyQuotesStruct[],
+    error: any
+  } = useSWR(
+    `${setting.apiPath}/api/prices-daily-quotes?code=${code}`,
     fetcher,
     {
       revalidateOnFocus: false,
@@ -35,9 +49,9 @@ export default function Company() {
   return (
     <Layout>
       <div id="Company">
-      {error ? (
+      {info_error ? (
           <Alert variant="danger">Failed to load...</Alert>
-        ) : !data ? (
+        ) : !info ? (
           <div className="mt-3 d-flex justify-content-between">
             <Spinner animation="grow" variant="primary" />
             <Spinner animation="grow" variant="secondary" />
@@ -48,14 +62,14 @@ export default function Company() {
             <Spinner animation="grow" variant="light" />
             <Spinner animation="grow" variant="dark" />
           </div>
-        ) : data.length === 0 ? (
+        ) : info.length === 0 ? (
           <Alert variant="warning">No data...</Alert>
         ) : (
           <div>
             <h2>Company Detail</h2>
             {
               (() => {
-                const company = data[0]
+                const company = info[0]
                 return <>
                   <Table className='mt-3'>
                     <tbody>
@@ -84,6 +98,7 @@ export default function Company() {
                 </>
               })()
             }
+            {prices && <CompanyPriceChart prices={prices} />}
           </div>
         )
       }
