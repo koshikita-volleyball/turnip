@@ -92,30 +92,28 @@ for (const stock of stocks) {
         },
       )
     ).json()
-  let i = 0
+  const csv_data = []
   for (const price of prices) {
-    i++
-    console.log(
-      `☆☆☆ [${n}/${stocks.length}] [${i}/${prices.length}] ${price.Date} | ${price.Open} | ${price.Close}`,
+    csv_data.push(
+      [
+        price.Code,
+        price.Date,
+        price.Open,
+        price.High,
+        price.Low,
+        price.Close,
+        price.Volume,
+        price.TurnoverValue,
+        price.AdjustmentFactor,
+        price.AdjustmentOpen,
+        price.AdjustmentHigh,
+        price.AdjustmentLow,
+        price.AdjustmentClose,
+        price.AdjustmentVolume,
+      ].join(','),
     )
-    const csv_data = [
-      price.Code,
-      price.Date,
-      price.Open,
-      price.High,
-      price.Low,
-      price.Close,
-      price.Volume,
-      price.TurnoverValue,
-      price.AdjustmentFactor,
-      price.AdjustmentOpen,
-      price.AdjustmentHigh,
-      price.AdjustmentLow,
-      price.AdjustmentClose,
-      price.AdjustmentVolume,
-    ].join(',')
-    fs.appendFile(file_name, `\n${csv_data}`, (err) => {
-      if (err) console.error(err)
-    })
   }
+  fs.appendFile(file_name, `${csv_data.join('\n')}\n`, (err) => {
+    if (err) console.error(err)
+  })
 }
