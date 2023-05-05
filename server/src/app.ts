@@ -148,7 +148,11 @@ export const prices_daily_quotes_handler = async (
 
     // DynamoDBから銘柄情報を取得
     const key_condition_expressions = ['Code = :Code']
-    const expression_attribute_values: ExpressionAttributeValueMap = {}
+    const expression_attribute_values: ExpressionAttributeValueMap = {
+      ':Code': {
+        S: code,
+      },
+    }
 
     if (from) {
       key_condition_expressions.push('Date >= :From')
