@@ -69,7 +69,7 @@ const headers = [
   'AdjustmentVolume',
 ]
 const csv_header = headers.join(',')
-fs.writeFile(file_name, csv_header, (err) => {
+fs.writeFile(file_name, `${csv_header}\n`, (err) => {
   if (err) console.error(err)
 })
 
