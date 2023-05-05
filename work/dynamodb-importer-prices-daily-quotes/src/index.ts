@@ -1,6 +1,5 @@
 import dotenv from 'dotenv'
-import pkg from 'aws-sdk'
-const { DynamoDB } = pkg
+import fs from 'fs'
 
 dotenv.config()
 
@@ -35,12 +34,9 @@ type PricesDailyQuotesStruct = {
 }
 
 const JQUANTS_API_TOKEN = process.env.JQUANTS_API_TOKEN || ''
-const DYNAMODB_TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || ''
 
 if (JQUANTS_API_TOKEN === '')
   throw new Error('JQUANTS_API_TOKEN is not defined.')
-if (DYNAMODB_TABLE_NAME === '')
-  throw new Error('DYNAMODB_TABLE_NAME is not defined.')
 
 // 銘柄コード一覧を取得
 await fetch('http://example.com')
@@ -54,6 +50,28 @@ const { info: stocks }: { info: ListedInfoStruct[] } = await (
 ).json()
 
 let n = 0
+
+const file_name = `stocks.csv`
+const headers = [
+  'Code',
+  'Date',
+  'Open',
+  'High',
+  'Low',
+  'Close',
+  'Volume',
+  'TurnoverValue',
+  'AdjustmentFactor',
+  'AdjustmentOpen',
+  'AdjustmentHigh',
+  'AdjustmentLow',
+  'AdjustmentClose',
+  'AdjustmentVolume',
+]
+const csv_header = headers.join(',')
+fs.writeFile(file_name, csv_header, (err) => {
+  if (err) console.error(err)
+})
 
 for (const stock of stocks) {
   n++
@@ -74,44 +92,30 @@ for (const stock of stocks) {
         },
       )
     ).json()
-
-  // DynamoDBのインスタンスを生成
-  const dynamodb = new DynamoDB.DocumentClient({
-    region: 'ap-northeast-1',
-  })
   let i = 0
   for (const price of prices) {
     i++
     console.log(
-      `☆☆☆ [${i}/${prices.length}] ${price.Date} | ${price.Open} | ${price.Close}`,
+      `☆☆☆ [${n}/${stocks.length}] [${i}/${prices.length}] ${price.Date} | ${price.Open} | ${price.Close}`,
     )
-    try {
-      // 株価をDynamoDBに保存
-      await dynamodb
-        .put({
-          TableName: DYNAMODB_TABLE_NAME,
-          Item: {
-            Code: stock.Code,
-            Date: price.Date,
-            Open: price.Open,
-            High: price.High,
-            Low: price.Low,
-            Close: price.Close,
-            Volume: price.Volume,
-            TurnoverValue: price.TurnoverValue,
-            AdjustmentFactor: price.AdjustmentFactor,
-            AdjustmentOpen: price.AdjustmentOpen,
-            AdjustmentHigh: price.AdjustmentHigh,
-            AdjustmentLow: price.AdjustmentLow,
-            AdjustmentClose: price.AdjustmentClose,
-            AdjustmentVolume: price.AdjustmentVolume,
-          },
-        })
-        .promise()
-    } catch (error) {
-      console.error(
-        `[ERROR] Code: ${stock.Code}, Date: ${price.Date} | ${error}`,
-      )
-    }
+    const csv_data = [
+      price.Code,
+      price.Date,
+      price.Open,
+      price.High,
+      price.Low,
+      price.Close,
+      price.Volume,
+      price.TurnoverValue,
+      price.AdjustmentFactor,
+      price.AdjustmentOpen,
+      price.AdjustmentHigh,
+      price.AdjustmentLow,
+      price.AdjustmentClose,
+      price.AdjustmentVolume,
+    ].join(',')
+    fs.appendFile(file_name, `\n${csv_data}`, (err) => {
+      if (err) console.error(err)
+    })
   }
 }
