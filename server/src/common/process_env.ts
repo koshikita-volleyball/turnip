@@ -5,6 +5,7 @@ type ProcessEnvKey =
   | 'JQUANTS_MAILADDRESS'
   | 'JQUANTS_PASSWORD'
   | 'LISTED_INFO_DYNAMODB_TABLE_NAME'
+  | 'PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'
 
 function GetProcessEnv(key: ProcessEnvKey): string {
   const value = process.env[key] ?? ''

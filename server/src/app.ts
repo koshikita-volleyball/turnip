@@ -131,21 +131,56 @@ export const prices_daily_quotes_handler = async (
 ): Promise<APIGatewayProxyResult> => {
   try {
     const code = event.queryStringParameters?.code
-    const date = event.queryStringParameters?.date
     const from = event.queryStringParameters?.from
     const to = event.queryStringParameters?.to
-    const params: { [key: string]: string } = {}
-    if (code) params['code'] = code
-    if (date) params['date'] = date
-    if (from) params['from'] = from
-    if (to) params['to'] = to
-    const data = await JQuantsClient<{
-      daily_quotes: PricesDailyQuotesStruct[]
-    }>('/v1/prices/daily_quotes', params)
+
+    if (!code) {
+      return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({
+          message: 'code is required',
+        }),
+      }
+    }
+
+    // DynamoDBから銘柄情報を取得
+    const filter_expressions = ['Code = :Code']
+    const expression_attribute_values: ExpressionAttributeValueMap = {
+      ':Code': {
+        S: code,
+      },
+    }
+
+    if (from) {
+      filter_expressions.push('Date >= :From')
+      expression_attribute_values[':From'] = {
+        S: from,
+      }
+    }
+
+    if (to) {
+      filter_expressions.push('Date <= :To')
+      expression_attribute_values[':To'] = {
+        S: to,
+      }
+    }
+
+    const dynamodb = new AWS.DynamoDB()
+    const params = {
+      TableName: GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
+      FilterExpression: filter_expressions.join(' AND '),
+      ExpressionAttributeValues: expression_attribute_values,
+    }
+
+    const prices = ((await dynamodb.scan(params).promise()).Items || []).map(
+      item => unmarshall(item) as PricesDailyQuotesStruct,
+    )
+
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(data.daily_quotes),
+      body: JSON.stringify(prices),
     }
   } catch (err) {
     if (err instanceof Error) {

@@ -155,7 +155,7 @@ Resources:
         MyApiGateway:
           Type: Api
           Properties:
-            Path: /api/prices-daily_quotes
+            Path: /api/prices-daily-quotes
             Method: get
     Metadata:
       DockerTag: nodejs18.x-v1
