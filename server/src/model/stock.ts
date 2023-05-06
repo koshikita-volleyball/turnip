@@ -51,8 +51,8 @@ export const getStockByCode = async (code: string): Promise<Stock | null> => {
   return unmarshall(result.Item) as Stock
 }
 
-export const getStockByName = async (name: string): Promise<Stock | null> => {
+export const getStockByCompanyName = async (company_name: string): Promise<Stock | null> => {
   const stocks = await getStocks()
-  const stock = stocks.find(stock => stock.CompanyName === name)
+  const stock = stocks.find(stock => stock.CompanyName === company_name)
   return stock || null
 }
