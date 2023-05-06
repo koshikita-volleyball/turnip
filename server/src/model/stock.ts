@@ -28,3 +28,20 @@ export const getStocks = async (
     )
     .sort((a, b) => a.Code.localeCompare(b.Code))
 }
+
+export const getStockByCode = async (code: string): Promise<Stock | null> => {
+  const ddb = new AWS.DynamoDB()
+  const params = {
+    TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
+    Key: {
+      Code: {
+        S: code,
+      },
+    },
+  }
+    const result = await ddb.getItem(params).promise()
+    if (!result.Item) {
+      return null
+    }
+    return unmarshall(result.Item) as Stock
+  }
