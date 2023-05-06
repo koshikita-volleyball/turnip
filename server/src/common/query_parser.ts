@@ -96,9 +96,9 @@ export const getPaginationParams = (event: APIGatewayEvent): PaginationParams =>
 
 export const getIndicatorParams = (event: APIGatewayEvent): Indicator[] => {
   try {
-    const condition = event.queryStringParameters?.condition
-    if (!condition) return []
-    const indicator = JSON.parse(decodeURI(condition)) as Indicator[]
+    const conditions = event.queryStringParameters?.conditions
+    if (!conditions) return []
+    const indicator = JSON.parse(decodeURI(conditions)) as Indicator[]
     return indicator
   } catch (e) {
     console.error(e)
