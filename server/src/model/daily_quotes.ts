@@ -20,32 +20,12 @@ export const getDailyQuotes = async ({
   if (code) {
     return await _getDailyQuotesByStock(code, from, to)
   }
+  // TODO: セカンダリインデックスを使用すれば実現できるかも
   // if (date) {
   //   return await _getDailyQuotesByDate(date)
   // }
   throw new Error('Missing required parameter: code or date')
 }
-
-// const _getDailyQuotesByDate = async (date: string): Promise<PricesDailyQuotesStruct[]> => {
-//   const ddb = new AWS.DynamoDB()
-//   const params = {
-//     TableName: GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
-//     KeyConditionExpression: '#Date = :Date',
-//     ExpressionAttributeValues: {
-//       ':Date': {
-//         S: date,
-//       },
-//     },
-//     ExpressionAttributeNames: {
-//       '#Date': 'Date',
-//     },
-//   }
-//   const result = await ddb.query(params).promise()
-//   if (!result.Items) {
-//     return []
-//   }
-//   return result.Items.map(item => unmarshall(item) as PricesDailyQuotesStruct)
-// }
 
 const _getDailyQuotesByStock = async (
   code: string,
