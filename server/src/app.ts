@@ -16,8 +16,12 @@ import { ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
 // import { per_page } from './common/const'
 import { notify } from './common/slack'
 import dayjs from './common/dayjs'
-import { getStocks } from './model/stock'
-import { getPaginationParams, getStockCommonFilterParams } from './common/query_parser'
+import { getStockByCode, getStocks } from './model/stock'
+import {
+  getPaginationParams,
+  getStockCodedParams,
+  getStockCommonFilterParams,
+} from './common/query_parser'
 import paginate from './common/pagination'
 import { Stock } from './interface/turnip/stock'
 
@@ -81,6 +85,29 @@ export const business_day_update_handler = async (): Promise<void> => {
   } catch (err) {
     if (err instanceof Error) {
       console.error(`[ERROR] ${err.message}`)
+    }
+  }
+}
+
+export const info_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+  try {
+    const { code } = getStockCodedParams(event)
+    const stock = await getStockByCode(code)
+    return {
+      statusCode: 200,
+      headers: CORS_HEADERS,
+      body: JSON.stringify(stock),
+    }
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
+    return {
+      statusCode: 500,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        message: err,
+      }),
     }
   }
 }

@@ -3,7 +3,7 @@ import { APIGatewayEvent } from 'aws-lambda'
 type Required<T extends object> = boolean | (keyof T)[]
 
 type StockCode = {
-  code?: string
+  code: string
 }
 
 type StockCommonFilter = {
@@ -44,16 +44,12 @@ const _parseList = (str: string | undefined): string[] | undefined => {
   return str.split(',')
 }
 
-export const getStockCodedParams = (
-  event: APIGatewayEvent,
-  required: Required<StockCode> = false,
-): StockCode => {
-  return _check_required<StockCode>(
-    {
-      code: event.queryStringParameters?.code,
-    },
-    required,
-  )
+export const getStockCodedParams = (event: APIGatewayEvent): StockCode => {
+  const code = event.queryStringParameters?.code
+  if (!code) {
+    throw new Error('Missing required parameter: code')
+  }
+  return { code }
 }
 
 export const getStockCommonFilterParams = (
