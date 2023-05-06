@@ -18,11 +18,13 @@ export const getStocks = async (
   const stocks = ((await ddb.scan(params).promise()).Items || []).map(
     item => unmarshall(item) as Stock,
   )
-  return stocks.filter(
-    stock =>
-      (!codes || codes.includes(stock.Code)) &&
-      (!sector17Codes || sector17Codes.includes(stock.Sector17Code)) &&
-      (!sector33Codes || sector33Codes.includes(stock.Sector33Code)) &&
-      (!marketCodes || marketCodes.includes(stock.MarketCode)),
-  )
+  return stocks
+    .filter(
+      stock =>
+        (!codes || codes.includes(stock.Code)) &&
+        (!sector17Codes || sector17Codes.includes(stock.Sector17Code)) &&
+        (!sector33Codes || sector33Codes.includes(stock.Sector33Code)) &&
+        (!marketCodes || marketCodes.includes(stock.MarketCode)),
+    )
+    .sort((a, b) => a.Code.localeCompare(b.Code))
 }
