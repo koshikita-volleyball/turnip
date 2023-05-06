@@ -8,6 +8,7 @@ type GetStocksProps = {
   sector_17_codes?: string[]
   sector_33_codes?: string[]
   market_codes?: string[]
+  company_name?: string
 }
 
 export const getStocks = async (props?: GetStocksProps): Promise<Stock[]> => {
@@ -24,13 +25,14 @@ export const getStocks = async (props?: GetStocksProps): Promise<Stock[]> => {
   if (!props) {
     return stocks
   }
-  const { codes, sector_17_codes, sector_33_codes, market_codes } = props
+  const { codes, sector_17_codes, sector_33_codes, market_codes, company_name } = props
   return stocks.filter(
     stock =>
       (!codes || codes.includes(stock.Code)) &&
       (!sector_17_codes || sector_17_codes.includes(stock.Sector17Code)) &&
       (!sector_33_codes || sector_33_codes.includes(stock.Sector33Code)) &&
-      (!market_codes || market_codes.includes(stock.MarketCode)),
+      (!market_codes || market_codes.includes(stock.MarketCode)) &&
+      (!company_name || stock.CompanyName.includes(company_name)),
   )
 }
 
@@ -49,10 +51,4 @@ export const getStockByCode = async (code: string): Promise<Stock | null> => {
     return null
   }
   return unmarshall(result.Item) as Stock
-}
-
-export const getStockByCompanyName = async (company_name: string): Promise<Stock | null> => {
-  const stocks = await getStocks()
-  const stock = stocks.find(stock => stock.CompanyName === company_name)
-  return stock || null
 }
