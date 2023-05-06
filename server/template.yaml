@@ -24,17 +24,35 @@ Resources:
       VersioningConfiguration:
         Status: Enabled
 
-  MyDynamoDBTable:
+  ListedInfoTable:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
-        - AttributeName: stock_code
+        - AttributeName: Code
           AttributeType: S
       KeySchema:
-        - AttributeName: stock_code
+        - AttributeName: Code
           KeyType: HASH
+        - AttributeName: Code
+          KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
-      TableName: !Sub ${AWS::StackName}-dynamodb-table
+      TableName: !Sub ${AWS::StackName}-listed-info
+
+  PricesDailyQuotesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Code
+          AttributeType: S
+        - AttributeName: Date
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Code
+          KeyType: HASH
+        - AttributeName: Date
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      TableName: !Sub ${AWS::StackName}-prices-daily-quotes
 
   MyLambdaRole:
     Type: AWS::IAM::Role
@@ -65,7 +83,7 @@ Resources:
                 Action:
                   - s3:ListBucket
                 Resource: !Sub "arn:aws:s3:::${MyBucket}"
-              - Sid: AllowDynamoDBTable
+              - Sid: AllowListedInfoTable
                 Effect: Allow
                 Action:
                   - dynamodb:GetItem
@@ -74,7 +92,17 @@ Resources:
                   - dynamodb:DeleteItem
                   - dynamodb:Query
                   - dynamodb:Scan
-                Resource: !GetAtt MyDynamoDBTable.Arn
+                Resource: !GetAtt ListedInfoTable.Arn
+              - Sid: AllowPricesDailyQuotesTable
+                Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource: !GetAtt PricesDailyQuotesTable.Arn
               - Sid: AllowCloudWatchLogs
                 Effect: Allow
                 Action:
@@ -99,6 +127,47 @@ Resources:
           Properties:
             Path: /api/hello
             Method: get
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
+
+  BusinessDayFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-business-day
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.business_day_handler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MyApiGateway:
+          Type: Api
+          Properties:
+            Path: /api/business_day
+            Method: get
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
+
+  BusinessDayUpdateFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-business-day-update
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.business_day_update_handler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 10 * * ? *)
     Metadata:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
@@ -139,7 +208,7 @@ Resources:
         MyApiGateway:
           Type: Api
           Properties:
-            Path: /api/prices-daily_quotes
+            Path: /api/prices-daily-quotes
             Method: get
     Metadata:
       DockerTag: nodejs18.x-v1
@@ -161,26 +230,6 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: cron(0 22 * * ? *)
-    Metadata:
-      DockerTag: nodejs18.x-v1
-      DockerContext: ./src
-      Dockerfile: Dockerfile
-
-  IdTokenUpdaterFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-id-token-updater
-      PackageType: Image
-      ImageConfig:
-        Command: [ "app.id_token_updater_handler" ]
-      Role: !GetAtt MyLambdaRole.Arn
-      Architectures:
-      - x86_64
-      Events:
-        MySchedule:
-          Type: Schedule
-          Properties:
-            Schedule: rate(20 hours)
     Metadata:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
@@ -221,7 +270,47 @@ Resources:
         MySchedule:
           Type: Schedule
           Properties:
-            Schedule: cron(0 0,12 * * * ?)
+            Schedule: rate(5 days)
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
+
+  IdTokenUpdaterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-id-token-updater
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.id_token_updater_handler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: rate(20 hours)
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
+
+  ListedInfoFunctionUpdaterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-listed-info-updater
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.listed_info_updater_handler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 10 * * ? *)
     Metadata:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src

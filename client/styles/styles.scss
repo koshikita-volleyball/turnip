@@ -1,0 +1,59 @@
+@import '../node_modules/bootstrap/scss/bootstrap';
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Consolas', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 1rem;
+  background-color: rgba(white, 0.99);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  height: 70px;
+}
+
+$main_vertical_margin: 16; // px
+$footer_height: 5; // rem
+
+main {
+  margin: #{$main_vertical_margin}px 0;
+  padding: 1rem;
+  @include media-breakpoint-up(xxl) {
+    margin-left: 200px;
+  }
+  @include media-breakpoint-up(xxl) {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 900px;
+    min-height: calc(
+      100vh - #{$main_vertical_margin * 2}px - #{$footer_height}rem
+    );
+  }
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: #{$footer_height}rem;
+  background-color: lightgray;
+  a {
+    color: #0e6dfe;
+    text-decoration: none;
+    &:last-child {
+      margin-right: 0;
+      padding-right: 0;
+      border-right: none;
+    }
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
