@@ -368,7 +368,7 @@ Promise<APIGatewayProxyResult> => {
   // res.sort((a, b) => b.growth_rate - a.growth_rate)
 
   return {
-    statusCode: 200,
+    statusCode: 500,
     headers: CORS_HEADERS,
     body: 'not implemented',
   }
