@@ -21,10 +21,10 @@ export default function AboutPage() {
   const [sector_33_code, setSector33Code] = useState<string>('')
 
   const {
-    data,
+    data: data,
     error,
   }: {
-    data: ListedInfoStruct[]
+    data: { data: ListedInfoStruct[] }
     error: any
   } = useSWR(
     `${setting.apiPath}/api/listed_info` +
@@ -40,21 +40,21 @@ export default function AboutPage() {
         useCondition === false
           ? ''
           : market_code !== ''
-          ? `&market_code=${market_code}`
+          ? `&market_codes=${market_code}`
           : ''
       }` +
       `${
         useCondition === false
           ? ''
           : sector_17_code !== ''
-          ? `&sector_17_code=${sector_17_code}`
+          ? `&sector_17_codes=${sector_17_code}`
           : ''
       }` +
       `${
         useCondition === false
           ? ''
           : sector_33_code !== ''
-          ? `&sector_33_code=${sector_33_code}`
+          ? `&sector_33_codes=${sector_33_code}`
           : ''
       }`,
     fetcher,
@@ -78,21 +78,21 @@ export default function AboutPage() {
         useCondition === false
           ? ''
           : market_code !== ''
-          ? `&market_code=${market_code}`
+          ? `&market_codes=${market_code}`
           : ''
       }` +
       `${
         useCondition === false
           ? ''
           : sector_17_code !== ''
-          ? `&sector_17_code=${sector_17_code}`
+          ? `&sector_17_codes=${sector_17_code}`
           : ''
       }` +
       `${
         useCondition === false
           ? ''
           : sector_33_code !== ''
-          ? `&sector_33_code=${sector_33_code}`
+          ? `&sector_33_codes=${sector_33_code}`
           : ''
       }`,
     fetcher,
@@ -133,21 +133,21 @@ export default function AboutPage() {
           useCondition === false
             ? ''
             : market_code !== ''
-            ? `&market_code=${market_code}`
+            ? `&market_codes=${market_code}`
             : ''
         }` +
         `${
           useCondition === false
             ? ''
             : sector_17_code !== ''
-            ? `&sector_17_code=${sector_17_code}`
+            ? `&sector_17_codes=${sector_17_code}`
             : ''
         }` +
         `${
           useCondition === false
             ? ''
             : sector_33_code !== ''
-            ? `&sector_33_code=${sector_33_code}`
+            ? `&sector_33_codes=${sector_33_code}`
             : ''
         }`,
     )
@@ -192,7 +192,7 @@ export default function AboutPage() {
               <Button
                 variant="primary"
                 onClick={() => setPage(page + 1)}
-                disabled={data.length === 0}
+                disabled={data.data.length === 0}
               >
                 次へ
               </Button>
@@ -208,7 +208,7 @@ export default function AboutPage() {
                 </tr>
               </thead>
               <tbody>
-                {data.map((item) => (
+                {data.data.map((item) => (
                   <tr key={item.Code}>
                     <td>
                       <Link href={`/company?code=${item.Code}`}>
