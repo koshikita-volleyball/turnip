@@ -388,7 +388,9 @@ export const listed_info_updater_handler = async (): Promise<void> => {
 export const prices_daily_quotes_updater_handler = async (): Promise<void> => {
   try {
     const today = dayjs(new Date()).format('YYYY-MM-DD')
-    const { daily_quotes: prices } = await JQuantsClient<{ daily_quotes: PricesDailyQuotesStruct[] }>('/v1/prices/daily_quotes', {
+    const { daily_quotes: prices } = await JQuantsClient<{
+      daily_quotes: PricesDailyQuotesStruct[]
+    }>('/v1/prices/daily_quotes', {
       date: today,
     })
     const dynamoClient = new AWS.DynamoDB.DocumentClient()
