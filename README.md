@@ -95,6 +95,14 @@ sam delete --stack-name <プロジェクト名>-staging-***
 
 AWSコンソールでひとつひとつリソースを削除すると消し忘れが発生する危険性があるため、原則としてこのコマンドを使用してください。  
 
+## 環境情報
+
+| 環境 | バージョン |
+| --- | --- |
+| Node.js | v18.12.1 |
+| AWS CLI | 2.11.16 |
+| SAM CLI | 1.82.0 |
+
 ## 使用している技術
 
 - GitHub
@@ -118,3 +126,19 @@ AWSコンソールでひとつひとつリソースを削除すると消し忘�
   - CloudWatch
 - Docker
 - Slack API
+
+## IAMの権限
+
+以下の権限を付しています。  
+かなり強力な権限を与えています、、、  
+
+- AmazonAPIGatewayAdministrator
+- AmazonAPIGatewayInvokeFullAccess
+- AmazonAPIGatewayPushToCloudWatchLogs
+- AmazonDynamoDBFullAccess
+- AmazonS3FullAccess
+- AWSLambda_FullAccess
+- CloudWatchEventsFullAccess
+- CloudWatchFullAccess
+- IAMFullAccess
+- IAMUserChangePassword
