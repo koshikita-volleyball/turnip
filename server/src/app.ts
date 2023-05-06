@@ -4,9 +4,8 @@ import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda'
 import JQuantsClient from './common/jquants_client'
 import ListedInfoStruct from './interface/jquants/listed_info'
 import { GetRefreshToken } from './common/get_id_token'
-import GrowthRateClose from './interface/turnip/growth_rate_close'
-import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
-import { getBusinessDays, updateBusinessDays } from './analysis/jpx_business_day'
+// import GrowthRateClose from './interface/turnip/growth_rate_close'
+// import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
 import { WebClient, LogLevel } from '@slack/web-api'
 import AWS from './common/aws'
 import GetIdToken from './common/get_id_token'
@@ -21,6 +20,8 @@ import {
 import paginate from './common/pagination'
 import { Stock } from './interface/turnip/stock'
 import { getDailyQuotes } from './model/daily_quotes'
+import { getBusinessDaysFromJQuants, saveBusinessDaysToS3 } from './model/jpx_business_day'
+import { getBusinessDays } from './analysis/jpx_business_day'
 
 dotenv.config()
 
@@ -59,7 +60,7 @@ export const business_day_handler = async (): Promise<APIGatewayProxyResult> => 
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(dates.map(d => d.format('YYYY-MM-DD'))),
+      body: JSON.stringify(dates),
     }
   } catch (err) {
     if (err instanceof Error) {
@@ -77,7 +78,8 @@ export const business_day_handler = async (): Promise<APIGatewayProxyResult> => 
 
 export const business_day_update_handler = async (): Promise<void> => {
   try {
-    await updateBusinessDays()
+    const dates = await getBusinessDaysFromJQuants()
+    await saveBusinessDaysToS3(dates)
     await notify('営業日情報を更新しました :spiral_calendar_pad:')
   } catch (err) {
     if (err instanceof Error) {
@@ -311,48 +313,47 @@ export const listed_info_updater_handler = async (): Promise<void> => {
  * 前営業日からの終値の変化率が一定以上の銘柄を返す。
  */
 
-export const growth_rate_close_handler = async (
-  event: APIGatewayEvent,
-): Promise<APIGatewayProxyResult> => {
+export const growth_rate_close_handler = async (): // event: APIGatewayEvent,
+Promise<APIGatewayProxyResult> => {
   // 閾値を取得
-  const threshold = event.queryStringParameters?.threshold
+  // const threshold = event.queryStringParameters?.threshold
 
-  const res: GrowthRateClose[] = []
+  // const res: GrowthRateClose[] = []
 
-  const dates = await getBusinessDays()
-  const { daily_quotes: daily_quotes_before } = await JQuantsClient<{
-    daily_quotes: PricesDailyQuotesStruct[]
-  }>('/v1/prices/daily_quotes', {
-    date: dates[dates.length - 2].format('YYYY-MM-DD'),
-  })
+  // const dates = await getBusinessDays()
+  // const { daily_quotes: daily_quotes_before } = await JQuantsClient<{
+  //   daily_quotes: PricesDailyQuotesStruct[]
+  // }>('/v1/prices/daily_quotes', {
+  //   date: dates[dates.length - 2].format('YYYY-MM-DD'),
+  // })
 
-  const { daily_quotes: daily_quotes_after } = await JQuantsClient<{
-    daily_quotes: PricesDailyQuotesStruct[]
-  }>('/v1/prices/daily_quotes', {
-    date: dates[dates.length - 1].format('YYYY-MM-DD'),
-  })
+  // const { daily_quotes: daily_quotes_after } = await JQuantsClient<{
+  //   daily_quotes: PricesDailyQuotesStruct[]
+  // }>('/v1/prices/daily_quotes', {
+  //   date: dates[dates.length - 1].format('YYYY-MM-DD'),
+  // })
 
-  for (const dq_before of daily_quotes_before) {
-    const dq_after = daily_quotes_after.find(dq => dq.Code === dq_before.Code)
-    if (!dq_after || !dq_before.Close || !dq_after.Close) continue
+  // for (const dq_before of daily_quotes_before) {
+  //   const dq_after = daily_quotes_after.find(dq => dq.Code === dq_before.Code)
+  //   if (!dq_after || !dq_before.Close || !dq_after.Close) continue
 
-    const growth_rate = (dq_after.Close - dq_before.Close) / dq_before.Close
-    if (!threshold || growth_rate > parseFloat(threshold)) {
-      res.push({
-        code: dq_before.Code,
-        growth_rate,
-        daily_quotes: {
-          before: dq_before,
-          after: dq_after,
-        },
-      })
-    }
-  }
-  res.sort((a, b) => b.growth_rate - a.growth_rate)
+  //   const growth_rate = (dq_after.Close - dq_before.Close) / dq_before.Close
+  //   if (!threshold || growth_rate > parseFloat(threshold)) {
+  //     res.push({
+  //       code: dq_before.Code,
+  //       growth_rate,
+  //       daily_quotes: {
+  //         before: dq_before,
+  //         after: dq_after,
+  //       },
+  //     })
+  //   }
+  // }
+  // res.sort((a, b) => b.growth_rate - a.growth_rate)
 
   return {
     statusCode: 200,
     headers: CORS_HEADERS,
-    body: JSON.stringify(res),
+    body: 'not implemented',
   }
 }
