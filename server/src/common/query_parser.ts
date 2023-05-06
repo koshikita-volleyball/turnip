@@ -20,8 +20,7 @@ type DatePeriodParams = {
 }
 
 const _check_required = <T extends object>(params: T, required: Required<T>): T => {
-
-  if(typeof required === 'boolean' && !required) return params
+  if (typeof required === 'boolean' && !required) return params
 
   const keys = (typeof required === 'boolean' ? Object.keys(params) : required) as (keyof T)[]
   keys.forEach(require => {
@@ -45,7 +44,6 @@ export const getDateParams = (
   )
 }
 
-
 export const getDatePeriodParams = (
   event: APIGatewayEvent,
   required: Required<DatePeriodParams> = false,
@@ -58,7 +56,6 @@ export const getDatePeriodParams = (
     required,
   )
 }
-
 
 export const getStockParams = (
   event: APIGatewayEvent,
