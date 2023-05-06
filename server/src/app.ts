@@ -4,8 +4,7 @@ import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda'
 import JQuantsClient from './common/jquants_client'
 import ListedInfoStruct from './interface/jquants/listed_info'
 import { GetRefreshToken } from './common/get_id_token'
-// import GrowthRateClose from './interface/turnip/growth_rate_close'
-// import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
+import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
 import { WebClient, LogLevel } from '@slack/web-api'
 import AWS from './common/aws'
 import GetIdToken from './common/get_id_token'
@@ -18,6 +17,7 @@ import { Stock } from './interface/turnip/stock'
 import { getDailyQuotes } from './model/daily_quotes'
 import { getBusinessDaysFromJQuants, saveBusinessDaysToS3 } from './model/jpx_business_day'
 import { getBusinessDays } from './analysis/jpx_business_day'
+import dayjs from './common/dayjs'
 
 dotenv.config()
 
@@ -325,7 +325,7 @@ export const listed_info_updater_handler = async (): Promise<void> => {
 
 export const prices_daily_quotes_updater_handler = async (): Promise<void> => {
   try {
-    const today = dayjs(new Date()).format('YYYY-MM-DD')
+    const today = dayjs().format('YYYY-MM-DD')
     const { daily_quotes: prices } = await JQuantsClient<{
       daily_quotes: PricesDailyQuotesStruct[]
     }>('/v1/prices/daily_quotes', {
