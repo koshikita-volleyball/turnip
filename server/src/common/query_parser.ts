@@ -1,4 +1,5 @@
 import { APIGatewayEvent } from 'aws-lambda'
+import { Indicator } from '../interface/jquants/indicator'
 
 type Required<T extends object> = boolean | (keyof T)[]
 
@@ -92,3 +93,15 @@ export const getDatePeriodParams = (
 export const getPaginationParams = (event: APIGatewayEvent): PaginationParams => ({
   page: parseInt(event.queryStringParameters?.page || '1'),
 })
+
+export const getIndicatorParams = (event: APIGatewayEvent): Indicator[] => {
+  try {
+    const conditions = event.queryStringParameters?.conditions
+    if (!conditions) return []
+    const indicator = JSON.parse(decodeURI(conditions)) as Indicator[]
+    return indicator
+  } catch (e) {
+    console.error(e)
+  }
+  return []
+}
