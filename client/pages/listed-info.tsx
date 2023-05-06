@@ -40,21 +40,21 @@ export default function AboutPage() {
         useCondition === false
           ? ''
           : market_code !== ''
-          ? `&market_code=${market_code}`
+          ? `&market_codes=${market_code}`
           : ''
       }` +
       `${
         useCondition === false
           ? ''
           : sector_17_code !== ''
-          ? `&sector_17_code=${sector_17_code}`
+          ? `&sector_17_codes=${sector_17_code}`
           : ''
       }` +
       `${
         useCondition === false
           ? ''
           : sector_33_code !== ''
-          ? `&sector_33_code=${sector_33_code}`
+          ? `&sector_33_codes=${sector_33_code}`
           : ''
       }`,
     fetcher,
@@ -78,21 +78,21 @@ export default function AboutPage() {
         useCondition === false
           ? ''
           : market_code !== ''
-          ? `&market_code=${market_code}`
+          ? `&market_codes=${market_code}`
           : ''
       }` +
       `${
         useCondition === false
           ? ''
           : sector_17_code !== ''
-          ? `&sector_17_code=${sector_17_code}`
+          ? `&sector_17_codes=${sector_17_code}`
           : ''
       }` +
       `${
         useCondition === false
           ? ''
           : sector_33_code !== ''
-          ? `&sector_33_code=${sector_33_code}`
+          ? `&sector_33_codes=${sector_33_code}`
           : ''
       }`,
     fetcher,
@@ -133,21 +133,21 @@ export default function AboutPage() {
           useCondition === false
             ? ''
             : market_code !== ''
-            ? `&market_code=${market_code}`
+            ? `&market_codes=${market_code}`
             : ''
         }` +
         `${
           useCondition === false
             ? ''
             : sector_17_code !== ''
-            ? `&sector_17_code=${sector_17_code}`
+            ? `&sector_17_codes=${sector_17_code}`
             : ''
         }` +
         `${
           useCondition === false
             ? ''
             : sector_33_code !== ''
-            ? `&sector_33_code=${sector_33_code}`
+            ? `&sector_33_codes=${sector_33_code}`
             : ''
         }`,
     )
