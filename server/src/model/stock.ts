@@ -3,14 +3,14 @@ import { unmarshall } from '@aws-sdk/util-dynamodb'
 import { Stock } from '../interface/turnip/stock'
 import GetProcessEnv from '../common/process_env'
 
-type GetStocksParams = {
+type GetStocksProps = {
   codes?: string[]
   sector_17_codes?: string[]
   sector_33_codes?: string[]
   market_codes?: string[]
 }
 
-export const getStocks = async (props?: GetStocksParams): Promise<Stock[]> => {
+export const getStocks = async (props?: GetStocksProps): Promise<Stock[]> => {
   const ddb = new AWS.DynamoDB()
 
   // TODO スキャンではなくセカンダリインデックスを使用する。#267
