@@ -7,7 +7,13 @@ import { Alert, Spinner, Table } from 'react-bootstrap'
 import CompanyPriceChart from '../components/CompanyPriceChart'
 import PricesDailyQuotesStruct from '../interface/prices_daily_quotes'
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json())
+const fetcher = (url: string) => fetch(url).then((r) => {
+  if (r.ok) {
+    return r.json()
+  } else {
+    throw null
+  }
+})
 
 export default function Company() {
   const [code, setCode] = useState<string>('')
@@ -103,7 +109,11 @@ export default function Company() {
               prices_error ? (
                 <Alert variant="danger">Failed to load...</Alert>
               ) : (
-                prices && <CompanyPriceChart prices={prices} />
+                prices ? <CompanyPriceChart prices={prices} />
+                  : <Alert variant="secondary" className='d-flex align-items-center'>
+                    <Spinner animation="grow" variant="primary" className='me-3' />
+                    株価データを取得中...
+                  </Alert>
               )
             }
           </div>
