@@ -4,8 +4,7 @@ import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda'
 import JQuantsClient from './common/jquants_client'
 import ListedInfoStruct from './interface/jquants/listed_info'
 import { GetRefreshToken } from './common/get_id_token'
-// import GrowthRateClose from './interface/turnip/growth_rate_close'
-// import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
+import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
 import { WebClient, LogLevel } from '@slack/web-api'
 import AWS from './common/aws'
 import GetIdToken from './common/get_id_token'
@@ -18,6 +17,7 @@ import { Stock } from './interface/turnip/stock'
 import { getDailyQuotes } from './model/daily_quotes'
 import { getBusinessDaysFromJQuants, saveBusinessDaysToS3 } from './model/jpx_business_day'
 import { getBusinessDays } from './analysis/jpx_business_day'
+import dayjs from './common/dayjs'
 
 dotenv.config()
 
@@ -313,6 +313,54 @@ export const listed_info_updater_handler = async (): Promise<void> => {
     const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
     const result = await slackClient.chat.postMessage({
       text: `:tori::tori::tori: 銘柄情報を更新しました！ :tori::tori::tori:`,
+      channel,
+    })
+    console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
+  }
+}
+
+export const prices_daily_quotes_updater_handler = async (): Promise<void> => {
+  try {
+    const today = dayjs().format('YYYY-MM-DD')
+    const { daily_quotes: prices } = await JQuantsClient<{
+      daily_quotes: PricesDailyQuotesStruct[]
+    }>('/v1/prices/daily_quotes', {
+      date: today,
+    })
+    const dynamoClient = new AWS.DynamoDB.DocumentClient()
+    const tableName = GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME')
+    for (const price of prices) {
+      // DynamoDBに保存
+      const params = {
+        TableName: tableName,
+        Item: {
+          Code: price.Code,
+          Date: price.Date,
+          Open: price.Open,
+          High: price.High,
+          Low: price.Low,
+          Close: price.Close,
+          Volume: price.Volume,
+          TurnoverValue: price.TurnoverValue,
+          AdjustmentHigh: price.AdjustmentHigh,
+          AdjustmentLow: price.AdjustmentLow,
+          AdjustmentClose: price.AdjustmentClose,
+          AdjustmentVolume: price.AdjustmentVolume,
+        },
+      }
+      await dynamoClient.put(params).promise()
+    }
+    // Slackに通知
+    const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
+      logLevel: LogLevel.DEBUG,
+    })
+    const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
+    const result = await slackClient.chat.postMessage({
+      text: `:tori::tori::tori: 株価四本値情報を更新しました！ :tori::tori::tori:`,
       channel,
     })
     console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
