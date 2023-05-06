@@ -7,13 +7,14 @@ import ListedInfoStruct from './interface/jquants/listed_info'
 import { GetRefreshToken } from './common/get_id_token'
 import GrowthRateClose from './interface/turnip/growth_rate_close'
 import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
-import { getBusinessDays } from './analysis/utils'
+import { getBusinessDays, updateBusinessDays } from './analysis/jpx_business_day'
 import { WebClient, LogLevel } from '@slack/web-api'
 import AWS from './common/aws'
 import GetIdToken from './common/get_id_token'
 import GetProcessEnv from './common/process_env'
 import { ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
 import { per_page } from './common/const'
+import { notify } from './common/slack'
 import dayjs from './common/dayjs'
 
 dotenv.config()
@@ -47,6 +48,39 @@ export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
   }
 }
 
+export const business_day_handler = async (): Promise<APIGatewayProxyResult> => {
+  try {
+    const dates = await getBusinessDays()
+    return {
+      statusCode: 200,
+      headers: CORS_HEADERS,
+      body: JSON.stringify(dates.map(d => d.format('YYYY-MM-DD'))),
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
+    return {
+      statusCode: 500,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        message: err,
+      }),
+    }
+  }
+}
+
+export const business_day_update_handler = async (): Promise<void> => {
+  try {
+    await updateBusinessDays()
+    await notify('営業日情報を更新しました :spiral_calendar_pad:')
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
+  }
+}
+
 export const listed_info_handler = async (
   event: APIGatewayEvent,
 ): Promise<APIGatewayProxyResult> => {
@@ -60,59 +94,82 @@ export const listed_info_handler = async (
     const market_code = event.queryStringParameters?.market_code
 
     // DynamoDBから銘柄情報を取得
-    const filter_expressions = [code ? 'Code = :Code' : 'Code <> :Code']
-    const expression_attribute_values: ExpressionAttributeValueMap = {
-      ':Code': {
-        S: code ?? '0000',
-      },
-    }
-    if (sector_17_code) {
-      filter_expressions.push('Sector17Code = :Sector17Code')
-      expression_attribute_values[':Sector17Code'] = {
-        S: sector_17_code,
-      }
-    }
-    if (sector_33_code) {
-      filter_expressions.push('Sector33Code = :Sector33Code')
-      expression_attribute_values[':Sector33Code'] = {
-        S: sector_33_code,
-      }
-    }
-    if (market_code) {
-      filter_expressions.push('MarketCode = :MarketCode')
-      expression_attribute_values[':MarketCode'] = {
-        S: market_code,
-      }
-    }
     const dynamodb = new AWS.DynamoDB()
-    const params = {
-      TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
-      FilterExpression: filter_expressions.join(' AND '),
-      ExpressionAttributeValues: expression_attribute_values,
-    }
-    const stocks = ((await dynamodb.scan(params).promise()).Items || []).map(
-      item => unmarshall(item) as ListedInfoStruct,
-    )
 
-    // 銘柄名でフィルタリング
-    const filtered_stocks = stocks.filter(stock => {
-      return company_name ? stock.CompanyName.includes(company_name) : true
-    })
+    if (code) {
+      const params = {
+        TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
+        KeyConditionExpression: 'Code = :Code',
+        ExpressionAttributeValues: {
+          ':Code': {
+            S: code,
+          },
+        },
+      }
+      const stocks = ((await dynamodb.query(params).promise()).Items || []).map(
+        item => unmarshall(item) as ListedInfoStruct,
+      )
+      return {
+        statusCode: 200,
+        headers: CORS_HEADERS,
+        body: JSON.stringify(stocks),
+      }
+    } else {
+      // 全件スキャン
+      // ひとつ以上のフィルターを指定する必要があるため、ダミーのフィルター(銘柄コードが0000以外 | 全て)を指定しておく。
+      const filter_expressions = ['Code <> :Code']
+      const expression_attribute_values: ExpressionAttributeValueMap = {
+        ':Code': {
+          S: '0000',
+        },
+      }
+      if (sector_17_code) {
+        filter_expressions.push('Sector17Code = :Sector17Code')
+        expression_attribute_values[':Sector17Code'] = {
+          S: sector_17_code,
+        }
+      }
+      if (sector_33_code) {
+        filter_expressions.push('Sector33Code = :Sector33Code')
+        expression_attribute_values[':Sector33Code'] = {
+          S: sector_33_code,
+        }
+      }
+      if (market_code) {
+        filter_expressions.push('MarketCode = :MarketCode')
+        expression_attribute_values[':MarketCode'] = {
+          S: market_code,
+        }
+      }
+      const params = {
+        TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
+        FilterExpression: filter_expressions.join(' AND '),
+        ExpressionAttributeValues: expression_attribute_values,
+      }
+      const stocks = ((await dynamodb.scan(params).promise()).Items || []).map(
+        item => unmarshall(item) as ListedInfoStruct,
+      )
 
-    // 銘柄コードでソート
-    filtered_stocks.sort((a, b) => {
-      return a.Code.localeCompare(b.Code)
-    })
+      // 銘柄名でフィルタリング
+      const filtered_stocks = stocks.filter(stock => {
+        return company_name ? stock.CompanyName.includes(company_name) : true
+      })
 
-    // ページング
-    const start = (page - 1) * per_page
-    const end = start + per_page
-    const paged_stocks = filtered_stocks.slice(start, end)
+      // 銘柄コードでソート
+      filtered_stocks.sort((a, b) => {
+        return a.Code.localeCompare(b.Code)
+      })
 
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify(paged_stocks),
+      // ページング
+      const start = (page - 1) * per_page
+      const end = start + per_page
+      const paged_stocks = filtered_stocks.slice(start, end)
+
+      return {
+        statusCode: 200,
+        headers: CORS_HEADERS,
+        body: JSON.stringify(paged_stocks),
+      }
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -155,14 +212,14 @@ export const prices_daily_quotes_handler = async (
     }
 
     if (from) {
-      key_condition_expressions.push('Date >= :From')
+      key_condition_expressions.push('#Date >= :From')
       expression_attribute_values[':From'] = {
         S: from,
       }
     }
 
     if (to) {
-      key_condition_expressions.push('Date <= :To')
+      key_condition_expressions.push('#Date <= :To')
       expression_attribute_values[':To'] = {
         S: to,
       }
@@ -173,6 +230,9 @@ export const prices_daily_quotes_handler = async (
       TableName: GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
       KeyConditionExpression: key_condition_expressions.join(' AND '),
       ExpressionAttributeValues: expression_attribute_values,
+      ExpressionAttributeNames: {
+        '#Date': 'Date',
+      },
     }
 
     const prices = ((await dynamodb.query(params).promise()).Items || []).map(
@@ -315,6 +375,54 @@ export const listed_info_updater_handler = async (): Promise<void> => {
     const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
     const result = await slackClient.chat.postMessage({
       text: `:tori::tori::tori: 銘柄情報を更新しました！ :tori::tori::tori:`,
+      channel,
+    })
+    console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
+  }
+}
+
+export const prices_daily_quotes_updater_handler = async (): Promise<void> => {
+  try {
+    const today = dayjs(new Date()).format('YYYY-MM-DD')
+    const { daily_quotes: prices } = await JQuantsClient<{
+      daily_quotes: PricesDailyQuotesStruct[]
+    }>('/v1/prices/daily_quotes', {
+      date: today,
+    })
+    const dynamoClient = new AWS.DynamoDB.DocumentClient()
+    const tableName = GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME')
+    for (const price of prices) {
+      // DynamoDBに保存
+      const params = {
+        TableName: tableName,
+        Item: {
+          Code: price.Code,
+          Date: price.Date,
+          Open: price.Open,
+          High: price.High,
+          Low: price.Low,
+          Close: price.Close,
+          Volume: price.Volume,
+          TurnoverValue: price.TurnoverValue,
+          AdjustmentHigh: price.AdjustmentHigh,
+          AdjustmentLow: price.AdjustmentLow,
+          AdjustmentClose: price.AdjustmentClose,
+          AdjustmentVolume: price.AdjustmentVolume,
+        },
+      }
+      await dynamoClient.put(params).promise()
+    }
+    // Slackに通知
+    const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
+      logLevel: LogLevel.DEBUG,
+    })
+    const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
+    const result = await slackClient.chat.postMessage({
+      text: `:tori::tori::tori: 株価四本値情報を更新しました！ :tori::tori::tori:`,
       channel,
     })
     console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
