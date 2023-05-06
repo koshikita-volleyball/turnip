@@ -372,7 +372,7 @@ export const screener_handler = async (event: APIGatewayEvent): Promise<APIGatew
   const indicatorParams = getIndicatorParams(event)
 
   return {
-    statusCode: 500,
+    statusCode: 200,
     headers: CORS_HEADERS,
     body: JSON.stringify({ stockCommonFilter, indicatorParams }),
   }
