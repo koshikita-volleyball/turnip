@@ -297,7 +297,7 @@ Resources:
   PricesDailyQuotesUpdaterFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-prices-daily-quotes-updater
+      FunctionName: !Sub ${AWS::StackName}-daily-quotes-updater
       PackageType: Image
       ImageConfig:
         Command: [ "app.prices_daily_quotes_updater_handler" ]
