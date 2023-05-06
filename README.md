@@ -126,3 +126,19 @@ AWSコンソールでひとつひとつリソースを削除すると消し忘�
   - CloudWatch
 - Docker
 - Slack API
+
+## IAMの権限
+
+以下の権限を付しています。  
+かなり強力な権限を与えています、、、  
+
+- AmazonAPIGatewayAdministrator
+- AmazonAPIGatewayInvokeFullAccess
+- AmazonAPIGatewayPushToCloudWatchLogs
+- AmazonDynamoDBFullAccess
+- AmazonS3FullAccess
+- AWSLambda_FullAccess
+- CloudWatchEventsFullAccess
+- CloudWatchFullAccess
+- IAMFullAccess
+- IAMUserChangePassword
