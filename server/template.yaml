@@ -294,7 +294,7 @@ Resources:
       DockerContext: ./src
       Dockerfile: Dockerfile
 
-  ListedInfoFunctionUpdaterFunction:
+  ListedInfoUpdaterFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-listed-info-updater
