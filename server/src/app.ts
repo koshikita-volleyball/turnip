@@ -11,7 +11,11 @@ import GetIdToken from './common/get_id_token'
 import GetProcessEnv from './common/process_env'
 import { notify } from './common/slack'
 import { getStockByCode, getStocks } from './model/stock'
-import { getPaginationParams, getStockCommonFilterParams } from './common/query_parser'
+import {
+  getIndicatorParams,
+  getPaginationParams,
+  getStockCommonFilterParams,
+} from './common/query_parser'
 import paginate from './common/pagination'
 import { Stock } from './interface/turnip/stock'
 import { getDailyQuotes } from './model/daily_quotes'
@@ -362,53 +366,65 @@ export const prices_daily_quotes_updater_handler = async (): Promise<void> => {
   }
 }
 
+export const screener_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+  // get query params
+  const stockCommonFilter = getStockCommonFilterParams(event)
+  const indicatorParams = getIndicatorParams(event)
+
+  return {
+    statusCode: 500,
+    headers: CORS_HEADERS,
+    body: JSON.stringify({ stockCommonFilter, indicatorParams }),
+  }
+}
+
 // テクニカル系のハンドラー
 
 /**
  * 前営業日からの終値の変化率が一定以上の銘柄を返す。
  */
 
-export const growth_rate_close_handler = async (): // event: APIGatewayEvent,
-Promise<APIGatewayProxyResult> => {
-  // 閾値を取得
-  // const threshold = event.queryStringParameters?.threshold
+// export const growth_rate_close_handler = async (): // event: APIGatewayEvent,
+// Promise<APIGatewayProxyResult> => {
+// 閾値を取得
+// const threshold = event.queryStringParameters?.threshold
 
-  // const res: GrowthRateClose[] = []
+// const res: GrowthRateClose[] = []
 
-  // const dates = await getBusinessDays()
-  // const { daily_quotes: daily_quotes_before } = await JQuantsClient<{
-  //   daily_quotes: PricesDailyQuotesStruct[]
-  // }>('/v1/prices/daily_quotes', {
-  //   date: dates[dates.length - 2].format('YYYY-MM-DD'),
-  // })
+// const dates = await getBusinessDays()
+// const { daily_quotes: daily_quotes_before } = await JQuantsClient<{
+//   daily_quotes: PricesDailyQuotesStruct[]
+// }>('/v1/prices/daily_quotes', {
+//   date: dates[dates.length - 2].format('YYYY-MM-DD'),
+// })
 
-  // const { daily_quotes: daily_quotes_after } = await JQuantsClient<{
-  //   daily_quotes: PricesDailyQuotesStruct[]
-  // }>('/v1/prices/daily_quotes', {
-  //   date: dates[dates.length - 1].format('YYYY-MM-DD'),
-  // })
+// const { daily_quotes: daily_quotes_after } = await JQuantsClient<{
+//   daily_quotes: PricesDailyQuotesStruct[]
+// }>('/v1/prices/daily_quotes', {
+//   date: dates[dates.length - 1].format('YYYY-MM-DD'),
+// })
 
-  // for (const dq_before of daily_quotes_before) {
-  //   const dq_after = daily_quotes_after.find(dq => dq.Code === dq_before.Code)
-  //   if (!dq_after || !dq_before.Close || !dq_after.Close) continue
+// for (const dq_before of daily_quotes_before) {
+//   const dq_after = daily_quotes_after.find(dq => dq.Code === dq_before.Code)
+//   if (!dq_after || !dq_before.Close || !dq_after.Close) continue
 
-  //   const growth_rate = (dq_after.Close - dq_before.Close) / dq_before.Close
-  //   if (!threshold || growth_rate > parseFloat(threshold)) {
-  //     res.push({
-  //       code: dq_before.Code,
-  //       growth_rate,
-  //       daily_quotes: {
-  //         before: dq_before,
-  //         after: dq_after,
-  //       },
-  //     })
-  //   }
-  // }
-  // res.sort((a, b) => b.growth_rate - a.growth_rate)
+//   const growth_rate = (dq_after.Close - dq_before.Close) / dq_before.Close
+//   if (!threshold || growth_rate > parseFloat(threshold)) {
+//     res.push({
+//       code: dq_before.Code,
+//       growth_rate,
+//       daily_quotes: {
+//         before: dq_before,
+//         after: dq_after,
+//       },
+//     })
+//   }
+// }
+// res.sort((a, b) => b.growth_rate - a.growth_rate)
 
-  return {
-    statusCode: 500,
-    headers: CORS_HEADERS,
-    body: 'not implemented',
-  }
-}
+//   return {
+//     statusCode: 500,
+//     headers: CORS_HEADERS,
+//     body: 'not implemented',
+//   }
+// }

@@ -254,13 +254,13 @@ Resources:
       DockerContext: ./src
       Dockerfile: Dockerfile
 
-  TechnicalGrowthRateFunction:
+  ScreenerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-technical-growth-rate
+      FunctionName: !Sub ${AWS::StackName}-screener
       PackageType: Image
       ImageConfig:
-        Command: [ "app.growth_rate_close_handler" ]
+        Command: [ "app.screener_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -268,13 +268,13 @@ Resources:
         MyApiGateway:
           Type: Api
           Properties:
-            Path: /api/technical/growth_rate_close
+            Path: /api/screener
             Method: get
     Metadata:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
       Dockerfile: Dockerfile
-
+  
   RefreshTokenUpdaterFunction:
     Type: AWS::Serverless::Function
     Properties:
