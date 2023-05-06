@@ -10,7 +10,7 @@ import AWS from './common/aws'
 import GetIdToken from './common/get_id_token'
 import GetProcessEnv from './common/process_env'
 import { notify } from './common/slack'
-import { getStockByCode, getStockByCompanyName, getStocks } from './model/stock'
+import { getStockByCode, getStocks } from './model/stock'
 import { getPaginationParams, getStockCommonFilterParams } from './common/query_parser'
 import paginate from './common/pagination'
 import { Stock } from './interface/turnip/stock'
@@ -87,32 +87,22 @@ export const business_day_update_handler = async (): Promise<void> => {
 export const info_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   try {
     const code = event.queryStringParameters?.code
-    const company_name = event.queryStringParameters?.company_name
 
-    if (code) {
-      const stock = await getStockByCode(code)
+    if (!code) {
       return {
-        statusCode: 200,
+        statusCode: 400,
         headers: CORS_HEADERS,
-        body: JSON.stringify(stock),
+        body: JSON.stringify({
+          message: 'code is required',
+        }),
       }
     }
 
-    if (company_name) {
-      const stock = await getStockByCompanyName(company_name)
-      return {
-        statusCode: 200,
-        headers: CORS_HEADERS,
-        body: JSON.stringify(stock),
-      }
-    }
-
+    const stock = await getStockByCode(code)
     return {
-      statusCode: 400,
+      statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify({
-        message: 'code or company_name is required',
-      }),
+      body: JSON.stringify(stock),
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -134,8 +124,9 @@ export const listed_info_handler = async (
   try {
     const { page } = getPaginationParams(event)
     const stockCommonFilterParams = getStockCommonFilterParams(event)
+    const company_name = event.queryStringParameters?.company_name
 
-    const stocks = await getStocks(stockCommonFilterParams)
+    const stocks = await getStocks({ ...stockCommonFilterParams, company_name })
 
     return {
       statusCode: 200,
