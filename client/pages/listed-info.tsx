@@ -21,10 +21,10 @@ export default function AboutPage() {
   const [sector_33_code, setSector33Code] = useState<string>('')
 
   const {
-    data,
+    data: data,
     error,
   }: {
-    data: ListedInfoStruct[]
+    data: { data: ListedInfoStruct[] }
     error: any
   } = useSWR(
     `${setting.apiPath}/api/listed_info` +
@@ -40,21 +40,21 @@ export default function AboutPage() {
         useCondition === false
           ? ''
           : market_code !== ''
-          ? `&market_code=${market_code}`
+          ? `&market_codes=${market_code}`
           : ''
       }` +
       `${
         useCondition === false
           ? ''
           : sector_17_code !== ''
-          ? `&sector_17_code=${sector_17_code}`
+          ? `&sector_17_codes=${sector_17_code}`
           : ''
       }` +
       `${
         useCondition === false
           ? ''
           : sector_33_code !== ''
-          ? `&sector_33_code=${sector_33_code}`
+          ? `&sector_33_codes=${sector_33_code}`
           : ''
       }`,
     fetcher,
@@ -78,21 +78,21 @@ export default function AboutPage() {
         useCondition === false
           ? ''
           : market_code !== ''
-          ? `&market_code=${market_code}`
+          ? `&market_codes=${market_code}`
           : ''
       }` +
       `${
         useCondition === false
           ? ''
           : sector_17_code !== ''
-          ? `&sector_17_code=${sector_17_code}`
+          ? `&sector_17_codes=${sector_17_code}`
           : ''
       }` +
       `${
         useCondition === false
           ? ''
           : sector_33_code !== ''
-          ? `&sector_33_code=${sector_33_code}`
+          ? `&sector_33_codes=${sector_33_code}`
           : ''
       }`,
     fetcher,
@@ -108,11 +108,11 @@ export default function AboutPage() {
     if (page) setPage(parseInt(page))
     const company_name = url.searchParams.get('company_name')
     if (company_name) setCompanyName(company_name)
-    const market_code = url.searchParams.get('market_code')
+    const market_code = url.searchParams.get('market_codes')
     if (market_code) setMarketCode(market_code)
-    const sector_17_code = url.searchParams.get('sector_17_code')
+    const sector_17_code = url.searchParams.get('sector_17_codes')
     if (sector_17_code) setSector17Code(sector_17_code)
-    const sector_33_code = url.searchParams.get('sector_33_code')
+    const sector_33_code = url.searchParams.get('sector_33_codes')
     if (sector_33_code) setSector33Code(sector_33_code)
   }, [])
 
@@ -133,21 +133,21 @@ export default function AboutPage() {
           useCondition === false
             ? ''
             : market_code !== ''
-            ? `&market_code=${market_code}`
+            ? `&market_codes=${market_code}`
             : ''
         }` +
         `${
           useCondition === false
             ? ''
             : sector_17_code !== ''
-            ? `&sector_17_code=${sector_17_code}`
+            ? `&sector_17_codes=${sector_17_code}`
             : ''
         }` +
         `${
           useCondition === false
             ? ''
             : sector_33_code !== ''
-            ? `&sector_33_code=${sector_33_code}`
+            ? `&sector_33_codes=${sector_33_code}`
             : ''
         }`,
     )
@@ -192,7 +192,7 @@ export default function AboutPage() {
               <Button
                 variant="primary"
                 onClick={() => setPage(page + 1)}
-                disabled={data.length === 0}
+                disabled={data.data.length === 0}
               >
                 次へ
               </Button>
@@ -208,7 +208,7 @@ export default function AboutPage() {
                 </tr>
               </thead>
               <tbody>
-                {data.map((item) => (
+                {data.data.map((item) => (
                   <tr key={item.Code}>
                     <td>
                       <Link href={`/company?code=${item.Code}`}>

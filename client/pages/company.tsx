@@ -7,7 +7,14 @@ import { Alert, Spinner, Table } from 'react-bootstrap'
 import CompanyPriceChart from '../components/CompanyPriceChart'
 import PricesDailyQuotesStruct from '../interface/prices_daily_quotes'
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json())
+const fetcher = (url: string) =>
+  fetch(url).then((r) => {
+    if (r.ok) {
+      return r.json()
+    } else {
+      throw null
+    }
+  })
 
 export default function Company() {
   const [code, setCode] = useState<string>('')
@@ -16,9 +23,9 @@ export default function Company() {
     data: info,
     error: info_error,
   }: {
-    data: ListedInfoStruct[]
+    data: ListedInfoStruct
     error: any
-  } = useSWR(`${setting.apiPath}/api/listed_info?code=${code}`, fetcher, {
+  } = useSWR(`${setting.apiPath}/api/info?code=${code}`, fetcher, {
     revalidateOnFocus: false,
     dedupingInterval: 10000,
   })
@@ -62,49 +69,52 @@ export default function Company() {
             <Spinner animation="grow" variant="light" />
             <Spinner animation="grow" variant="dark" />
           </div>
-        ) : info.length === 0 ? (
+        ) : !info ? (
           <Alert variant="warning">No data...</Alert>
         ) : (
           <div>
             <h2>Company Detail</h2>
             {(() => {
-              const company = info[0]
+              const company = info
               return (
                 <>
                   <Table className="mt-3">
                     <tbody>
                       <tr>
                         <th>銘柄コード</th>
-                        <td>{company.Code}</td>
+                        <td>{company?.Code}</td>
                       </tr>
                       <tr>
                         <th>銘柄名</th>
-                        <td>{company.CompanyName}</td>
+                        <td>{company?.CompanyName}</td>
                       </tr>
                       <tr>
                         <th>市場・商品区分</th>
-                        <td>{company.MarketCodeName}</td>
+                        <td>{company?.MarketCodeName}</td>
                       </tr>
                       <tr>
                         <th>17業種区分</th>
-                        <td>{company.Sector17CodeName}</td>
+                        <td>{company?.Sector17CodeName}</td>
                       </tr>
                       <tr>
                         <th>33業種コード</th>
-                        <td>{company.Sector33Code}</td>
+                        <td>{company?.Sector33Code}</td>
                       </tr>
                     </tbody>
                   </Table>
                 </>
               )
             })()}
-            {
-              prices_error ? (
-                <Alert variant="danger">Failed to load...</Alert>
-              ) : (
-                prices && <CompanyPriceChart prices={prices} />
-              )
-            }
+            {prices_error ? (
+              <Alert variant="danger">Failed to load...</Alert>
+            ) : prices ? (
+              <CompanyPriceChart prices={prices} />
+            ) : (
+              <Alert variant="secondary" className="d-flex align-items-center">
+                <Spinner animation="grow" variant="primary" className="me-3" />
+                株価データを取得中...
+              </Alert>
+            )}
           </div>
         )}
       </div>

@@ -1,5 +1,5 @@
 type PricesDailyQuotesStruct = {
-  Date: Date
+  Date: string
   Code: string
   Open: number
   High: number

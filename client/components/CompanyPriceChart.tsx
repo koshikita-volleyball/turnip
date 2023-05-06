@@ -3,6 +3,7 @@ import { Chart as ChartJS, registerables } from 'chart.js'
 import { Line } from 'react-chartjs-2'
 ChartJS.register(...registerables)
 import PricesDailyQuotesStruct from '../interface/prices_daily_quotes'
+import { Alert } from 'react-bootstrap'
 
 const dataset_setting = {
   borderWidth: 1,
@@ -13,7 +14,7 @@ export default function CompanyPriceChart(props: {
   prices: PricesDailyQuotesStruct[]
 }) {
   if (!props.prices) {
-    return <></>
+    return <Alert variant="danger">Failed to load prices...</Alert>
   }
 
   const labels = props.prices.map((item) => item.Date)
