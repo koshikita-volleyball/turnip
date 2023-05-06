@@ -47,7 +47,6 @@ export default function Company() {
   useEffect(() => {
     const url = new URL(window.location.href)
     const code = url.searchParams.get('code')
-    console.log(code)
     if (code) {
       setCode(code)
     }
