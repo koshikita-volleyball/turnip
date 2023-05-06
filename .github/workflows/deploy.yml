@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - server/221-datasource
 
 env:
   project-name: ${{ secrets.PROJECT_NAME }}

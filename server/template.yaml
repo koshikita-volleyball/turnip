@@ -33,8 +33,6 @@ Resources:
       KeySchema:
         - AttributeName: Code
           KeyType: HASH
-        - AttributeName: Code
-          KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
       TableName: !Sub ${AWS::StackName}-listed-info
 
