@@ -47,15 +47,3 @@ export const saveBusinessDaysToS3 = async (dates: string[]): Promise<void> => {
   await s3.putObject(params).promise()
   console.log(`Successfully saved business days to S3: ${dates.length} days`)
 }
-
-// export const getBusinessDays = getBusinessDaysFromS3
-
-// export const updateBusinessDays = async (): Promise<void> => {
-//   const dates = await _getBusinessDaysFromJQuants()
-//   await _saveBusinessDaysToS3(dates)
-// }
-
-// export const isBusinessDay = async (date: dayjs.Dayjs): Promise<boolean> => {
-//   const dates = await getBusinessDays()
-//   return dates.some(d => d.isSame(date, 'day'))
-// }
