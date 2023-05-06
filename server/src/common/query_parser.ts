@@ -98,7 +98,7 @@ export const getIndicatorParams = (event: APIGatewayEvent): Indicator[] => {
   try {
     const condition = event.queryStringParameters?.condition
     if (!condition) return []
-    const indicator = JSON.parse(condition) as Indicator[]
+    const indicator = JSON.parse(decodeURI(condition)) as Indicator[]
     return indicator
   } catch (e) {
     console.error(e)
