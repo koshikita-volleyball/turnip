@@ -1,21 +1,23 @@
 /* eslint-disable @typescript-eslint/require-await */
 import dotenv from 'dotenv'
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda'
-import { unmarshall } from '@aws-sdk/util-dynamodb'
 import JQuantsClient from './common/jquants_client'
 import ListedInfoStruct from './interface/jquants/listed_info'
 import { GetRefreshToken } from './common/get_id_token'
-import GrowthRateClose from './interface/turnip/growth_rate_close'
-import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
-import { getBusinessDays, updateBusinessDays } from './analysis/jpx_business_day'
+// import GrowthRateClose from './interface/turnip/growth_rate_close'
+// import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
 import { WebClient, LogLevel } from '@slack/web-api'
 import AWS from './common/aws'
 import GetIdToken from './common/get_id_token'
 import GetProcessEnv from './common/process_env'
-import { ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
-import { per_page } from './common/const'
 import { notify } from './common/slack'
-import dayjs from './common/dayjs'
+import { getStockByCode, getStockByCompanyName, getStocks } from './model/stock'
+import { getPaginationParams, getStockCommonFilterParams } from './common/query_parser'
+import paginate from './common/pagination'
+import { Stock } from './interface/turnip/stock'
+import { getDailyQuotes } from './model/daily_quotes'
+import { getBusinessDaysFromJQuants, saveBusinessDaysToS3 } from './model/jpx_business_day'
+import { getBusinessDays } from './analysis/jpx_business_day'
 
 dotenv.config()
 
@@ -54,7 +56,7 @@ export const business_day_handler = async (): Promise<APIGatewayProxyResult> => 
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(dates.map(d => d.format('YYYY-MM-DD'))),
+      body: JSON.stringify(dates),
     }
   } catch (err) {
     if (err instanceof Error) {
@@ -72,7 +74,8 @@ export const business_day_handler = async (): Promise<APIGatewayProxyResult> => 
 
 export const business_day_update_handler = async (): Promise<void> => {
   try {
-    await updateBusinessDays()
+    const dates = await getBusinessDaysFromJQuants()
+    await saveBusinessDaysToS3(dates)
     await notify('営業日情報を更新しました :spiral_calendar_pad:')
   } catch (err) {
     if (err instanceof Error) {
@@ -81,95 +84,63 @@ export const business_day_update_handler = async (): Promise<void> => {
   }
 }
 
+export const info_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+  try {
+    const code = event.queryStringParameters?.code
+    const company_name = event.queryStringParameters?.company_name
+
+    if (code) {
+      const stock = await getStockByCode(code)
+      return {
+        statusCode: 200,
+        headers: CORS_HEADERS,
+        body: JSON.stringify(stock),
+      }
+    }
+
+    if (company_name) {
+      const stock = await getStockByCompanyName(company_name)
+      return {
+        statusCode: 200,
+        headers: CORS_HEADERS,
+        body: JSON.stringify(stock),
+      }
+    }
+
+    return {
+      statusCode: 400,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        message: 'code or company_name is required',
+      }),
+    }
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
+    return {
+      statusCode: 500,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        message: err,
+      }),
+    }
+  }
+}
+
 export const listed_info_handler = async (
   event: APIGatewayEvent,
 ): Promise<APIGatewayProxyResult> => {
   try {
-    // パラメタを取得
-    const page = parseInt(event.queryStringParameters?.page ?? '1')
-    const code = event.queryStringParameters?.code
-    const company_name = event.queryStringParameters?.company_name
-    const sector_17_code = event.queryStringParameters?.sector_17_code
-    const sector_33_code = event.queryStringParameters?.sector_33_code
-    const market_code = event.queryStringParameters?.market_code
+    const { page } = getPaginationParams(event)
+    const stockCommonFilterParams = getStockCommonFilterParams(event)
 
-    // DynamoDBから銘柄情報を取得
-    const dynamodb = new AWS.DynamoDB()
+    const stocks = await getStocks(stockCommonFilterParams)
 
-    if (code) {
-      const params = {
-        TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
-        KeyConditionExpression: 'Code = :Code',
-        ExpressionAttributeValues: {
-          ':Code': {
-            S: code,
-          },
-        },
-      }
-      const stocks = ((await dynamodb.query(params).promise()).Items || []).map(
-        item => unmarshall(item) as ListedInfoStruct,
-      )
-      return {
-        statusCode: 200,
-        headers: CORS_HEADERS,
-        body: JSON.stringify(stocks),
-      }
-    } else {
-      // 全件スキャン
-      // ひとつ以上のフィルターを指定する必要があるため、ダミーのフィルター(銘柄コードが0000以外 | 全て)を指定しておく。
-      const filter_expressions = ['Code <> :Code']
-      const expression_attribute_values: ExpressionAttributeValueMap = {
-        ':Code': {
-          S: '0000',
-        },
-      }
-      if (sector_17_code) {
-        filter_expressions.push('Sector17Code = :Sector17Code')
-        expression_attribute_values[':Sector17Code'] = {
-          S: sector_17_code,
-        }
-      }
-      if (sector_33_code) {
-        filter_expressions.push('Sector33Code = :Sector33Code')
-        expression_attribute_values[':Sector33Code'] = {
-          S: sector_33_code,
-        }
-      }
-      if (market_code) {
-        filter_expressions.push('MarketCode = :MarketCode')
-        expression_attribute_values[':MarketCode'] = {
-          S: market_code,
-        }
-      }
-      const params = {
-        TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
-        FilterExpression: filter_expressions.join(' AND '),
-        ExpressionAttributeValues: expression_attribute_values,
-      }
-      const stocks = ((await dynamodb.scan(params).promise()).Items || []).map(
-        item => unmarshall(item) as ListedInfoStruct,
-      )
-
-      // 銘柄名でフィルタリング
-      const filtered_stocks = stocks.filter(stock => {
-        return company_name ? stock.CompanyName.includes(company_name) : true
-      })
-
-      // 銘柄コードでソート
-      filtered_stocks.sort((a, b) => {
-        return a.Code.localeCompare(b.Code)
-      })
-
-      // ページング
-      const start = (page - 1) * per_page
-      const end = start + per_page
-      const paged_stocks = filtered_stocks.slice(start, end)
-
-      return {
-        statusCode: 200,
-        headers: CORS_HEADERS,
-        body: JSON.stringify(paged_stocks),
-      }
+    return {
+      statusCode: 200,
+      headers: CORS_HEADERS,
+      body: JSON.stringify(paginate<Stock>(stocks, page)),
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -190,8 +161,9 @@ export const prices_daily_quotes_handler = async (
 ): Promise<APIGatewayProxyResult> => {
   try {
     const code = event.queryStringParameters?.code
+    const date = event.queryStringParameters?.date
     const from = event.queryStringParameters?.from
-    const to = event.queryStringParameters?.to || dayjs(new Date()).format('YYYY-MM-DD')
+    const to = event.queryStringParameters?.to
 
     if (!code) {
       return {
@@ -203,46 +175,12 @@ export const prices_daily_quotes_handler = async (
       }
     }
 
-    // DynamoDBから銘柄情報を取得
-    const key_condition_expressions = ['Code = :Code']
-    const expression_attribute_values: ExpressionAttributeValueMap = {
-      ':Code': {
-        S: code,
-      },
-    }
-
-    if (from) {
-      key_condition_expressions.push('#Date >= :From')
-      expression_attribute_values[':From'] = {
-        S: from,
-      }
-    }
-
-    if (to) {
-      key_condition_expressions.push('#Date <= :To')
-      expression_attribute_values[':To'] = {
-        S: to,
-      }
-    }
-
-    const dynamodb = new AWS.DynamoDB()
-    const params = {
-      TableName: GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
-      KeyConditionExpression: key_condition_expressions.join(' AND '),
-      ExpressionAttributeValues: expression_attribute_values,
-      ExpressionAttributeNames: {
-        '#Date': 'Date',
-      },
-    }
-
-    const prices = ((await dynamodb.query(params).promise()).Items || []).map(
-      item => unmarshall(item) as PricesDailyQuotesStruct,
-    )
+    const dailyQuotes = await getDailyQuotes({ code, date, from, to })
 
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(prices),
+      body: JSON.stringify(dailyQuotes),
     }
   } catch (err) {
     if (err instanceof Error) {
@@ -391,48 +329,47 @@ export const listed_info_updater_handler = async (): Promise<void> => {
  * 前営業日からの終値の変化率が一定以上の銘柄を返す。
  */
 
-export const growth_rate_close_handler = async (
-  event: APIGatewayEvent,
-): Promise<APIGatewayProxyResult> => {
+export const growth_rate_close_handler = async (): // event: APIGatewayEvent,
+Promise<APIGatewayProxyResult> => {
   // 閾値を取得
-  const threshold = event.queryStringParameters?.threshold
+  // const threshold = event.queryStringParameters?.threshold
 
-  const res: GrowthRateClose[] = []
+  // const res: GrowthRateClose[] = []
 
-  const dates = await getBusinessDays()
-  const { daily_quotes: daily_quotes_before } = await JQuantsClient<{
-    daily_quotes: PricesDailyQuotesStruct[]
-  }>('/v1/prices/daily_quotes', {
-    date: dates[dates.length - 2].format('YYYY-MM-DD'),
-  })
+  // const dates = await getBusinessDays()
+  // const { daily_quotes: daily_quotes_before } = await JQuantsClient<{
+  //   daily_quotes: PricesDailyQuotesStruct[]
+  // }>('/v1/prices/daily_quotes', {
+  //   date: dates[dates.length - 2].format('YYYY-MM-DD'),
+  // })
 
-  const { daily_quotes: daily_quotes_after } = await JQuantsClient<{
-    daily_quotes: PricesDailyQuotesStruct[]
-  }>('/v1/prices/daily_quotes', {
-    date: dates[dates.length - 1].format('YYYY-MM-DD'),
-  })
+  // const { daily_quotes: daily_quotes_after } = await JQuantsClient<{
+  //   daily_quotes: PricesDailyQuotesStruct[]
+  // }>('/v1/prices/daily_quotes', {
+  //   date: dates[dates.length - 1].format('YYYY-MM-DD'),
+  // })
 
-  for (const dq_before of daily_quotes_before) {
-    const dq_after = daily_quotes_after.find(dq => dq.Code === dq_before.Code)
-    if (!dq_after || !dq_before.Close || !dq_after.Close) continue
+  // for (const dq_before of daily_quotes_before) {
+  //   const dq_after = daily_quotes_after.find(dq => dq.Code === dq_before.Code)
+  //   if (!dq_after || !dq_before.Close || !dq_after.Close) continue
 
-    const growth_rate = (dq_after.Close - dq_before.Close) / dq_before.Close
-    if (!threshold || growth_rate > parseFloat(threshold)) {
-      res.push({
-        code: dq_before.Code,
-        growth_rate,
-        daily_quotes: {
-          before: dq_before,
-          after: dq_after,
-        },
-      })
-    }
-  }
-  res.sort((a, b) => b.growth_rate - a.growth_rate)
+  //   const growth_rate = (dq_after.Close - dq_before.Close) / dq_before.Close
+  //   if (!threshold || growth_rate > parseFloat(threshold)) {
+  //     res.push({
+  //       code: dq_before.Code,
+  //       growth_rate,
+  //       daily_quotes: {
+  //         before: dq_before,
+  //         after: dq_after,
+  //       },
+  //     })
+  //   }
+  // }
+  // res.sort((a, b) => b.growth_rate - a.growth_rate)
 
   return {
     statusCode: 200,
     headers: CORS_HEADERS,
-    body: JSON.stringify(res),
+    body: 'not implemented',
   }
 }
