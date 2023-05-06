@@ -2,21 +2,28 @@ import { APIGatewayEvent } from 'aws-lambda'
 
 type Required<T extends object> = boolean | (keyof T)[]
 
-type StockParams = {
+type StockCode = {
   code?: string
-  company_name?: string
-  sector_17_code?: string
-  sector_33_code?: string
-  market_code?: string
 }
 
-type DateParams = {
+type StockCommonFilter = {
+  codes?: string[]
+  sector_17_codes?: string[]
+  sector_33_codes?: string[]
+  market_codes?: string[]
+}
+
+type Date = {
   date?: string
 }
 
-type DatePeriodParams = {
+type DatePeriod = {
   from?: string
   to?: string
+}
+
+type PaginationParams = {
+  page: number
 }
 
 const _check_required = <T extends object>(params: T, required: Required<T>): T => {
@@ -32,11 +39,40 @@ const _check_required = <T extends object>(params: T, required: Required<T>): T 
   return params
 }
 
-export const getDateParams = (
+const _parseList = (str: string | undefined): string[] | undefined => {
+  if (!str) return undefined
+  return str.split(',')
+}
+
+export const getStockCodedParams = (
   event: APIGatewayEvent,
-  required: Required<DateParams> = false,
-): DateParams => {
-  return _check_required<DateParams>(
+  required: Required<StockCode> = false,
+): StockCode => {
+  return _check_required<StockCode>(
+    {
+      code: event.queryStringParameters?.code,
+    },
+    required,
+  )
+}
+
+export const getStockCommonFilterParams = (
+  event: APIGatewayEvent,
+  required: Required<StockCommonFilter> = false,
+): StockCommonFilter => {
+  return _check_required<StockCommonFilter>(
+    {
+      codes: _parseList(event.queryStringParameters?.codes),
+      sector_17_codes: _parseList(event.queryStringParameters?.sector_17_codes),
+      sector_33_codes: _parseList(event.queryStringParameters?.sector_33_codes),
+      market_codes: _parseList(event.queryStringParameters?.market_codes),
+    },
+    required,
+  )
+}
+
+export const getDateParams = (event: APIGatewayEvent, required: Required<Date> = false): Date => {
+  return _check_required<Date>(
     {
       date: event.queryStringParameters?.date,
     },
@@ -46,9 +82,9 @@ export const getDateParams = (
 
 export const getDatePeriodParams = (
   event: APIGatewayEvent,
-  required: Required<DatePeriodParams> = false,
-): DatePeriodParams => {
-  return _check_required<DatePeriodParams>(
+  required: Required<DatePeriod> = false,
+): DatePeriod => {
+  return _check_required<DatePeriod>(
     {
       from: event.queryStringParameters?.from,
       to: event.queryStringParameters?.to,
@@ -57,18 +93,6 @@ export const getDatePeriodParams = (
   )
 }
 
-export const getStockParams = (
-  event: APIGatewayEvent,
-  required: Required<StockParams> = false,
-): StockParams => {
-  return _check_required<StockParams>(
-    {
-      code: event.queryStringParameters?.code,
-      company_name: event.queryStringParameters?.company_name,
-      sector_17_code: event.queryStringParameters?.sector_17_code,
-      sector_33_code: event.queryStringParameters?.sector_33_code,
-      market_code: event.queryStringParameters?.market_code,
-    },
-    required,
-  )
-}
+export const getPaginationParams = (event: APIGatewayEvent): PaginationParams => ({
+  page: parseInt(event.queryStringParameters?.page || '1'),
+})
