@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/require-await */
 import dotenv from 'dotenv'
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda'
-import { unmarshall } from '@aws-sdk/util-dynamodb'
 import JQuantsClient from './common/jquants_client'
 import ListedInfoStruct from './interface/jquants/listed_info'
 import { GetRefreshToken } from './common/get_id_token'
@@ -12,10 +11,7 @@ import { WebClient, LogLevel } from '@slack/web-api'
 import AWS from './common/aws'
 import GetIdToken from './common/get_id_token'
 import GetProcessEnv from './common/process_env'
-import { ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
-// import { per_page } from './common/const'
 import { notify } from './common/slack'
-import dayjs from './common/dayjs'
 import { getStockByCode, getStocks } from './model/stock'
 import {
   getPaginationParams,
@@ -24,6 +20,7 @@ import {
 } from './common/query_parser'
 import paginate from './common/pagination'
 import { Stock } from './interface/turnip/stock'
+import { getDailyQuotes } from './model/daily_quotes'
 
 dotenv.config()
 
@@ -93,6 +90,7 @@ export const info_handler = async (event: APIGatewayEvent): Promise<APIGatewayPr
   try {
     const { code } = getStockCodedParams(event)
     const stock = await getStockByCode(code)
+
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
@@ -145,8 +143,9 @@ export const prices_daily_quotes_handler = async (
 ): Promise<APIGatewayProxyResult> => {
   try {
     const code = event.queryStringParameters?.code
+    const date = event.queryStringParameters?.date
     const from = event.queryStringParameters?.from
-    const to = event.queryStringParameters?.to || dayjs(new Date()).format('YYYY-MM-DD')
+    const to = event.queryStringParameters?.to
 
     if (!code) {
       return {
@@ -158,46 +157,12 @@ export const prices_daily_quotes_handler = async (
       }
     }
 
-    // DynamoDBから銘柄情報を取得
-    const key_condition_expressions = ['Code = :Code']
-    const expression_attribute_values: ExpressionAttributeValueMap = {
-      ':Code': {
-        S: code,
-      },
-    }
-
-    if (from) {
-      key_condition_expressions.push('#Date >= :From')
-      expression_attribute_values[':From'] = {
-        S: from,
-      }
-    }
-
-    if (to) {
-      key_condition_expressions.push('#Date <= :To')
-      expression_attribute_values[':To'] = {
-        S: to,
-      }
-    }
-
-    const dynamodb = new AWS.DynamoDB()
-    const params = {
-      TableName: GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
-      KeyConditionExpression: key_condition_expressions.join(' AND '),
-      ExpressionAttributeValues: expression_attribute_values,
-      ExpressionAttributeNames: {
-        '#Date': 'Date',
-      },
-    }
-
-    const prices = ((await dynamodb.query(params).promise()).Items || []).map(
-      item => unmarshall(item) as PricesDailyQuotesStruct,
-    )
+    const dailyQuotes = await getDailyQuotes({ code, date, from, to })
 
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(prices),
+      body: JSON.stringify(dailyQuotes),
     }
   } catch (err) {
     if (err instanceof Error) {
