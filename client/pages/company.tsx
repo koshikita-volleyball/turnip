@@ -6,6 +6,8 @@ import ListedInfoStruct from '../interface/listed_info'
 import { Alert, Spinner, Table } from 'react-bootstrap'
 import CompanyPriceChart from '../components/CompanyPriceChart'
 import PricesDailyQuotesStruct from '../interface/prices_daily_quotes'
+import FinsStatementsStruct from '../interface/fins_statements'
+import CompanyStatementsCard from '../components/CompanyStatementsCard'
 
 const fetcher = (url: string) =>
   fetch(url).then((r) => {
@@ -44,6 +46,17 @@ export default function Company() {
       dedupingInterval: 10000,
     },
   )
+
+  const {
+    data: statements,
+    error: statements_error,
+  }: {
+    data: FinsStatementsStruct[]
+    error: any
+  } = useSWR(`${setting.apiPath}/api/fins-statements?code=${code}`, fetcher, {
+    revalidateOnFocus: false,
+    dedupingInterval: 10000,
+  })
 
   useEffect(() => {
     const url = new URL(window.location.href)
@@ -113,6 +126,16 @@ export default function Company() {
               <Alert variant="secondary" className="d-flex align-items-center">
                 <Spinner animation="grow" variant="primary" className="me-3" />
                 株価データを取得中...
+              </Alert>
+            )}
+            {statements_error ? (
+              <Alert variant="danger">Failed to load...</Alert>
+            ) : statements ? (
+              <CompanyStatementsCard statements={statements} />
+            ) : (
+              <Alert variant="secondary" className="d-flex align-items-center">
+                <Spinner animation="grow" variant="primary" className="me-3" />
+                財務データを取得中...
               </Alert>
             )}
           </div>
