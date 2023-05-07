@@ -7,7 +7,7 @@ import {
   ScreeningConditionGrowthRateStruct,
   ScreeningConditionStructs,
 } from '../interface/screening_condition'
-import { Button, Form } from 'react-bootstrap'
+import { Alert, Button, Form } from 'react-bootstrap'
 import dayjs from 'dayjs'
 
 const customStyles = {
@@ -97,6 +97,9 @@ export default function ScreeningConditionModal(props: {
                     selectedCondition as ScreeningConditionGrowthRateStruct
                   return (
                     <>
+                      <Alert variant="secondary" className='mt-3'>
+                        特定の日付の株価が、指定した日付の株価より〇〇%以上上昇(下落)しているかどうかを判定します。
+                      </Alert>
                       <Form.Group className="mt-3">
                         <Form.Label>上昇 or 下落</Form.Label>
                         <Form.Check
@@ -188,6 +191,9 @@ export default function ScreeningConditionModal(props: {
 
                   return (
                     <>
+                      <Alert variant="secondary" className='mt-3'>
+                        移動平均線A(Line 1)が移動平均線B(Line 2)を特定の期間内に上回ったかどうかを判定します。
+                      </Alert>
                       <Form.Group className="mt-3">
                         <Form.Label>Line 1</Form.Label>
                         <Form.Control
