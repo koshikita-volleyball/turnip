@@ -5,9 +5,7 @@ import setting from '../setting'
 import { Alert, Button, Form, Spinner, Table } from 'react-bootstrap'
 import ListedInfoStruct from '../interface/listed_info'
 import { useRouter } from 'next/router'
-import MarketInfo from '../data/MarketInfo'
-import Sector17Info from '../data/Sector17Info'
-import Sector33Info from '../data/Sector33Info'
+import { MarketInfo, Sector17Info, Sector33Info } from '../data/export'
 import Link from 'next/link'
 
 const fetcher = (url: string) =>
