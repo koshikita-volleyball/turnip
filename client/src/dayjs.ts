@@ -6,7 +6,9 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.tz.setDefault('Asia/Tokyo')
 
-export const toDayjs = (date: Date | string | number | dayjs.Dayjs): dayjs.Dayjs => {
+export const toDayjs = (
+  date: Date | string | number | dayjs.Dayjs,
+): dayjs.Dayjs => {
   return dayjs.tz(date)
 }
 

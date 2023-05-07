@@ -53,14 +53,10 @@ export default function Company() {
   }: {
     data: FinsStatementsStruct[]
     error: any
-  } = useSWR(
-    `${setting.apiPath}/api/fins-statements?code=${code}`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 10000,
-    },
-  )
+  } = useSWR(`${setting.apiPath}/api/fins-statements?code=${code}`, fetcher, {
+    revalidateOnFocus: false,
+    dedupingInterval: 10000,
+  })
 
   useEffect(() => {
     const url = new URL(window.location.href)

@@ -1,14 +1,13 @@
-import React from "react"
-import { Alert, Table } from "react-bootstrap"
-import FinsStatementsStruct from "../interface/fins_statements"
-import { Splide, SplideSlide } from "@splidejs/react-splide"
+import React from 'react'
+import { Alert, Table } from 'react-bootstrap'
+import FinsStatementsStruct from '../interface/fins_statements'
+import { Splide, SplideSlide } from '@splidejs/react-splide'
 import '@splidejs/splide/css'
-import dayjs from "../src/dayjs"
+import dayjs from '../src/dayjs'
 
 export default function CompanyStatementsCard(props: {
   statements: FinsStatementsStruct[]
 }) {
-
   if (!props.statements) {
     return <Alert variant="danger">Failed to load statements...</Alert>
   }
@@ -19,16 +18,19 @@ export default function CompanyStatementsCard(props: {
         options={{
           autoplay: false,
         }}
-        >
-        {
-          props.statements.sort((a, b) => dayjs(b.DisclosedDate).diff(dayjs(a.DisclosedDate))).map((statement, index) => {
+      >
+        {props.statements
+          .sort((a, b) => dayjs(b.DisclosedDate).diff(dayjs(a.DisclosedDate)))
+          .map((statement, index) => {
             return (
               <SplideSlide key={index}>
                 <Table className="m-5">
                   <tbody>
                     <tr>
                       <th>開示日</th>
-                      <td>{statement.DisclosedDate} ({statement.DisclosedTime})</td>
+                      <td>
+                        {statement.DisclosedDate} ({statement.DisclosedTime})
+                      </td>
                     </tr>
                     <tr>
                       <th>会計期間の種類</th>
@@ -36,11 +38,17 @@ export default function CompanyStatementsCard(props: {
                     </tr>
                     <tr>
                       <th>会計期間</th>
-                      <td>{statement.CurrentPeriodStartDate} 〜 {statement.CurrentPeriodEndDate}</td>
+                      <td>
+                        {statement.CurrentPeriodStartDate} 〜{' '}
+                        {statement.CurrentPeriodEndDate}
+                      </td>
                     </tr>
                     <tr>
                       <th>事業年度</th>
-                      <td>{statement.CurrentFiscalYearStartDate} 〜 {statement.CurrentFiscalYearEndDate}</td>
+                      <td>
+                        {statement.CurrentFiscalYearStartDate} 〜{' '}
+                        {statement.CurrentFiscalYearEndDate}
+                      </td>
                     </tr>
                     <tr>
                       <th>売上高</th>
@@ -102,8 +110,7 @@ export default function CompanyStatementsCard(props: {
                 </Table>
               </SplideSlide>
             )
-          })
-        }
+          })}
       </Splide>
     </>
   )
