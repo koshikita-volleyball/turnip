@@ -276,9 +276,11 @@ export default function ScreeningConditionModal(props: {
               }}
               disabled={
                 selectedCondition === null ||
-                (selectedCondition as ScreeningConditionCrossOverStruct)
-                  .line1 ===
-                  (selectedCondition as ScreeningConditionCrossOverStruct).line2
+                (selectedCondition.type === 'cross_over' &&
+                  (selectedCondition as ScreeningConditionCrossOverStruct)
+                    .line1 ===
+                    (selectedCondition as ScreeningConditionCrossOverStruct)
+                      .line2)
               }
             >
               追加
