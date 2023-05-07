@@ -1,17 +1,8 @@
-type ScreeningConditionType =
-  | 'growth_rate'
-  | 'cross_over'
+type ScreeningConditionType = 'growth_rate' | 'cross_over'
 
-type OHCL =
-  | 'open'
-  | 'high'
-  | 'close'
-  | 'low'
+type OHCL = 'open' | 'high' | 'close' | 'low'
 
-type MovingAverageType =
-  | 'close'
-  | 'ma_25'
-  | 'ma_50'
+type MovingAverageType = 'close' | 'ma_25' | 'ma_50'
 
 // 基底クラス
 type ScreeningConditionStruct = {
@@ -35,6 +26,14 @@ type ScreeningConditionCrossOverStruct = ScreeningConditionStruct & {
   to: string
 }
 
-type ScreeningConditionStructs = ScreeningConditionGrowthRateStruct | ScreeningConditionCrossOverStruct
+type ScreeningConditionStructs =
+  | ScreeningConditionGrowthRateStruct
+  | ScreeningConditionCrossOverStruct
 
-export type { ScreeningConditionStructs, ScreeningConditionGrowthRateStruct, ScreeningConditionCrossOverStruct, OHCL, MovingAverageType }
+export type {
+  ScreeningConditionStructs,
+  ScreeningConditionGrowthRateStruct,
+  ScreeningConditionCrossOverStruct,
+  OHCL,
+  MovingAverageType,
+}
