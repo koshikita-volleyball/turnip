@@ -62,6 +62,7 @@ jobs:
           echo "S3_BUCKET_NAME=${{ env.project-name }}-production-s3-bucket" >> ./src/.env
           echo "LISTED_INFO_DYNAMODB_TABLE_NAME=${{ env.project-name }}-production-listed-info" >> ./src/.env
           echo "PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME=${{ env.project-name }}-production-prices-daily-quotes" >> ./src/.env
+          echo "FINS_STATEMENTS_DYNAMODB_TABLE_NAME=${{ env.project-name }}-production-fins-statements" >> ./src/.env
         working-directory: ${{ env.server-directory }}
       - run: sam build --use-container
         working-directory: ${{ env.server-directory }}
