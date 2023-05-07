@@ -14,6 +14,7 @@ export default function CompanyStatementsCard(props: {
 
   return (
     <>
+      <h2 className='mt-5'>💰 財務情報</h2>
       <Splide
         options={{
           autoplay: false,
@@ -112,6 +113,7 @@ export default function CompanyStatementsCard(props: {
             )
           })}
       </Splide>
+      <hr />
     </>
   )
 }

@@ -50,7 +50,9 @@ export default function CompanyPriceChart(props: {
 
   return (
     <>
+      <h2 className='mt-5'>💹 株価情報</h2>
       <Line height={100} width={300} data={graphData} />
+      <hr />
     </>
   )
 }

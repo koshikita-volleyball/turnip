@@ -86,11 +86,12 @@ export default function Company() {
           <Alert variant="warning">No data...</Alert>
         ) : (
           <div>
-            <h2>Company Detail</h2>
+            <h1>🌟 銘柄情報詳細</h1>
             {(() => {
               const company = info
               return (
                 <>
+                  <h2 className='mt-5'>🏠 基本情報</h2>
                   <Table className="mt-3">
                     <tbody>
                       <tr>
@@ -115,6 +116,7 @@ export default function Company() {
                       </tr>
                     </tbody>
                   </Table>
+                  <hr />
                 </>
               )
             })()}
