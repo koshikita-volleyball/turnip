@@ -83,7 +83,13 @@ export default function AboutPage() {
     if (sector_17_code) setSector17Code(sector_17_code as string)
     const sector_33_code = router.query.sector_33_codes
     if (sector_33_code) setSector33Code(sector_33_code as string)
-  }, [router.query.company_name, router.query.market_codes, router.query.page, router.query.sector_17_codes, router.query.sector_33_codes])
+  }, [
+    router.query.company_name,
+    router.query.market_codes,
+    router.query.page,
+    router.query.sector_17_codes,
+    router.query.sector_33_codes,
+  ])
 
   useEffect(() => {
     const query = {}
