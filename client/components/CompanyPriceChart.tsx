@@ -16,17 +16,21 @@ export default function CompanyPriceChart(props: {
   prices: PricesDailyQuotesStruct[]
 }) {
   if (!props.prices) {
-    return <>
-      {title}
-      <Alert variant="danger">株価情報の取得に失敗しました。</Alert>
-    </>
+    return (
+      <>
+        {title}
+        <Alert variant="danger">株価情報の取得に失敗しました。</Alert>
+      </>
+    )
   }
 
   if (props.prices.length === 0) {
-    return <>
-      {title}
-      <Alert variant="warning">株価情報がありません。</Alert>
-    </>
+    return (
+      <>
+        {title}
+        <Alert variant="warning">株価情報がありません。</Alert>
+      </>
+    )
   }
 
   const labels = props.prices.map((item) => item.Date)

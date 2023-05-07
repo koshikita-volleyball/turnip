@@ -6,10 +6,12 @@ const title = <h2 className="mt-5">🏠 基本情報</h2>
 
 export default function CompanyBasicInfo(props: { info: ListedInfoStruct }) {
   if (!props.info) {
-    return <>
-      {title}
-      <Alert variant="danger">基本情報の取得に失敗しました。</Alert>
-    </>
+    return (
+      <>
+        {title}
+        <Alert variant="danger">基本情報の取得に失敗しました。</Alert>
+      </>
+    )
   }
 
   const company = props.info

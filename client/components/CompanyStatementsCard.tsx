@@ -11,17 +11,21 @@ export default function CompanyStatementsCard(props: {
   statements: FinsStatementsStruct[]
 }) {
   if (!props.statements) {
-    return <>
-      {title}
-      <Alert variant="danger">財務情報の取得に失敗しました。</Alert>
-    </>
+    return (
+      <>
+        {title}
+        <Alert variant="danger">財務情報の取得に失敗しました。</Alert>
+      </>
+    )
   }
 
   if (props.statements.length === 0) {
-    return <>
-      {title}
-      <Alert variant="warning">財務情報がありません。</Alert>
-    </>
+    return (
+      <>
+        {title}
+        <Alert variant="warning">財務情報がありません。</Alert>
+      </>
+    )
   }
 
   return (
