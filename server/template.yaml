@@ -371,6 +371,26 @@ Resources:
       DockerContext: ./src
       Dockerfile: Dockerfile
 
+  FinsStatementsUpdaterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-statements-updater
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.fins_statements_updater_handler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 10 * * ? *)
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
+
 Outputs:
   MyApiGateway:
     Description: API Gateway endpoint URL for Prod stage
