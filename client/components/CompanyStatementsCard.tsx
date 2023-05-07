@@ -12,6 +12,10 @@ export default function CompanyStatementsCard(props: {
     return <Alert variant="danger">財務情報の取得に失敗しました。</Alert>
   }
 
+  if (props.statements.length === 0) {
+    return <Alert variant="warning">財務情報がありません。</Alert>
+  }
+
   return (
     <>
       <h2 className="mt-5">💰 財務情報</h2>
