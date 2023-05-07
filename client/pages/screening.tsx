@@ -20,7 +20,10 @@ export default function ContactPage() {
   return (
     <Layout>
       <div id="ScreeningModal">
-        <ScreeningConditionList conditions={conditions} setConditions={setConditions} />
+        <ScreeningConditionList
+          conditions={conditions}
+          setConditions={setConditions}
+        />
         <Button
           variant="info"
           className="d-block mx-auto mt-3"

@@ -63,7 +63,10 @@ export default function ScreeningConditionModal(props: {
                       collapsed: true,
                       threshold: 1.5,
                       up: true,
-                      ohlc: (selectedCondition as ScreeningConditionGrowthRateStruct)?.ohlc || 'close' as OHLC,
+                      ohlc:
+                        (
+                          selectedCondition as ScreeningConditionGrowthRateStruct
+                        )?.ohlc || ('close' as OHLC),
                       before: dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
                       after: dayjs().format('YYYY-MM-DD'),
                     } as unknown as ScreeningConditionGrowthRateStruct)
@@ -126,7 +129,10 @@ export default function ScreeningConditionModal(props: {
                         <Form.Label>OHLC</Form.Label>
                         <Form.Control
                           as="select"
-                          value={(condition as ScreeningConditionGrowthRateStruct).ohlc}
+                          value={
+                            (condition as ScreeningConditionGrowthRateStruct)
+                              .ohlc
+                          }
                           onChange={(e) => {
                             setSelectedCondition({
                               ...selectedCondition,
