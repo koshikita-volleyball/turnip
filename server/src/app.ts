@@ -587,7 +587,7 @@ export const screener_handler = async (event: APIGatewayEvent): Promise<APIGatew
   const indicatorParams = await getIndicatorParams(event)
 
   const stocks = await getStocks(stockCommonFilter)
-  const screenedStocks = screener(stocks, indicatorParams)
+  const screenedStocks = await screener(stocks, indicatorParams)
 
   return {
     statusCode: 200,

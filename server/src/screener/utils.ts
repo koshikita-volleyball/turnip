@@ -1,4 +1,6 @@
+import { OHLC } from '../interface/jquants/indicator'
 import { TimeSeriesLineType, TimeSeriesPoint } from '../interface/jquants/line'
+import PricesDailyQuotesStruct from '../interface/jquants/prices_daily_quotes'
 import { getDailyQuotes } from '../model/daily_quotes'
 import { getBusinessDaysFromS3 } from '../model/jpx_business_day'
 
@@ -30,4 +32,19 @@ const movingAverage = (data: TimeSeriesPoint[], window: number): TimeSeriesPoint
     return { date: d.date, value: sum / window }
   })
   return ma
+}
+
+export const getOHLC = (price: PricesDailyQuotesStruct, ohlc: OHLC): number => {
+  switch (ohlc) {
+    case 'open':
+      return price.Open
+    case 'high':
+      return price.High
+    case 'low':
+      return price.Low
+    case 'close':
+      return price.Close
+    default:
+      throw new Error('invalid OHLC')
+  }
 }

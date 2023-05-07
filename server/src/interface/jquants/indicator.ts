@@ -1,7 +1,7 @@
 import { TimeSeriesLineType } from './line'
 
 type IndicatorType = 'growth_rate' | 'cross_over'
-type OHLC = 'open' | 'high' | 'low' | 'close'
+export type OHLC = 'open' | 'high' | 'low' | 'close'
 
 type CommonIndicator = {
   type: IndicatorType
