@@ -9,7 +9,7 @@ export default function CompanyStatementsCard(props: {
   statements: FinsStatementsStruct[]
 }) {
   if (!props.statements) {
-    return <Alert variant="danger">Failed to load statements...</Alert>
+    return <Alert variant="danger">財務情報の取得に失敗しました。</Alert>
   }
 
   return (

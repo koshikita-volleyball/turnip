@@ -7,7 +7,7 @@ export default function CompanyBasicInfo(props: {
 }) {
 
   if (!props.info) {
-    return <Alert variant="danger">Failed to load info...</Alert>
+    return <Alert variant="danger">基本情報の取得に失敗しました。</Alert>
   }
 
   const company = props.info
