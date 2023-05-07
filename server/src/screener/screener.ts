@@ -2,6 +2,16 @@ import { Indicator } from '../interface/jquants/indicator'
 import { Stock } from '../interface/turnip/stock'
 import growthRate from './growth_rate'
 import crossOver from './cross_over'
+import PricesDailyQuotesStruct from '../interface/jquants/prices_daily_quotes'
+import { getDailyQuotes } from '../model/daily_quotes'
+
+type CheckerProps = {
+  indicator: Indicator
+  stock: Stock
+  prices: PricesDailyQuotesStruct[]
+}
+
+export type Checker = (props: CheckerProps) => boolean
 
 const screener = async (stocks: Stock[], indicators: Indicator[]): Promise<Stock[]> => {
   const results = await Promise.all(stocks.map(stock => _checkIndicators(stock, indicators)))
@@ -9,22 +19,23 @@ const screener = async (stocks: Stock[], indicators: Indicator[]): Promise<Stock
 }
 
 const _checkIndicators = async (stock: Stock, indicators: Indicator[]): Promise<boolean> => {
-  const results = await Promise.all(indicators.map(indicator => _checkIndicator(stock, indicator)))
+  const prices = await getDailyQuotes({ code: stock.Code })
+  const results = indicators.map(indicator => _checkIndicator({ stock, indicator, prices }))
   return results.every(result => result)
 }
 
-const _checkIndicator = async (stock: Stock, indicator: Indicator): Promise<boolean> => {
+const _checkIndicator = (props: CheckerProps): boolean => {
+  const { indicator } = props
   if (indicator.type === 'growth_rate') {
-    return toggle(!indicator.positive, growthRate(stock, indicator))
+    return toggle(!indicator.positive, growthRate(props))
   } else if (indicator.type === 'cross_over') {
-    return toggle(!indicator.positive, crossOver(stock, indicator))
+    return toggle(!indicator.positive, crossOver(props))
   }
   throw new Error('not implemented')
 }
 
-const toggle = async (isToggle: boolean, val: Promise<boolean>): Promise<boolean> => {
-  const v = await val
-  return isToggle ? !v : v
+const toggle = (isToggle: boolean, val: boolean): boolean => {
+  return isToggle ? !val : val
 }
 
 export default screener
