@@ -4,13 +4,14 @@ import useSWR from 'swr'
 import setting from '../setting'
 import { Alert, Button, Form, Spinner, Table } from 'react-bootstrap'
 import ListedInfoStruct from '../interface/listed_info'
-
+import { useRouter } from 'next/router'
 import MarketInfo from '../data/MarketInfo'
 import Sector17Info from '../data/Sector17Info'
 import Sector33Info from '../data/Sector33Info'
 import Link from 'next/link'
 
-const fetcher = (url: string) => fetch(url).then((r) => r.ok ? r.json() : null)
+const fetcher = (url: string) =>
+  fetch(url).then((r) => (r.ok ? r.json() : null))
 
 const make_params = ({
   page,
@@ -26,26 +27,10 @@ const make_params = ({
   sector_33_code: string
 }) =>
   `?page=${page}` +
-  `${
-    company_name !== ''
-      ? `&company_name=${company_name}`
-      : ''
-  }` +
-  `${
-    market_code !== ''
-      ? `&market_codes=${market_code}`
-      : ''
-  }` +
-  `${
-    sector_17_code !== ''
-      ? `&sector_17_codes=${sector_17_code}`
-      : ''
-  }` +
-  `${
-    sector_33_code !== ''
-      ? `&sector_33_codes=${sector_33_code}`
-      : ''
-  }`
+  `${company_name !== '' ? `&company_name=${company_name}` : ''}` +
+  `${market_code !== '' ? `&market_codes=${market_code}` : ''}` +
+  `${sector_17_code !== '' ? `&sector_17_codes=${sector_17_code}` : ''}` +
+  `${sector_33_code !== '' ? `&sector_33_codes=${sector_33_code}` : ''}`
 
 export default function AboutPage() {
   const [page, setPage] = useState(1)
@@ -55,53 +40,69 @@ export default function AboutPage() {
   const [sector_17_code, setSector17Code] = useState<string>('')
   const [sector_33_code, setSector33Code] = useState<string>('')
 
+  const router = useRouter()
+
   const {
     data: data,
     error,
   }: {
     data: { data: ListedInfoStruct[] }
     error: any
-  } = useSWR(`${setting.apiPath}/api/listed_info` + make_params({
-    page,
-    company_name,
-    market_code,
-    sector_17_code,
-    sector_33_code,
-  }), fetcher)
-
-  useSWR(`${setting.apiPath}/api/listed_info` + make_params({
-    page: page + 1,
-    company_name,
-    market_code,
-    sector_17_code,
-    sector_33_code,
-  }), fetcher)
-
-  useEffect(() => {
-    const url = new URL(window.location.href)
-    const page = url.searchParams.get('page')
-    if (page) setPage(parseInt(page))
-    const company_name = url.searchParams.get('company_name')
-    if (company_name) setCompanyName(company_name)
-    const market_code = url.searchParams.get('market_codes')
-    if (market_code) setMarketCode(market_code)
-    const sector_17_code = url.searchParams.get('sector_17_codes')
-    if (sector_17_code) setSector17Code(sector_17_code)
-    const sector_33_code = url.searchParams.get('sector_33_codes')
-    if (sector_33_code) setSector33Code(sector_33_code)
-  }, [])
-
-  useEffect(() => {
-    window.history.pushState(
-      null,
-      '',
-      `${window.location.pathname}` + make_params({
+  } = useSWR(
+    `${setting.apiPath}/api/listed_info` +
+      make_params({
         page,
         company_name,
         market_code,
         sector_17_code,
         sector_33_code,
-      })
+      }),
+    fetcher,
+  )
+
+  useSWR(
+    `${setting.apiPath}/api/listed_info` +
+      make_params({
+        page: page + 1,
+        company_name,
+        market_code,
+        sector_17_code,
+        sector_33_code,
+      }),
+    fetcher,
+  )
+
+  useEffect(() => {
+    const page = router.query.page
+    if (page) setPage(parseInt(page as string))
+    const company_name = router.query.company_name
+    if (company_name) setCompanyName(company_name as string)
+    const market_code = router.query.market_codes
+    if (market_code) setMarketCode(market_code as string)
+    const sector_17_code = router.query.sector_17_codes
+    if (sector_17_code) setSector17Code(sector_17_code as string)
+    const sector_33_code = router.query.sector_33_codes
+    if (sector_33_code) setSector33Code(sector_33_code as string)
+  }, [
+    router.query.company_name,
+    router.query.market_codes,
+    router.query.page,
+    router.query.sector_17_codes,
+    router.query.sector_33_codes,
+  ])
+
+  useEffect(() => {
+    window.history.pushState(
+      null,
+      '',
+      `${window.location.pathname}` +
+        make_params({
+          page,
+          company_name,
+          market_code,
+          sector_17_code,
+          sector_33_code,
+        }),
     )
   }, [
     company_name,
