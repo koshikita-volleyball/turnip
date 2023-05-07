@@ -56,8 +56,9 @@ jobs:
       - name: Create dotenv file
         run: echo $'${{ secrets.LAMBDA_DOTENV }}' > ./src/.env
         working-directory: ${{ env.server-directory }}
-      - name: Add Data name to dotenv file
+      - name: Add Data to dotenv file
         run: |
+          echo "ENVIRONMENT=production" >> ./src/.env
           echo "S3_BUCKET_NAME=${{ env.project-name }}-production-s3-bucket" >> ./src/.env
           echo "LISTED_INFO_DYNAMODB_TABLE_NAME=${{ env.project-name }}-production-listed-info" >> ./src/.env
           echo "PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME=${{ env.project-name }}-production-prices-daily-quotes" >> ./src/.env
