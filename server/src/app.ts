@@ -19,6 +19,7 @@ import {
 import paginate from './common/pagination'
 import { Stock } from './interface/turnip/stock'
 import { getDailyQuotes } from './model/daily_quotes'
+import { getFinsStatements } from './model/fins_statements'
 import { getBusinessDaysFromJQuants, saveBusinessDaysToS3 } from './model/jpx_business_day'
 import { getBusinessDays } from './analysis/jpx_business_day'
 import dayjs from './common/dayjs'
@@ -166,7 +167,7 @@ export const prices_daily_quotes_handler = async (
         statusCode: 400,
         headers: CORS_HEADERS,
         body: JSON.stringify({
-          message: 'code is required',
+          message: 'code is required.',
         }),
       }
     }
@@ -177,6 +178,46 @@ export const prices_daily_quotes_handler = async (
       statusCode: 200,
       headers: CORS_HEADERS,
       body: JSON.stringify(dailyQuotes),
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(`[ERROR] ${err.message}`)
+    }
+    return {
+      statusCode: 500,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        message: err,
+      }),
+    }
+  }
+}
+
+export const fins_statements_handler = async (
+  event: APIGatewayEvent,
+): Promise<APIGatewayProxyResult> => {
+  try {
+    const code = event.queryStringParameters?.code
+    const date = event.queryStringParameters?.date
+    const from = event.queryStringParameters?.from
+    const to = event.queryStringParameters?.to
+
+    if (!code) {
+      return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({
+          message: 'code is required.',
+        }),
+      }
+    }
+
+    const finsStatements = await getFinsStatements({ code, date, from, to })
+
+    return {
+      statusCode: 200,
+      headers: CORS_HEADERS,
+      body: JSON.stringify(finsStatements),
     }
   } catch (err) {
     if (err instanceof Error) {
