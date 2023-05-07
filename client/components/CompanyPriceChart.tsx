@@ -10,11 +10,23 @@ const dataset_setting = {
   radius: 1,
 }
 
+const title = <h2 className="mt-5">💹 株価情報</h2>
+
 export default function CompanyPriceChart(props: {
   prices: PricesDailyQuotesStruct[]
 }) {
   if (!props.prices) {
-    return <Alert variant="danger">株価情報の取得に失敗しました。</Alert>
+    return <>
+      {title}
+      <Alert variant="danger">株価情報の取得に失敗しました。</Alert>
+    </>
+  }
+
+  if (props.prices.length === 0) {
+    return <>
+      {title}
+      <Alert variant="warning">株価情報がありません。</Alert>
+    </>
   }
 
   const labels = props.prices.map((item) => item.Date)
@@ -50,7 +62,7 @@ export default function CompanyPriceChart(props: {
 
   return (
     <>
-      <h2 className="mt-5">💹 株価情報</h2>
+      {title}
       <Line height={100} width={300} data={graphData} />
       <hr />
     </>

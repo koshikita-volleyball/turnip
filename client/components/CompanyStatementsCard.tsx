@@ -5,20 +5,28 @@ import { Splide, SplideSlide } from '@splidejs/react-splide'
 import '@splidejs/splide/css'
 import dayjs from '../src/dayjs'
 
+const title = <h2 className="mt-5">💰 財務情報</h2>
+
 export default function CompanyStatementsCard(props: {
   statements: FinsStatementsStruct[]
 }) {
   if (!props.statements) {
-    return <Alert variant="danger">財務情報の取得に失敗しました。</Alert>
+    return <>
+      {title}
+      <Alert variant="danger">財務情報の取得に失敗しました。</Alert>
+    </>
   }
 
   if (props.statements.length === 0) {
-    return <Alert variant="warning">財務情報がありません。</Alert>
+    return <>
+      {title}
+      <Alert variant="warning">財務情報がありません。</Alert>
+    </>
   }
 
   return (
     <>
-      <h2 className="mt-5">💰 財務情報</h2>
+      {title}
       <Splide
         options={{
           autoplay: false,
