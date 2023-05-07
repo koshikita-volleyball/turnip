@@ -9,11 +9,12 @@ export default function CompanyStatementsCard(props: {
   statements: FinsStatementsStruct[]
 }) {
   if (!props.statements) {
-    return <Alert variant="danger">Failed to load statements...</Alert>
+    return <Alert variant="danger">財務情報の取得に失敗しました。</Alert>
   }
 
   return (
     <>
+      <h2 className="mt-5">💰 財務情報</h2>
       <Splide
         options={{
           autoplay: false,
@@ -112,6 +113,7 @@ export default function CompanyStatementsCard(props: {
             )
           })}
       </Splide>
+      <hr />
     </>
   )
 }
