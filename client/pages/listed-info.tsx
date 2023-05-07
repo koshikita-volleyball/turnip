@@ -10,7 +10,42 @@ import Sector17Info from '../data/Sector17Info'
 import Sector33Info from '../data/Sector33Info'
 import Link from 'next/link'
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json())
+const fetcher = (url: string) => fetch(url).then((r) => r.ok ? r.json() : null)
+
+const make_params = ({
+  page,
+  company_name,
+  market_code,
+  sector_17_code,
+  sector_33_code,
+}: {
+  page: number
+  company_name: string
+  market_code: string
+  sector_17_code: string
+  sector_33_code: string
+}) =>
+  `?page=${page}` +
+  `${
+    company_name !== ''
+      ? `&company_name=${company_name}`
+      : ''
+  }` +
+  `${
+    market_code !== ''
+      ? `&market_codes=${market_code}`
+      : ''
+  }` +
+  `${
+    sector_17_code !== ''
+      ? `&sector_17_codes=${sector_17_code}`
+      : ''
+  }` +
+  `${
+    sector_33_code !== ''
+      ? `&sector_33_codes=${sector_33_code}`
+      : ''
+  }`
 
 export default function AboutPage() {
   const [page, setPage] = useState(1)
@@ -26,81 +61,21 @@ export default function AboutPage() {
   }: {
     data: { data: ListedInfoStruct[] }
     error: any
-  } = useSWR(
-    `${setting.apiPath}/api/listed_info` +
-      `?page=${page}` +
-      `${
-        useCondition === false
-          ? ''
-          : company_name !== ''
-          ? `&company_name=${company_name}`
-          : ''
-      }` +
-      `${
-        useCondition === false
-          ? ''
-          : market_code !== ''
-          ? `&market_codes=${market_code}`
-          : ''
-      }` +
-      `${
-        useCondition === false
-          ? ''
-          : sector_17_code !== ''
-          ? `&sector_17_codes=${sector_17_code}`
-          : ''
-      }` +
-      `${
-        useCondition === false
-          ? ''
-          : sector_33_code !== ''
-          ? `&sector_33_codes=${sector_33_code}`
-          : ''
-      }`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 10000,
-    },
-  )
+  } = useSWR(`${setting.apiPath}/api/listed_info` + make_params({
+    page,
+    company_name,
+    market_code,
+    sector_17_code,
+    sector_33_code,
+  }), fetcher)
 
-  useSWR(
-    `${setting.apiPath}/api/listed_info` +
-      `?page=${page + 1}` +
-      `${
-        useCondition === false
-          ? ''
-          : company_name !== ''
-          ? `&company_name=${company_name}`
-          : ''
-      }` +
-      `${
-        useCondition === false
-          ? ''
-          : market_code !== ''
-          ? `&market_codes=${market_code}`
-          : ''
-      }` +
-      `${
-        useCondition === false
-          ? ''
-          : sector_17_code !== ''
-          ? `&sector_17_codes=${sector_17_code}`
-          : ''
-      }` +
-      `${
-        useCondition === false
-          ? ''
-          : sector_33_code !== ''
-          ? `&sector_33_codes=${sector_33_code}`
-          : ''
-      }`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 10000,
-    },
-  )
+  useSWR(`${setting.apiPath}/api/listed_info` + make_params({
+    page: page + 1,
+    company_name,
+    market_code,
+    sector_17_code,
+    sector_33_code,
+  }), fetcher)
 
   useEffect(() => {
     const url = new URL(window.location.href)
@@ -120,36 +95,13 @@ export default function AboutPage() {
     window.history.pushState(
       null,
       '',
-      `${window.location.pathname}` +
-        `?page=${page === 0 ? 1 : page}` +
-        `${
-          useCondition === false
-            ? ''
-            : company_name !== ''
-            ? `&company_name=${company_name}`
-            : ''
-        }` +
-        `${
-          useCondition === false
-            ? ''
-            : market_code !== ''
-            ? `&market_codes=${market_code}`
-            : ''
-        }` +
-        `${
-          useCondition === false
-            ? ''
-            : sector_17_code !== ''
-            ? `&sector_17_codes=${sector_17_code}`
-            : ''
-        }` +
-        `${
-          useCondition === false
-            ? ''
-            : sector_33_code !== ''
-            ? `&sector_33_codes=${sector_33_code}`
-            : ''
-        }`,
+      `${window.location.pathname}` + make_params({
+        page,
+        company_name,
+        market_code,
+        sector_17_code,
+        sector_33_code,
+      })
     )
   }, [
     company_name,
