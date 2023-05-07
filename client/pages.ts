@@ -10,9 +10,9 @@ const pages = [
     name: '銘柄一覧',
   },
   {
-    emoji: '💓',
-    path: '/technical/',
-    name: 'テクニカル分析',
+    emoji: '🔍',
+    path: '/screening/',
+    name: '銘柄スクリーニング',
   },
 ]
 
