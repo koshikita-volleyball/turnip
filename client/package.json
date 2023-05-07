@@ -21,7 +21,8 @@
     "start": "next start",
     "type-check": "tsc",
     "lint": "eslint .",
-    "prettify": "prettier --write ."
+    "prettier:write": "prettier --write .",
+    "prettier:check": "prettier --check ."
   },
   "dependencies": {
     "@types/bootstrap": "^5.2.6",
