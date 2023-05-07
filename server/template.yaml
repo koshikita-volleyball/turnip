@@ -117,6 +117,16 @@ Resources:
                   - dynamodb:Query
                   - dynamodb:Scan
                 Resource: !GetAtt PricesDailyQuotesTable.Arn
+              - Sid: AllowFinsStatementsTable
+                Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource: !GetAtt FinsStatementsTable.Arn
               - Sid: AllowCloudWatchLogs
                 Effect: Allow
                 Action:
