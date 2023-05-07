@@ -1,42 +1,42 @@
-import React from 'react'
+import React, { useState } from 'react'
+import Modal from 'react-modal'
 
 import Layout from '../components/Layout'
-import useSWR from 'swr'
-import setting from '../setting'
+import { ScreeningConditionStructs } from '../interface/screening_condition'
+import ScreeningConditionModal from '../components/ScreeningConditionModal'
+import { Button } from 'react-bootstrap'
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json())
+Modal.setAppElement('#ScreeningModal');
 
 export default function ContactPage() {
-  const conditions = [
-    {
-      type: 'growth_rate',
-      positive: true,
-      threshold: 0.1,
-    },
-    {
-      type: 'cross_over',
-      line1: 'close',
-      line2: 'ma_25',
-      from: '2023-01-01',
-    },
-  ]
 
-  const { data } = useSWR(
-    `${setting.apiPath}/api/screener?codes=1,2,3&conditions=${encodeURI(
-      JSON.stringify(conditions),
-    )}`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 10000,
-    },
-  )
+  const [conditions, setConditions] = useState<ScreeningConditionStructs[]>([])
+
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
 
   return (
     <Layout>
-      <p>conditions: {JSON.stringify(conditions)}</p>
-      <p>response: {JSON.stringify(data)}</p>
-      <div id="Technical"></div>
+      <div id="ScreeningModal">
+        {
+          conditions.map((condition, index) => {
+            return (
+              <div key={index}>
+                aaa
+              </div>
+            )
+          })
+        }
+        <Button variant="info" className="d-block mx-auto mt-3" onClick={openModal}>スクリーニングルールを追加</Button>
+        <ScreeningConditionModal
+          modalIsOpen={modalIsOpen}
+          closeModal={closeModal}
+          conditions={conditions}
+          setConditions={setConditions}
+        />
+      </div>
     </Layout>
   )
 }
