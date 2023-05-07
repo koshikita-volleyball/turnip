@@ -8,7 +8,7 @@ type MovingAverageType = 'close' | 'ma_25' | 'ma_50'
 type ScreeningConditionStruct = {
   type: ScreeningConditionType
   positive: boolean
-  guid: string
+  collapsed: boolean
 }
 
 type ScreeningConditionGrowthRateStruct = ScreeningConditionStruct & {

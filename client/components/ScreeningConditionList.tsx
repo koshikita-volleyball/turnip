@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import { ScreeningConditionGrowthRateStruct, ScreeningConditionStructs } from '../interface/screening_condition'
 import { Alert, Table } from 'react-bootstrap'
-import { Trash } from 'react-bootstrap-icons';
+import { Trash, ChevronDoubleUp, ChevronDoubleDown } from 'react-bootstrap-icons';
 import dayjs from '../src/dayjs';
 
 export default function ScreeningConditionList(props: {
@@ -23,10 +23,34 @@ export default function ScreeningConditionList(props: {
           <Alert key={index} variant='info' className='position-relative'>
             {
               (() => {
+
+                if (_condition.collapsed) {
+                  return (
+                    <>
+                      <ChevronDoubleDown onClick={() => {
+                        const _conditions = [...conditions]
+                        _conditions[index].collapsed = false
+                        props.setConditions(_conditions)
+                      }} role='button' className='me-3' />Rule #{index + 1} | {
+                        (() => {
+                          if (_condition.type === 'growth_rate') return '株価上昇率'
+                          if (_condition.type === 'cross_over') return 'クロスオーバー'
+                        })()
+                      }
+                    </>
+                  )
+                }
+
                 if (_condition.type === 'growth_rate') {
                   const condition = _condition as ScreeningConditionGrowthRateStruct
                   return (
-                    <Table className='no-border'>
+                    <>
+                    <ChevronDoubleUp onClick={() => {
+                      const _conditions = [...conditions]
+                      _conditions[index].collapsed = true
+                      props.setConditions(_conditions)
+                    }} role='button' className='me-3' />Rule #{index + 1}
+                    <Table className='no-border mt-3'>
                       <tbody>
                         <tr>
                           <th className='w-25'>条件</th>
@@ -56,6 +80,7 @@ export default function ScreeningConditionList(props: {
                         </tr>
                       </tbody>
                     </Table>
+                    </>
                   )
                 }
                 return null
@@ -63,8 +88,9 @@ export default function ScreeningConditionList(props: {
             }
             <Trash className='position-absolute top-0 end-0 text-danger fs-2 fw-bold' role='button' onClick={() => {
               if (confirm('削除しますか？')) {
-                const new_conditions = conditions.filter((c) => c.guid !== _condition.guid)
-                props.setConditions(new_conditions)
+                const _conditions = [...conditions]
+                _conditions.splice(index, 1)
+                props.setConditions(_conditions)
               }
             }} />
           </Alert>

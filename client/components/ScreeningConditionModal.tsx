@@ -60,6 +60,7 @@ export default function ScreeningConditionModal(props: {
                     setSelectedCondition({
                       type: 'growth_rate',
                       positive: true,
+                      collapsed: true,
                       threshold: 1.5,
                       up: true,
                       ohlc: (selectedCondition as ScreeningConditionGrowthRateStruct)?.ohlc || 'close' as OHLC,
@@ -94,10 +95,10 @@ export default function ScreeningConditionModal(props: {
                   return (
                     <>
                       <Form.Group className="mt-3">
-                        <Form.Label>正負</Form.Label>
+                        <Form.Label>上昇 or 下落</Form.Label>
                         <Form.Check
                           type="checkbox"
-                          label="正"
+                          label="上昇"
                           checked={selectedCondition.positive}
                           onChange={(e) => {
                             setSelectedCondition({
@@ -181,20 +182,7 @@ export default function ScreeningConditionModal(props: {
               className="d-block mt-5 mx-auto"
               onClick={() => {
                 if (selectedCondition) {
-                  setConditions([
-                    ...conditions,
-                    {
-                      ...selectedCondition,
-                      guid: 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
-                        /[xy]/g,
-                        function (c) {
-                          const r = (Math.random() * 16) | 0,
-                            v = c === 'x' ? r : (r & 0x3) | 0x8
-                          return v.toString(16)
-                        },
-                      ),
-                    },
-                  ])
+                  setConditions([...conditions, selectedCondition])
                 }
                 closeModal()
               }}
