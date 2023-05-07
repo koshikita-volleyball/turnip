@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import {
+  ScreeningConditionCrossOverStruct,
   ScreeningConditionGrowthRateStruct,
   ScreeningConditionStructs,
 } from '../interface/screening_condition'
@@ -105,6 +106,52 @@ export default function ScreeningConditionList(props: {
                   </>
                 )
               }
+
+              if (_condition.type === 'cross_over') {
+                const condition = _condition as ScreeningConditionCrossOverStruct
+                return (
+                  <>
+                    <ChevronDoubleUp
+                      onClick={() => {
+                        const _conditions = [...conditions]
+                        _conditions[index].collapsed = true
+                        props.setConditions(_conditions)
+                      }}
+                      role="button"
+                      className="me-3"
+                    />
+                    Rule #{index + 1}
+                    <Table className="no-border mt-3">
+                      <tbody>
+                        <tr>
+                          <th className="w-25">条件</th>
+                          <td>クロスオーバー</td>
+                        </tr>
+                        <tr>
+                          <th className="w-25">Line 1</th>
+                          <td>{condition.line1}</td>
+                        </tr>
+                        <tr>
+                          <th className="w-25">Line 2</th>
+                          <td>{condition.line2}</td>
+                        </tr>
+                        <tr>
+                          <th className="w-25">期間</th>
+                          <td>
+                            {condition.from} - {condition.to} |{' '}
+                            {dayjs(condition.to).diff(
+                              dayjs(condition.from),
+                              'day',
+                            ) + 1}
+                            day(s)
+                          </td>
+                        </tr>
+                      </tbody>
+                    </Table>
+                  </>
+                )
+              }
+
               return null
             })()}
             <Trash
