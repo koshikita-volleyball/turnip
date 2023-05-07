@@ -5,6 +5,7 @@ import Layout from '../components/Layout'
 import { ScreeningConditionStructs } from '../interface/screening_condition'
 import ScreeningConditionModal from '../components/ScreeningConditionModal'
 import { Button } from 'react-bootstrap'
+import ScreeningConditionList from '../components/ScreeningConditionList'
 
 Modal.setAppElement('#ScreeningModal')
 
@@ -19,9 +20,7 @@ export default function ContactPage() {
   return (
     <Layout>
       <div id="ScreeningModal">
-        {conditions.map((condition, index) => {
-          return <div key={index}>aaa</div>
-        })}
+        <ScreeningConditionList conditions={conditions} setConditions={setConditions} />
         <Button
           variant="info"
           className="d-block mx-auto mt-3"

@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useState } from 'react'
 import Modal from 'react-modal'
 import {
   MovingAverageType,
-  OHCL,
+  OHLC,
   ScreeningConditionCrossOverStruct,
   ScreeningConditionGrowthRateStruct,
   ScreeningConditionStructs,
@@ -49,8 +49,9 @@ export default function ScreeningConditionModal(props: {
               <Form.Label>条件</Form.Label>
               <Form.Control
                 as="select"
+                value={selectedCondition?.type || ''}
                 onChange={(e) => {
-                  if (e.target.value === '') {
+                  if (!e.target.value) {
                     setSelectedCondition(null)
                     return
                   }
@@ -61,7 +62,7 @@ export default function ScreeningConditionModal(props: {
                       positive: true,
                       threshold: 1.5,
                       up: true,
-                      ohcl: 'close' as OHCL,
+                      ohlc: (selectedCondition as ScreeningConditionGrowthRateStruct)?.ohlc || 'close' as OHLC,
                       before: dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
                       after: dayjs().format('YYYY-MM-DD'),
                     } as unknown as ScreeningConditionGrowthRateStruct)
@@ -121,15 +122,14 @@ export default function ScreeningConditionModal(props: {
                         />
                       </Form.Group>
                       <Form.Group className="mt-3">
-                        <Form.Label>OHCL</Form.Label>
+                        <Form.Label>OHLC</Form.Label>
                         <Form.Control
                           as="select"
-                          value="close"
+                          value={(condition as ScreeningConditionGrowthRateStruct).ohlc}
                           onChange={(e) => {
-                            console.log(e.target.value)
                             setSelectedCondition({
                               ...selectedCondition,
-                              ohcl: 'low',
+                              ohlc: e.target.value as OHLC,
                             } as unknown as ScreeningConditionGrowthRateStruct)
                           }}
                         >

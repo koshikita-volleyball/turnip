@@ -1,6 +1,6 @@
 type ScreeningConditionType = 'growth_rate' | 'cross_over'
 
-type OHCL = 'open' | 'high' | 'close' | 'low'
+type OHLC = 'open' | 'high' | 'low' | 'close'
 
 type MovingAverageType = 'close' | 'ma_25' | 'ma_50'
 
@@ -14,7 +14,7 @@ type ScreeningConditionStruct = {
 type ScreeningConditionGrowthRateStruct = ScreeningConditionStruct & {
   threshold: number
   up: boolean
-  ohlc: OHCL
+  ohlc: OHLC
   before: string
   after: string
 }
@@ -34,6 +34,6 @@ export type {
   ScreeningConditionStructs,
   ScreeningConditionGrowthRateStruct,
   ScreeningConditionCrossOverStruct,
-  OHCL,
+  OHLC,
   MovingAverageType,
 }
