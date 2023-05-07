@@ -1,8 +1,7 @@
 import { APIGatewayEvent } from 'aws-lambda'
 import { CrossOverIndicator, GrowthRateIndicator, Indicator } from '../interface/jquants/indicator'
-import { notify } from './slack'
 import dayjs from '../common/dayjs'
-import { getBusinessDays } from '../analysis/jpx_business_day'
+import { getBusinessDays } from '../analysis/utils'
 
 type Required<T extends object> = boolean | (keyof T)[]
 
@@ -129,10 +128,10 @@ const _parseGrowthRateIndicator = (
   return {
     ...indicator,
     threshold: indicator.threshold,
-    up: indicator.up || true,
-    before: indicator.before || businessDays[businessDays.length - 2],
-    after: indicator.after || businessDays[businessDays.length - 1],
-    positive: indicator.positive || true,
+    up: _default(indicator.up, true),
+    before: _default(indicator.before, businessDays[businessDays.length - 2]),
+    after: _default(indicator.after, businessDays[businessDays.length - 1]),
+    positive: _default(indicator.positive, true),
   }
 }
 
@@ -142,10 +141,14 @@ const _parseCrossOverIndicator = (indicator: CrossOverIndicator, now: dayjs.Dayj
   }
   return {
     ...indicator,
-    line1: indicator.line1 || 'close',
-    line2: indicator.line2 || 'ma_25',
+    line1: _default(indicator.line1, 'close'),
+    line2: _default(indicator.line2, 'ma_25'),
     from: indicator.from,
-    to: indicator.to || now.format('YYYY-MM-DD'),
-    positive: indicator.positive || true,
+    to: _default(indicator.to, now.format('YYYY-MM-DD')),
+    positive: _default(indicator.positive, true),
   }
+}
+
+const _default = <T>(val: T | undefined, def: T): T => {
+  return val !== undefined ? val : def
 }
