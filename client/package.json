@@ -25,6 +25,7 @@
     "prettier:check": "prettier --check ."
   },
   "dependencies": {
+    "@splidejs/react-splide": "^0.7.12",
     "@types/bootstrap": "^5.2.6",
     "@types/react-bootstrap": "^0.32.32",
     "bootstrap": "^5.2.3",
