@@ -117,6 +117,16 @@ Resources:
                   - dynamodb:Query
                   - dynamodb:Scan
                 Resource: !GetAtt PricesDailyQuotesTable.Arn
+              - Sid: AllowFinsStatementsTable
+                Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource: !GetAtt FinsStatementsTable.Arn
               - Sid: AllowCloudWatchLogs
                 Effect: Allow
                 Action:
@@ -250,6 +260,27 @@ Resources:
       DockerContext: ./src
       Dockerfile: Dockerfile
 
+  FinsStatementsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-fins-statements
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.fins_statements_handler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MyApiGateway:
+          Type: Api
+          Properties:
+            Path: /api/fins-statements
+            Method: get
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
+
   SlackNotifyFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -358,6 +389,26 @@ Resources:
       PackageType: Image
       ImageConfig:
         Command: [ "app.prices_daily_quotes_updater_handler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 10 * * ? *)
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
+
+  FinsStatementsUpdaterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-statements-updater
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.fins_statements_updater_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64

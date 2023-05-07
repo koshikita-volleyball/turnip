@@ -97,8 +97,8 @@ export default function Company() {
                         <td>{company?.Sector17CodeName}</td>
                       </tr>
                       <tr>
-                        <th>33業種コード</th>
-                        <td>{company?.Sector33Code}</td>
+                        <th>33業種区分</th>
+                        <td>{company?.Sector33CodeName}</td>
                       </tr>
                     </tbody>
                   </Table>
