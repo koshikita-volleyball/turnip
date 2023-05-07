@@ -28,10 +28,7 @@ export default function Company() {
   }: {
     data: ListedInfoStruct
     error: any
-  } = useSWR(`${setting.apiPath}/api/info?code=${code}`, fetcher, {
-    revalidateOnFocus: false,
-    dedupingInterval: 10000,
-  })
+  } = useSWR(`${setting.apiPath}/api/info?code=${code}`, fetcher)
 
   const {
     data: prices,
@@ -42,10 +39,6 @@ export default function Company() {
   } = useSWR(
     `${setting.apiPath}/api/prices-daily-quotes?code=${code}`,
     fetcher,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 10000,
-    },
   )
 
   const {
@@ -54,10 +47,7 @@ export default function Company() {
   }: {
     data: FinsStatementsStruct[]
     error: any
-  } = useSWR(`${setting.apiPath}/api/fins-statements?code=${code}`, fetcher, {
-    revalidateOnFocus: false,
-    dedupingInterval: 10000,
-  })
+  } = useSWR(`${setting.apiPath}/api/fins-statements?code=${code}`, fetcher)
 
   useEffect(() => {
     const url = new URL(window.location.href)
