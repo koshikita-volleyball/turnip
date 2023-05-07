@@ -10,7 +10,7 @@ import Sector17Info from '../data/Sector17Info'
 import Sector33Info from '../data/Sector33Info'
 import Link from 'next/link'
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json())
+const fetcher = (url: string) => fetch(url).then((r) => r.ok ? r.json() : null)
 
 const make_params = ({
   page,
