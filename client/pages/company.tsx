@@ -8,6 +8,7 @@ import CompanyPriceChart from '../components/CompanyPriceChart'
 import PricesDailyQuotesStruct from '../interface/prices_daily_quotes'
 import FinsStatementsStruct from '../interface/fins_statements'
 import CompanyStatementsCard from '../components/CompanyStatementsCard'
+import CompanyBasicInfo from '../components/CompanyBasicInfo'
 
 const fetcher = (url: string) =>
   fetch(url).then((r) => {
@@ -69,9 +70,7 @@ export default function Company() {
   return (
     <Layout>
       <div id="Company">
-        {info_error ? (
-          <Alert variant="danger">Failed to load...</Alert>
-        ) : !info ? (
+        {!info && (
           <div className="mt-3 d-flex justify-content-between">
             <Spinner animation="grow" variant="primary" />
             <Spinner animation="grow" variant="secondary" />
@@ -82,66 +81,37 @@ export default function Company() {
             <Spinner animation="grow" variant="light" />
             <Spinner animation="grow" variant="dark" />
           </div>
-        ) : !info ? (
-          <Alert variant="warning">No data...</Alert>
-        ) : (
-          <div>
-            <h1>🌟 銘柄情報詳細</h1>
-            {(() => {
-              const company = info
-              return (
-                <>
-                  <h2 className='mt-5'>🏠 基本情報</h2>
-                  <Table className="mt-3">
-                    <tbody>
-                      <tr>
-                        <th>銘柄コード</th>
-                        <td>{company?.Code}</td>
-                      </tr>
-                      <tr>
-                        <th>銘柄名</th>
-                        <td>{company?.CompanyName}</td>
-                      </tr>
-                      <tr>
-                        <th>市場・商品区分</th>
-                        <td>{company?.MarketCodeName}</td>
-                      </tr>
-                      <tr>
-                        <th>17業種区分</th>
-                        <td>{company?.Sector17CodeName}</td>
-                      </tr>
-                      <tr>
-                        <th>33業種区分</th>
-                        <td>{company?.Sector33CodeName}</td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                  <hr />
-                </>
-              )
-            })()}
-            {prices_error ? (
-              <Alert variant="danger">Failed to load...</Alert>
-            ) : prices ? (
-              <CompanyPriceChart prices={prices} />
-            ) : (
-              <Alert variant="secondary" className="d-flex align-items-center">
-                <Spinner animation="grow" variant="primary" className="me-3" />
-                株価データを取得中...
-              </Alert>
-            )}
-            {statements_error ? (
-              <Alert variant="danger">Failed to load...</Alert>
-            ) : statements ? (
-              <CompanyStatementsCard statements={statements} />
-            ) : (
-              <Alert variant="secondary" className="d-flex align-items-center">
-                <Spinner animation="grow" variant="primary" className="me-3" />
-                財務データを取得中...
-              </Alert>
-            )}
-          </div>
         )}
+        <div>
+          <h1>🌟 銘柄情報詳細</h1>
+          {/* 銘柄基本情報 */}
+          {info_error ? (
+            <Alert variant="danger">Failed to load...</Alert>
+          ) : <CompanyBasicInfo info={info} />
+          }
+          {/* 株価情報 */}
+          {prices_error ? (
+            <Alert variant="danger">Failed to load...</Alert>
+          ) : prices ? (
+            <CompanyPriceChart prices={prices} />
+          ) : (
+            <Alert variant="secondary" className="d-flex align-items-center">
+              <Spinner animation="grow" variant="primary" className="me-3" />
+              株価データを取得中...
+            </Alert>
+          )}
+          {/* 財務情報 */}
+          {statements_error ? (
+            <Alert variant="danger">Failed to load...</Alert>
+          ) : statements ? (
+            <CompanyStatementsCard statements={statements} />
+          ) : (
+            <Alert variant="secondary" className="d-flex align-items-center">
+              <Spinner animation="grow" variant="primary" className="me-3" />
+              財務データを取得中...
+            </Alert>
+          )}
+        </div>
       </div>
     </Layout>
   )
