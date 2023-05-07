@@ -83,35 +83,21 @@ export default function AboutPage() {
     if (sector_17_code) setSector17Code(sector_17_code as string)
     const sector_33_code = router.query.sector_33_codes
     if (sector_33_code) setSector33Code(sector_33_code as string)
-  }, [
-    router.query.company_name,
-    router.query.market_codes,
-    router.query.page,
-    router.query.sector_17_codes,
-    router.query.sector_33_codes,
-  ])
+  }, [router.query.company_name, router.query.market_codes, router.query.page, router.query.sector_17_codes, router.query.sector_33_codes])
 
   useEffect(() => {
-    window.history.pushState(
-      null,
-      '',
-      `${window.location.pathname}` +
-        make_params({
-          page,
-          company_name,
-          market_code,
-          sector_17_code,
-          sector_33_code,
-        }),
-    )
-  }, [
-    company_name,
-    market_code,
-    page,
-    sector_17_code,
-    sector_33_code,
-    useCondition,
-  ])
+    const query = {}
+    if (page !== 1) query['page'] = page
+    if (company_name !== '') query['company_name'] = company_name
+    if (market_code !== '') query['market_codes'] = market_code
+    if (sector_17_code !== '') query['sector_17_codes'] = sector_17_code
+    if (sector_33_code !== '') query['sector_33_codes'] = sector_33_code
+    router.push({
+      pathname: '/listed-info',
+      query,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, company_name, market_code, sector_17_code, sector_33_code])
 
   return (
     <Layout>
