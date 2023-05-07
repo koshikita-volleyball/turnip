@@ -52,6 +52,22 @@ Resources:
       BillingMode: PAY_PER_REQUEST
       TableName: !Sub ${AWS::StackName}-prices-daily-quotes
 
+  FinsStatementsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: LocalCode
+          AttributeType: S
+        - AttributeName: DisclosedDate
+          AttributeType: S
+      KeySchema:
+        - AttributeName: LocalCode
+          KeyType: HASH
+        - AttributeName: DisclosedDate
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      TableName: !Sub ${AWS::StackName}-fins-statements
+
   MyLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -191,7 +207,7 @@ Resources:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
       Dockerfile: Dockerfile
-  
+
   ListedInfoFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -274,7 +290,7 @@ Resources:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
       Dockerfile: Dockerfile
-  
+
   RefreshTokenUpdaterFunction:
     Type: AWS::Serverless::Function
     Properties:
