@@ -1,4 +1,5 @@
 type ProcessEnvKey =
+  | 'ENVIRONMENT'
   | 'SLACK_API_TOKEN'
   | 'SLACK_NOTICE_CHANNEL'
   | 'S3_BUCKET_NAME'
