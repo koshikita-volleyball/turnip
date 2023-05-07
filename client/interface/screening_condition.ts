@@ -17,6 +17,7 @@ type MovingAverageType =
 type ScreeningConditionStruct = {
   type: ScreeningConditionType
   positive: boolean
+  guid: string
 }
 
 type ScreeningConditionGrowthRateStruct = ScreeningConditionStruct & {

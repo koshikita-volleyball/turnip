@@ -107,7 +107,7 @@ export default function ScreeningConditionModal(props: {
                     </Form.Group>
                     <Form.Group className="mt-3">
                       <Form.Label>OHCL</Form.Label>
-                      <Form.Control as="select" value={condition.ohlc} onChange={(e) => {
+                      <Form.Control as="select" value="close" onChange={(e) => {
                         console.log(e.target.value)
                         setSelectedCondition({
                           ...selectedCondition,
@@ -152,7 +152,13 @@ export default function ScreeningConditionModal(props: {
 
             <Button variant='primary' className="d-block mt-5 mx-auto" onClick={() => {
               if (selectedCondition) {
-                setConditions([...conditions, selectedCondition])
+                setConditions([...conditions, {
+                  ...selectedCondition,
+                  guid: 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8)
+                    return v.toString(16)
+                  })
+                }])
               }
               closeModal()
             }} disabled={selectedCondition === null}>追加</Button>
