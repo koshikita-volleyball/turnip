@@ -59,7 +59,7 @@ export default function Company() {
       <div id="Company">
         {/* 全てのブロックが表示されていなければローディングを表示する。 */}
         {!info && !prices && !statements && (
-          <div className="mt-3 d-flex justify-content-between">
+          <div className="my-5 d-flex justify-content-between">
             <Spinner animation="grow" variant="primary" />
             <Spinner animation="grow" variant="secondary" />
             <Spinner animation="grow" variant="success" />
