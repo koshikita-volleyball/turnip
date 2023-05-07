@@ -17,112 +17,112 @@ type ListedInfoStruct = {
   MarketCodeName: string
 }
 type FinsStatementsStruct = {
-  "DisclosedDate": string;
-  "DisclosedTime": string;
-  "LocalCode": string;
-  "DisclosureNumber": string;
-  "TypeOfDocument": string;
-  "TypeOfCurrentPeriod": string;
-  "CurrentPeriodStartDate": string;
-  "CurrentPeriodEndDate": string;
-  "CurrentFiscalYearStartDate": string;
-  "CurrentFiscalYearEndDate": string;
-  "NextFiscalYearStartDate": string;
-  "NextFiscalYearEndDate": string;
-  "NetSales": string;
-  "OperatingProfit": string;
-  "OrdinaryProfit": string;
-  "Profit": string;
-  "EarningsPerShare": string;
-  "DilutedEarningsPerShare": string;
-  "TotalAssets": string;
-  "Equity": string;
-  "EquityToAssetRatio": string;
-  "BookValuePerShare": string;
-  "CashFlowsFromOperatingActivities": string;
-  "CashFlowsFromInvestingActivities": string;
-  "CashFlowsFromFinancingActivities": string;
-  "CashAndEquivalents": string;
-  "ResultDividendPerShare1stQuarter": string;
-  "ResultDividendPerShare2ndQuarter": string;
-  "ResultDividendPerShare3rdQuarter": string;
-  "ResultDividendPerShareFiscalYearEnd": string;
-  "ResultDividendPerShareAnnual": string;
-  "DistributionsPerUnit(REIT)": string;
-  "ResultTotalDividendPaidAnnual": string;
-  "ResultPayoutRatioAnnual": string;
-  "ForecastDividendPerShare1stQuarter": string;
-  "ForecastDividendPerShare2ndQuarter": string;
-  "ForecastDividendPerShare3rdQuarter": string;
-  "ForecastDividendPerShareFiscalYearEnd": string;
-  "ForecastDividendPerShareAnnual": string;
-  "ForecastDistributionsPerUnit(REIT)": string;
-  "ForecastTotalDividendPaidAnnual": string;
-  "ForecastPayoutRatioAnnual": string;
-  "NextYearForecastDividendPerShare1stQuarter": string;
-  "NextYearForecastDividendPerShare2ndQuarter": string;
-  "NextYearForecastDividendPerShare3rdQuarter": string;
-  "NextYearForecastDividendPerShareFiscalYearEnd": string;
-  "NextYearForecastDividendPerShareAnnual": string;
-  "NextYearForecastDistributionsPerUnit(REIT)": string;
-  "NextYearForecastPayoutRatioAnnual": string;
-  "ForecastNetSales2ndQuarter": string;
-  "ForecastOperatingProfit2ndQuarter": string;
-  "ForecastOrdinaryProfit2ndQuarter": string;
-  "ForecastProfit2ndQuarter": string;
-  "ForecastEarningsPerShare2ndQuarter": string;
-  "NextYearForecastNetSales2ndQuarter": string;
-  "NextYearForecastOperatingProfit2ndQuarter": string;
-  "NextYearForecastOrdinaryProfit2ndQuarter": string;
-  "NextYearForecastProfit2ndQuarter": string;
-  "NextYearForecastEarningsPerShare2ndQuarter": string;
-  "ForecastNetSales": string;
-  "ForecastOperatingProfit": string;
-  "ForecastOrdinaryProfit": string;
-  "ForecastProfit": string;
-  "ForecastEarningsPerShare": string;
-  "NextYearForecastNetSales": string;
-  "NextYearForecastOperatingProfit": string;
-  "NextYearForecastOrdinaryProfit": string;
-  "NextYearForecastProfit": string;
-  "NextYearForecastEarningsPerShare": string;
-  "MaterialChangesInSubsidiaries": string;
-  "ChangesBasedOnRevisionsOfAccountingStandard": string;
-  "ChangesOtherThanOnesBasedOnRevisionsOfAccountingStandard": string;
-  "ChangesInAccountingEstimates": string;
-  "RetrospectiveRestatement": string;
-  "NumberOfIssuedAndOutstandingSharesAtTheEndOfFiscalYearIncludingTreasuryStock": string;
-  "NumberOfTreasuryStockAtTheEndOfFiscalYear": string;
-  "AverageNumberOfShares": string;
-  "NonConsolidatedNetSales": string;
-  "NonConsolidatedOperatingProfit": string;
-  "NonConsolidatedOrdinaryProfit": string;
-  "NonConsolidatedProfit": string;
-  "NonConsolidatedEarningsPerShare": string;
-  "NonConsolidatedTotalAssets": string;
-  "NonConsolidatedEquity": string;
-  "NonConsolidatedEquityToAssetRatio": string;
-  "NonConsolidatedBookValuePerShare": string;
-  "ForecastNonConsolidatedNetSales2ndQuarter": string;
-  "ForecastNonConsolidatedOperatingProfit2ndQuarter": string;
-  "ForecastNonConsolidatedOrdinaryProfit2ndQuarter": string;
-  "ForecastNonConsolidatedProfit2ndQuarter": string;
-  "ForecastNonConsolidatedEarningsPerShare2ndQuarter": string;
-  "NextYearForecastNonConsolidatedNetSales2ndQuarter": string;
-  "NextYearForecastNonConsolidatedOperatingProfit2ndQuarter": string;
-  "NextYearForecastNonConsolidatedOrdinaryProfit2ndQuarter": string;
-  "NextYearForecastNonConsolidatedProfit2ndQuarter": string;
-  "NextYearForecastNonConsolidatedEarningsPerShare2ndQuarter": string;
-  "ForecastNonConsolidatedNetSales": string;
-  "ForecastNonConsolidatedOperatingProfit": string;
-  "ForecastNonConsolidatedOrdinaryProfit": string;
-  "ForecastNonConsolidatedProfit": string;
-  "ForecastNonConsolidatedEarningsPerShare": string;
-  "NextYearForecastNonConsolidatedNetSales": string;
-  "NextYearForecastNonConsolidatedOperatingProfit": string;
-  "NextYearForecastNonConsolidatedOrdinaryProfit": string;
-  "NextYearForecastNonConsolidatedProfit": string;
-  "NextYearForecastNonConsolidatedEarningsPerShare": string;
+  DisclosedDate: string
+  DisclosedTime: string
+  LocalCode: string
+  DisclosureNumber: string
+  TypeOfDocument: string
+  TypeOfCurrentPeriod: string
+  CurrentPeriodStartDate: string
+  CurrentPeriodEndDate: string
+  CurrentFiscalYearStartDate: string
+  CurrentFiscalYearEndDate: string
+  NextFiscalYearStartDate: string
+  NextFiscalYearEndDate: string
+  NetSales: string
+  OperatingProfit: string
+  OrdinaryProfit: string
+  Profit: string
+  EarningsPerShare: string
+  DilutedEarningsPerShare: string
+  TotalAssets: string
+  Equity: string
+  EquityToAssetRatio: string
+  BookValuePerShare: string
+  CashFlowsFromOperatingActivities: string
+  CashFlowsFromInvestingActivities: string
+  CashFlowsFromFinancingActivities: string
+  CashAndEquivalents: string
+  ResultDividendPerShare1stQuarter: string
+  ResultDividendPerShare2ndQuarter: string
+  ResultDividendPerShare3rdQuarter: string
+  ResultDividendPerShareFiscalYearEnd: string
+  ResultDividendPerShareAnnual: string
+  'DistributionsPerUnit(REIT)': string
+  ResultTotalDividendPaidAnnual: string
+  ResultPayoutRatioAnnual: string
+  ForecastDividendPerShare1stQuarter: string
+  ForecastDividendPerShare2ndQuarter: string
+  ForecastDividendPerShare3rdQuarter: string
+  ForecastDividendPerShareFiscalYearEnd: string
+  ForecastDividendPerShareAnnual: string
+  'ForecastDistributionsPerUnit(REIT)': string
+  ForecastTotalDividendPaidAnnual: string
+  ForecastPayoutRatioAnnual: string
+  NextYearForecastDividendPerShare1stQuarter: string
+  NextYearForecastDividendPerShare2ndQuarter: string
+  NextYearForecastDividendPerShare3rdQuarter: string
+  NextYearForecastDividendPerShareFiscalYearEnd: string
+  NextYearForecastDividendPerShareAnnual: string
+  'NextYearForecastDistributionsPerUnit(REIT)': string
+  NextYearForecastPayoutRatioAnnual: string
+  ForecastNetSales2ndQuarter: string
+  ForecastOperatingProfit2ndQuarter: string
+  ForecastOrdinaryProfit2ndQuarter: string
+  ForecastProfit2ndQuarter: string
+  ForecastEarningsPerShare2ndQuarter: string
+  NextYearForecastNetSales2ndQuarter: string
+  NextYearForecastOperatingProfit2ndQuarter: string
+  NextYearForecastOrdinaryProfit2ndQuarter: string
+  NextYearForecastProfit2ndQuarter: string
+  NextYearForecastEarningsPerShare2ndQuarter: string
+  ForecastNetSales: string
+  ForecastOperatingProfit: string
+  ForecastOrdinaryProfit: string
+  ForecastProfit: string
+  ForecastEarningsPerShare: string
+  NextYearForecastNetSales: string
+  NextYearForecastOperatingProfit: string
+  NextYearForecastOrdinaryProfit: string
+  NextYearForecastProfit: string
+  NextYearForecastEarningsPerShare: string
+  MaterialChangesInSubsidiaries: string
+  ChangesBasedOnRevisionsOfAccountingStandard: string
+  ChangesOtherThanOnesBasedOnRevisionsOfAccountingStandard: string
+  ChangesInAccountingEstimates: string
+  RetrospectiveRestatement: string
+  NumberOfIssuedAndOutstandingSharesAtTheEndOfFiscalYearIncludingTreasuryStock: string
+  NumberOfTreasuryStockAtTheEndOfFiscalYear: string
+  AverageNumberOfShares: string
+  NonConsolidatedNetSales: string
+  NonConsolidatedOperatingProfit: string
+  NonConsolidatedOrdinaryProfit: string
+  NonConsolidatedProfit: string
+  NonConsolidatedEarningsPerShare: string
+  NonConsolidatedTotalAssets: string
+  NonConsolidatedEquity: string
+  NonConsolidatedEquityToAssetRatio: string
+  NonConsolidatedBookValuePerShare: string
+  ForecastNonConsolidatedNetSales2ndQuarter: string
+  ForecastNonConsolidatedOperatingProfit2ndQuarter: string
+  ForecastNonConsolidatedOrdinaryProfit2ndQuarter: string
+  ForecastNonConsolidatedProfit2ndQuarter: string
+  ForecastNonConsolidatedEarningsPerShare2ndQuarter: string
+  NextYearForecastNonConsolidatedNetSales2ndQuarter: string
+  NextYearForecastNonConsolidatedOperatingProfit2ndQuarter: string
+  NextYearForecastNonConsolidatedOrdinaryProfit2ndQuarter: string
+  NextYearForecastNonConsolidatedProfit2ndQuarter: string
+  NextYearForecastNonConsolidatedEarningsPerShare2ndQuarter: string
+  ForecastNonConsolidatedNetSales: string
+  ForecastNonConsolidatedOperatingProfit: string
+  ForecastNonConsolidatedOrdinaryProfit: string
+  ForecastNonConsolidatedProfit: string
+  ForecastNonConsolidatedEarningsPerShare: string
+  NextYearForecastNonConsolidatedNetSales: string
+  NextYearForecastNonConsolidatedOperatingProfit: string
+  NextYearForecastNonConsolidatedOrdinaryProfit: string
+  NextYearForecastNonConsolidatedProfit: string
+  NextYearForecastNonConsolidatedEarningsPerShare: string
 }
 
 const JQUANTS_API_TOKEN = process.env.JQUANTS_API_TOKEN || ''
@@ -145,112 +145,112 @@ let n = 0
 
 const file_name = `statements.csv`
 const headers = [
-  "DisclosedDate",
-  "DisclosedTime",
-  "LocalCode",
-  "DisclosureNumber",
-  "TypeOfDocument",
-  "TypeOfCurrentPeriod",
-  "CurrentPeriodStartDate",
-  "CurrentPeriodEndDate",
-  "CurrentFiscalYearStartDate",
-  "CurrentFiscalYearEndDate",
-  "NextFiscalYearStartDate",
-  "NextFiscalYearEndDate",
-  "NetSales",
-  "OperatingProfit",
-  "OrdinaryProfit",
-  "Profit",
-  "EarningsPerShare",
-  "DilutedEarningsPerShare",
-  "TotalAssets",
-  "Equity",
-  "EquityToAssetRatio",
-  "BookValuePerShare",
-  "CashFlowsFromOperatingActivities",
-  "CashFlowsFromInvestingActivities",
-  "CashFlowsFromFinancingActivities",
-  "CashAndEquivalents",
-  "ResultDividendPerShare1stQuarter",
-  "ResultDividendPerShare2ndQuarter",
-  "ResultDividendPerShare3rdQuarter",
-  "ResultDividendPerShareFiscalYearEnd",
-  "ResultDividendPerShareAnnual",
-  "DistributionsPerUnit(REIT)",
-  "ResultTotalDividendPaidAnnual",
-  "ResultPayoutRatioAnnual",
-  "ForecastDividendPerShare1stQuarter",
-  "ForecastDividendPerShare2ndQuarter",
-  "ForecastDividendPerShare3rdQuarter",
-  "ForecastDividendPerShareFiscalYearEnd",
-  "ForecastDividendPerShareAnnual",
-  "ForecastDistributionsPerUnit(REIT)",
-  "ForecastTotalDividendPaidAnnual",
-  "ForecastPayoutRatioAnnual",
-  "NextYearForecastDividendPerShare1stQuarter",
-  "NextYearForecastDividendPerShare2ndQuarter",
-  "NextYearForecastDividendPerShare3rdQuarter",
-  "NextYearForecastDividendPerShareFiscalYearEnd",
-  "NextYearForecastDividendPerShareAnnual",
-  "NextYearForecastDistributionsPerUnit(REIT)",
-  "NextYearForecastPayoutRatioAnnual",
-  "ForecastNetSales2ndQuarter",
-  "ForecastOperatingProfit2ndQuarter",
-  "ForecastOrdinaryProfit2ndQuarter",
-  "ForecastProfit2ndQuarter",
-  "ForecastEarningsPerShare2ndQuarter",
-  "NextYearForecastNetSales2ndQuarter",
-  "NextYearForecastOperatingProfit2ndQuarter",
-  "NextYearForecastOrdinaryProfit2ndQuarter",
-  "NextYearForecastProfit2ndQuarter",
-  "NextYearForecastEarningsPerShare2ndQuarter",
-  "ForecastNetSales",
-  "ForecastOperatingProfit",
-  "ForecastOrdinaryProfit",
-  "ForecastProfit",
-  "ForecastEarningsPerShare",
-  "NextYearForecastNetSales",
-  "NextYearForecastOperatingProfit",
-  "NextYearForecastOrdinaryProfit",
-  "NextYearForecastProfit",
-  "NextYearForecastEarningsPerShare",
-  "MaterialChangesInSubsidiaries",
-  "ChangesBasedOnRevisionsOfAccountingStandard",
-  "ChangesOtherThanOnesBasedOnRevisionsOfAccountingStandard",
-  "ChangesInAccountingEstimates",
-  "RetrospectiveRestatement",
-  "NumberOfIssuedAndOutstandingSharesAtTheEndOfFiscalYearIncludingTreasuryStock",
-  "NumberOfTreasuryStockAtTheEndOfFiscalYear",
-  "AverageNumberOfShares",
-  "NonConsolidatedNetSales",
-  "NonConsolidatedOperatingProfit",
-  "NonConsolidatedOrdinaryProfit",
-  "NonConsolidatedProfit",
-  "NonConsolidatedEarningsPerShare",
-  "NonConsolidatedTotalAssets",
-  "NonConsolidatedEquity",
-  "NonConsolidatedEquityToAssetRatio",
-  "NonConsolidatedBookValuePerShare",
-  "ForecastNonConsolidatedNetSales2ndQuarter",
-  "ForecastNonConsolidatedOperatingProfit2ndQuarter",
-  "ForecastNonConsolidatedOrdinaryProfit2ndQuarter",
-  "ForecastNonConsolidatedProfit2ndQuarter",
-  "ForecastNonConsolidatedEarningsPerShare2ndQuarter",
-  "NextYearForecastNonConsolidatedNetSales2ndQuarter",
-  "NextYearForecastNonConsolidatedOperatingProfit2ndQuarter",
-  "NextYearForecastNonConsolidatedOrdinaryProfit2ndQuarter",
-  "NextYearForecastNonConsolidatedProfit2ndQuarter",
-  "NextYearForecastNonConsolidatedEarningsPerShare2ndQuarter",
-  "ForecastNonConsolidatedNetSales",
-  "ForecastNonConsolidatedOperatingProfit",
-  "ForecastNonConsolidatedOrdinaryProfit",
-  "ForecastNonConsolidatedProfit",
-  "ForecastNonConsolidatedEarningsPerShare",
-  "NextYearForecastNonConsolidatedNetSales",
-  "NextYearForecastNonConsolidatedOperatingProfit",
-  "NextYearForecastNonConsolidatedOrdinaryProfit",
-  "NextYearForecastNonConsolidatedProfit",
-  "NextYearForecastNonConsolidatedEarningsPerShare"
+  'DisclosedDate',
+  'DisclosedTime',
+  'LocalCode',
+  'DisclosureNumber',
+  'TypeOfDocument',
+  'TypeOfCurrentPeriod',
+  'CurrentPeriodStartDate',
+  'CurrentPeriodEndDate',
+  'CurrentFiscalYearStartDate',
+  'CurrentFiscalYearEndDate',
+  'NextFiscalYearStartDate',
+  'NextFiscalYearEndDate',
+  'NetSales',
+  'OperatingProfit',
+  'OrdinaryProfit',
+  'Profit',
+  'EarningsPerShare',
+  'DilutedEarningsPerShare',
+  'TotalAssets',
+  'Equity',
+  'EquityToAssetRatio',
+  'BookValuePerShare',
+  'CashFlowsFromOperatingActivities',
+  'CashFlowsFromInvestingActivities',
+  'CashFlowsFromFinancingActivities',
+  'CashAndEquivalents',
+  'ResultDividendPerShare1stQuarter',
+  'ResultDividendPerShare2ndQuarter',
+  'ResultDividendPerShare3rdQuarter',
+  'ResultDividendPerShareFiscalYearEnd',
+  'ResultDividendPerShareAnnual',
+  'DistributionsPerUnit(REIT)',
+  'ResultTotalDividendPaidAnnual',
+  'ResultPayoutRatioAnnual',
+  'ForecastDividendPerShare1stQuarter',
+  'ForecastDividendPerShare2ndQuarter',
+  'ForecastDividendPerShare3rdQuarter',
+  'ForecastDividendPerShareFiscalYearEnd',
+  'ForecastDividendPerShareAnnual',
+  'ForecastDistributionsPerUnit(REIT)',
+  'ForecastTotalDividendPaidAnnual',
+  'ForecastPayoutRatioAnnual',
+  'NextYearForecastDividendPerShare1stQuarter',
+  'NextYearForecastDividendPerShare2ndQuarter',
+  'NextYearForecastDividendPerShare3rdQuarter',
+  'NextYearForecastDividendPerShareFiscalYearEnd',
+  'NextYearForecastDividendPerShareAnnual',
+  'NextYearForecastDistributionsPerUnit(REIT)',
+  'NextYearForecastPayoutRatioAnnual',
+  'ForecastNetSales2ndQuarter',
+  'ForecastOperatingProfit2ndQuarter',
+  'ForecastOrdinaryProfit2ndQuarter',
+  'ForecastProfit2ndQuarter',
+  'ForecastEarningsPerShare2ndQuarter',
+  'NextYearForecastNetSales2ndQuarter',
+  'NextYearForecastOperatingProfit2ndQuarter',
+  'NextYearForecastOrdinaryProfit2ndQuarter',
+  'NextYearForecastProfit2ndQuarter',
+  'NextYearForecastEarningsPerShare2ndQuarter',
+  'ForecastNetSales',
+  'ForecastOperatingProfit',
+  'ForecastOrdinaryProfit',
+  'ForecastProfit',
+  'ForecastEarningsPerShare',
+  'NextYearForecastNetSales',
+  'NextYearForecastOperatingProfit',
+  'NextYearForecastOrdinaryProfit',
+  'NextYearForecastProfit',
+  'NextYearForecastEarningsPerShare',
+  'MaterialChangesInSubsidiaries',
+  'ChangesBasedOnRevisionsOfAccountingStandard',
+  'ChangesOtherThanOnesBasedOnRevisionsOfAccountingStandard',
+  'ChangesInAccountingEstimates',
+  'RetrospectiveRestatement',
+  'NumberOfIssuedAndOutstandingSharesAtTheEndOfFiscalYearIncludingTreasuryStock',
+  'NumberOfTreasuryStockAtTheEndOfFiscalYear',
+  'AverageNumberOfShares',
+  'NonConsolidatedNetSales',
+  'NonConsolidatedOperatingProfit',
+  'NonConsolidatedOrdinaryProfit',
+  'NonConsolidatedProfit',
+  'NonConsolidatedEarningsPerShare',
+  'NonConsolidatedTotalAssets',
+  'NonConsolidatedEquity',
+  'NonConsolidatedEquityToAssetRatio',
+  'NonConsolidatedBookValuePerShare',
+  'ForecastNonConsolidatedNetSales2ndQuarter',
+  'ForecastNonConsolidatedOperatingProfit2ndQuarter',
+  'ForecastNonConsolidatedOrdinaryProfit2ndQuarter',
+  'ForecastNonConsolidatedProfit2ndQuarter',
+  'ForecastNonConsolidatedEarningsPerShare2ndQuarter',
+  'NextYearForecastNonConsolidatedNetSales2ndQuarter',
+  'NextYearForecastNonConsolidatedOperatingProfit2ndQuarter',
+  'NextYearForecastNonConsolidatedOrdinaryProfit2ndQuarter',
+  'NextYearForecastNonConsolidatedProfit2ndQuarter',
+  'NextYearForecastNonConsolidatedEarningsPerShare2ndQuarter',
+  'ForecastNonConsolidatedNetSales',
+  'ForecastNonConsolidatedOperatingProfit',
+  'ForecastNonConsolidatedOrdinaryProfit',
+  'ForecastNonConsolidatedProfit',
+  'ForecastNonConsolidatedEarningsPerShare',
+  'NextYearForecastNonConsolidatedNetSales',
+  'NextYearForecastNonConsolidatedOperatingProfit',
+  'NextYearForecastNonConsolidatedOrdinaryProfit',
+  'NextYearForecastNonConsolidatedProfit',
+  'NextYearForecastNonConsolidatedEarningsPerShare',
 ]
 const csv_header = headers.join(',')
 fs.writeFile(file_name, `${csv_header}\n`, (err) => {
