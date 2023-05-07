@@ -108,7 +108,8 @@ export default function ScreeningConditionList(props: {
               }
 
               if (_condition.type === 'cross_over') {
-                const condition = _condition as ScreeningConditionCrossOverStruct
+                const condition =
+                  _condition as ScreeningConditionCrossOverStruct
                 return (
                   <>
                     <ChevronDoubleUp
