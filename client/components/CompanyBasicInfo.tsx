@@ -1,11 +1,8 @@
-import React from "react";
-import ListedInfoStruct from "../interface/listed_info";
-import { Alert, Table } from "react-bootstrap";
+import React from 'react'
+import ListedInfoStruct from '../interface/listed_info'
+import { Alert, Table } from 'react-bootstrap'
 
-export default function CompanyBasicInfo(props: {
-  info: ListedInfoStruct
-}) {
-
+export default function CompanyBasicInfo(props: { info: ListedInfoStruct }) {
   if (!props.info) {
     return <Alert variant="danger">基本情報の取得に失敗しました。</Alert>
   }
@@ -14,7 +11,7 @@ export default function CompanyBasicInfo(props: {
 
   return (
     <>
-      <h2 className='mt-5'>🏠 基本情報</h2>
+      <h2 className="mt-5">🏠 基本情報</h2>
       <Table className="mt-3">
         <tbody>
           <tr>

@@ -36,10 +36,7 @@ export default function Company() {
   }: {
     data: PricesDailyQuotesStruct[]
     error: any
-  } = useSWR(
-    `${setting.apiPath}/api/prices-daily-quotes?code=${code}`,
-    fetcher,
-  )
+  } = useSWR(`${setting.apiPath}/api/prices-daily-quotes?code=${code}`, fetcher)
 
   const {
     data: statements,
@@ -85,8 +82,7 @@ export default function Company() {
               <Spinner animation="grow" variant="primary" className="me-3" />
               基本情報を取得中...
             </Alert>
-          )
-          }
+          )}
           {/* 株価情報 */}
           {prices_error ? (
             <Alert variant="danger">Failed to load...</Alert>
