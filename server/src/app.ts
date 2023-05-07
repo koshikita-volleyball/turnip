@@ -367,9 +367,8 @@ export const prices_daily_quotes_updater_handler = async (): Promise<void> => {
 }
 
 export const screener_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-  // get query params
   const stockCommonFilter = getStockCommonFilterParams(event)
-  const indicatorParams = getIndicatorParams(event)
+  const indicatorParams = await getIndicatorParams(event)
 
   return {
     statusCode: 200,
