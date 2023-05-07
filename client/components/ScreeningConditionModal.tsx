@@ -77,8 +77,8 @@ export default function ScreeningConditionModal(props: {
                       positive: true,
                       line1: 'close' as MovingAverageType,
                       line2: 'ma_25' as MovingAverageType,
-                      from: '',
-                      to: '',
+                      from: dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
+                      to: dayjs().format('YYYY-MM-DD'),
                     } as unknown as ScreeningConditionCrossOverStruct)
                   }
                 }}
@@ -180,7 +180,86 @@ export default function ScreeningConditionModal(props: {
 
             {/* クロスオーバー */}
             {selectedCondition?.type === 'cross_over' && (
-              <Form.Group className="mt-3"></Form.Group>
+              <>
+              {
+                (() => {
+
+                  const condition = selectedCondition as ScreeningConditionCrossOverStruct
+
+                  return (
+                    <>
+                      <Form.Group className="mt-3">
+                        <Form.Label>Line 1</Form.Label>
+                        <Form.Control
+                          as="select"
+                          value={condition.line1}
+                          onChange={(e) => {
+                            setSelectedCondition({
+                              ...selectedCondition,
+                              line1: e.target.value as MovingAverageType,
+                            } as unknown as ScreeningConditionCrossOverStruct)
+                          }}
+                        >
+                          <option value="close">終値 (0日移動平均線)</option>
+                          <option value="ma_25">25日移動平均線</option>
+                          <option value="ma_50">50日移動平均線</option>
+                        </Form.Control>
+                      </Form.Group>
+                      <Form.Group className="mt-3">
+                        <Form.Label>Line 2</Form.Label>
+                        <Form.Control
+                          as="select"
+                          value={condition.line2}
+                          onChange={(e) => {
+                            setSelectedCondition({
+                              ...selectedCondition,
+                              line2: e.target.value as MovingAverageType,
+                            } as unknown as ScreeningConditionCrossOverStruct)
+                          }}
+                        >
+                          <option value="close">終値 (0日移動平均線)</option>
+                          <option value="ma_25">25日移動平均線</option>
+                          <option value="ma_50">50日移動平均線</option>
+                        </Form.Control>
+                      </Form.Group>
+                      {
+                        condition.line1 === condition.line2 && (
+                          <Alert variant="danger" className='mt-3'>
+                            `Line 1`と`Line 2`が同じです。
+                          </Alert>
+                        )
+                      }
+                      <Form.Group className="mt-3">
+                        <Form.Label>期間</Form.Label>
+                        <Form.Group className="d-flex justify-content-between align-items-center">
+                          <Form.Control
+                            type="date"
+                            value={condition.from}
+                            onChange={(e) => {
+                              setSelectedCondition({
+                                ...selectedCondition,
+                                from: e.target.value,
+                              })
+                            }}
+                          />
+                          ～
+                          <Form.Control
+                            type="date"
+                            value={condition.to}
+                            onChange={(e) => {
+                              setSelectedCondition({
+                                ...selectedCondition,
+                                to: e.target.value,
+                              })
+                            }}
+                          />
+                        </Form.Group>
+                      </Form.Group>
+                    </>
+                  )
+                })()
+              }
+              </>
             )}
 
             <Button
@@ -192,7 +271,7 @@ export default function ScreeningConditionModal(props: {
                 }
                 closeModal()
               }}
-              disabled={selectedCondition === null}
+              disabled={selectedCondition === null || (selectedCondition as ScreeningConditionCrossOverStruct).line1 === (selectedCondition as ScreeningConditionCrossOverStruct).line2}
             >
               追加
             </Button>
