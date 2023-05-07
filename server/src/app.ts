@@ -20,7 +20,7 @@ import paginate from './common/pagination'
 import { Stock } from './interface/turnip/stock'
 import { getDailyQuotes } from './model/daily_quotes'
 import { getBusinessDaysFromJQuants, saveBusinessDaysToS3 } from './model/jpx_business_day'
-import { getBusinessDays } from './analysis/jpx_business_day'
+import { getBusinessDays } from './analysis/utils'
 import dayjs from './common/dayjs'
 
 dotenv.config()
