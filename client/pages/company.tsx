@@ -3,7 +3,7 @@ import Layout from '../components/Layout'
 import setting from '../setting'
 import useSWR from 'swr'
 import ListedInfoStruct from '../interface/listed_info'
-import { Alert, Spinner, Table } from 'react-bootstrap'
+import { Alert, Spinner } from 'react-bootstrap'
 import CompanyPriceChart from '../components/CompanyPriceChart'
 import PricesDailyQuotesStruct from '../interface/prices_daily_quotes'
 import FinsStatementsStruct from '../interface/fins_statements'
@@ -70,7 +70,8 @@ export default function Company() {
   return (
     <Layout>
       <div id="Company">
-        {!info && (
+        {/* 全てのブロックが表示されていなければローディングを表示する。 */}
+        {!info && !prices && !statements && (
           <div className="mt-3 d-flex justify-content-between">
             <Spinner animation="grow" variant="primary" />
             <Spinner animation="grow" variant="secondary" />
@@ -87,7 +88,14 @@ export default function Company() {
           {/* 銘柄基本情報 */}
           {info_error ? (
             <Alert variant="danger">Failed to load...</Alert>
-          ) : <CompanyBasicInfo info={info} />
+          ) : info ? (
+            <CompanyBasicInfo info={info} />
+          ) : (
+            <Alert variant="secondary" className="d-flex align-items-center">
+              <Spinner animation="grow" variant="primary" className="me-3" />
+              基本情報を取得中...
+            </Alert>
+          )
           }
           {/* 株価情報 */}
           {prices_error ? (
