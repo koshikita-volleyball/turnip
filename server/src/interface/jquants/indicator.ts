@@ -1,4 +1,4 @@
-import { LineType } from './line'
+import { TimeSeriesLineType } from './line'
 
 type IndicatorType = 'growth_rate' | 'cross_over'
 type OHLC = 'open' | 'high' | 'low' | 'close'
@@ -19,8 +19,8 @@ export type GrowthRateIndicator = CommonIndicator & {
 
 export type CrossOverIndicator = CommonIndicator & {
   type: 'cross_over'
-  line1: LineType
-  line2: LineType
+  line1: TimeSeriesLineType
+  line2: TimeSeriesLineType
   from: string
   to: string
 }
