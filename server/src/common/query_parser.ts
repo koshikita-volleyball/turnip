@@ -1,7 +1,7 @@
 import { APIGatewayEvent } from 'aws-lambda'
 import { CrossOverIndicator, GrowthRateIndicator, Indicator } from '../interface/jquants/indicator'
 import dayjs from '../common/dayjs'
-import { getBusinessDays } from '../analysis/utils'
+import { getBusinessDays } from '../screener/utils'
 
 type Required<T extends object> = boolean | (keyof T)[]
 

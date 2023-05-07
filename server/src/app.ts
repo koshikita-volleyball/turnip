@@ -20,10 +20,14 @@ import paginate from './common/pagination'
 import { Stock } from './interface/turnip/stock'
 import { getDailyQuotes } from './model/daily_quotes'
 import { getFinsStatements } from './model/fins_statements'
-import { getBusinessDaysFromJQuants, saveBusinessDaysToS3 } from './model/jpx_business_day'
-import { getBusinessDays } from './analysis/utils'
+import {
+  getBusinessDaysFromS3,
+  getBusinessDaysFromJQuants,
+  saveBusinessDaysToS3,
+} from './model/jpx_business_day'
 import dayjs from './common/dayjs'
 import FinsStatementsStruct from './interface/jquants/fins_statements'
+import screener from './screener/screener'
 
 dotenv.config()
 
@@ -58,7 +62,7 @@ export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
 
 export const business_day_handler = async (): Promise<APIGatewayProxyResult> => {
   try {
-    const dates = await getBusinessDays()
+    const dates = await getBusinessDaysFromS3()
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
@@ -578,13 +582,17 @@ export const fins_statements_updater_handler = async (): Promise<void> => {
 }
 
 export const screener_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+  const { page } = getPaginationParams(event)
   const stockCommonFilter = getStockCommonFilterParams(event)
   const indicatorParams = await getIndicatorParams(event)
+
+  const stocks = await getStocks(stockCommonFilter)
+  const screenedStocks = screener(stocks, indicatorParams)
 
   return {
     statusCode: 200,
     headers: CORS_HEADERS,
-    body: JSON.stringify({ stockCommonFilter, indicatorParams }),
+    body: JSON.stringify({ ...paginate(screenedStocks, page), indicatorParams }),
   }
 }
 
