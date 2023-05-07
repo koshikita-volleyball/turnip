@@ -97,7 +97,7 @@ export default function ScreeningConditionModal(props: {
                     selectedCondition as ScreeningConditionGrowthRateStruct
                   return (
                     <>
-                      <Alert variant="secondary" className='mt-3'>
+                      <Alert variant="secondary" className="mt-3">
                         特定の日付の株価が、指定した日付の株価より〇〇%以上上昇(下落)しているかどうかを判定します。
                       </Alert>
                       <Form.Group className="mt-3">
@@ -184,15 +184,15 @@ export default function ScreeningConditionModal(props: {
             {/* クロスオーバー */}
             {selectedCondition?.type === 'cross_over' && (
               <>
-              {
-                (() => {
-
-                  const condition = selectedCondition as ScreeningConditionCrossOverStruct
+                {(() => {
+                  const condition =
+                    selectedCondition as ScreeningConditionCrossOverStruct
 
                   return (
                     <>
-                      <Alert variant="secondary" className='mt-3'>
-                        移動平均線A(Line 1)が移動平均線B(Line 2)を特定の期間内に上回ったかどうかを判定します。
+                      <Alert variant="secondary" className="mt-3">
+                        移動平均線A(Line 1)が移動平均線B(Line
+                        2)を特定の期間内に上回ったかどうかを判定します。
                       </Alert>
                       <Form.Group className="mt-3">
                         <Form.Label>Line 1</Form.Label>
@@ -228,13 +228,11 @@ export default function ScreeningConditionModal(props: {
                           <option value="ma_50">50日移動平均線</option>
                         </Form.Control>
                       </Form.Group>
-                      {
-                        condition.line1 === condition.line2 && (
-                          <Alert variant="danger" className='mt-3'>
-                            `Line 1`と`Line 2`が同じです。
-                          </Alert>
-                        )
-                      }
+                      {condition.line1 === condition.line2 && (
+                        <Alert variant="danger" className="mt-3">
+                          `Line 1`と`Line 2`が同じです。
+                        </Alert>
+                      )}
                       <Form.Group className="mt-3">
                         <Form.Label>期間</Form.Label>
                         <Form.Group className="d-flex justify-content-between align-items-center">
@@ -263,8 +261,7 @@ export default function ScreeningConditionModal(props: {
                       </Form.Group>
                     </>
                   )
-                })()
-              }
+                })()}
               </>
             )}
 
@@ -277,7 +274,12 @@ export default function ScreeningConditionModal(props: {
                 }
                 closeModal()
               }}
-              disabled={selectedCondition === null || (selectedCondition as ScreeningConditionCrossOverStruct).line1 === (selectedCondition as ScreeningConditionCrossOverStruct).line2}
+              disabled={
+                selectedCondition === null ||
+                (selectedCondition as ScreeningConditionCrossOverStruct)
+                  .line1 ===
+                  (selectedCondition as ScreeningConditionCrossOverStruct).line2
+              }
             >
               追加
             </Button>
