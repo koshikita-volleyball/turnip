@@ -18,7 +18,7 @@ import {
 } from './common/query_parser'
 import paginate from './common/pagination'
 import { Stock } from './interface/turnip/stock'
-import { getDailyQuotes, getDailyQuotesByPeriod } from './model/daily_quotes'
+import { getDailyQuotes } from './model/daily_quotes'
 import { getFinsStatements } from './model/fins_statements'
 import {
   getBusinessDaysFromS3,
@@ -38,6 +38,12 @@ const CORS_HEADERS = {
 }
 
 export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
+  // TODO: loggerにまとめる
+  const now = dayjs()
+  const environment = GetProcessEnv('ENVIRONMENT')
+  await notify(
+    `【 ${environment} | ${now.format('YYYY-MM-DD HH:mm:ss')} 】 :boyon: Hello World :boyon:`,
+  )
   try {
     return {
       statusCode: 200,
