@@ -5,13 +5,13 @@ services:
     container_name: client
     image: node:20
     ports:
-      - "3000:3000"
+      - '3000:3000'
     working_dir: /app
-    command: "yarn dev"
+    command: 'yarn dev'
     volumes:
       - type: bind
-        source: "./"
-        target: "/app/"
+        source: './'
+        target: '/app/'
 
 volumes:
   client_volume:
