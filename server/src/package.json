@@ -13,6 +13,7 @@
     "axios": ">=0.21.1",
     "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
+    "express": "^4.18.2",
     "node-fetch": "2.6.6",
     "typescript": "^5.0.4"
   },
