@@ -14,16 +14,15 @@ type GetDailyQuotesProps = {
 
 export const getDailyQuotes = async ({
   code,
-  date,
   from,
   to,
 }: GetDailyQuotesProps): Promise<PricesDailyQuotesStruct[]> => {
   if (code) {
     return _getDailyQuotesByStock(code, from, to)
   }
-  if (date) {
-    return _getDailyQuotesByDate(date)
-  }
+  // if (date) {
+  //   return _getDailyQuotesByDate(date)
+  // }
   throw new Error('Missing required parameter: code or date')
 }
 
@@ -64,14 +63,41 @@ const _getDailyQuotesByStock = async (
 }
 
 // TODO: セカンダリインデックス?
-const _getDailyQuotesByDate = async (date: string): Promise<PricesDailyQuotesStruct[]> => {
+// const _getDailyQuotesByDate = async (date: string): Promise<PricesDailyQuotesStruct[]> => {
+//   const ddb = new AWS.DynamoDB()
+//   const params = {
+//     TableName: GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
+//     FilterExpression: '#Date = :Date',
+//     ExpressionAttributeValues: {
+//       ':Date': {
+//         S: date,
+//       },
+//     },
+//     ExpressionAttributeNames: {
+//       '#Date': 'Date',
+//     },
+//   }
+//   const result = await ddb.scan(params).promise()
+//   if (!result.Items) {
+//     return []
+//   }
+//   return result.Items.map(item => unmarshall(item) as PricesDailyQuotesStruct)
+// }
+
+export const getDailyQuotesByPeriod = async (from?: string, to?: string): Promise<PricesDailyQuotesStruct[]> => {
+  
+  const { from: defaultFrom, to: defaultTo } = getDefaultPeriod()
+  
   const ddb = new AWS.DynamoDB()
   const params = {
     TableName: GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
-    FilterExpression: '#Date = :Date',
+    FilterExpression: '#Date BETWEEN :From AND :To',
     ExpressionAttributeValues: {
-      ':Date': {
-        S: date,
+      ':From': {
+        S: from ?? defaultFrom,
+      },
+      ':To': {
+        S: to ?? defaultTo,
       },
     },
     ExpressionAttributeNames: {

@@ -18,7 +18,7 @@ import {
 } from './common/query_parser'
 import paginate from './common/pagination'
 import { Stock } from './interface/turnip/stock'
-import { getDailyQuotes } from './model/daily_quotes'
+import { getDailyQuotes, getDailyQuotesByPeriod } from './model/daily_quotes'
 import { getFinsStatements } from './model/fins_statements'
 import {
   getBusinessDaysFromS3,
@@ -599,23 +599,15 @@ export const screener_handler = async (event: APIGatewayEvent): Promise<APIGatew
 export const tmp_prices_handler = async (
   event: APIGatewayEvent,
 ): Promise<APIGatewayProxyResult> => {
-  const { page } = getPaginationParams(event)
-  const date = event.queryStringParameters?.date
+  const from = event.queryStringParameters?.from
+  const to = event.queryStringParameters?.to
 
-  if (!date) {
-    return {
-      statusCode: 400,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({ message: 'date is required' }),
-    }
-  }
-
-  const prices = await getDailyQuotes({ date })
+  const prices = await getDailyQuotesByPeriod(from, to)
 
   return {
     statusCode: 200,
     headers: CORS_HEADERS,
-    body: JSON.stringify(paginate(prices, page)),
+    body: JSON.stringify(prices),
   }
 }
 
