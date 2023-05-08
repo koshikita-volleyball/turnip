@@ -91,6 +91,9 @@ jobs:
       - name: Test
         run: yarn test
         working-directory: ${{ env.client-directory }}
+      - name: Vulnerability check
+        run: yarn audit
+        working-directory: ${{ env.client-directory }}
   nextjs-build:
     needs:
       - nextjs-check
