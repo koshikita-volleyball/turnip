@@ -9,8 +9,9 @@ interface HttpResponseErrorType extends Error {
 class HttpResponseError extends Error implements HttpResponseErrorType {
   statusCode: number
   response: APIGatewayProxyResult
-  constructor(statusCode: number, message: string) {
+  constructor(name: string, statusCode: number, message: string) {
     super(message)
+    this.name = name
     this.statusCode = statusCode
     this.response = {
       statusCode,
@@ -24,18 +25,18 @@ class HttpResponseError extends Error implements HttpResponseErrorType {
 
 export class BadRequestError extends HttpResponseError {
   constructor(message: string) {
-    super(400, message)
+    super('BadRequestError', 400, message)
   }
 }
 
 export class InternalServerError extends HttpResponseError {
   constructor(message: string) {
-    super(500, message)
+    super('InternalServerError', 500, message)
   }
 }
 
 export class NotImplementedError extends HttpResponseError {
   constructor(message: string) {
-    super(501, message)
+    super('NotImplementedError', 501, message)
   }
 }
