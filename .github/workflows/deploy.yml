@@ -41,6 +41,9 @@ jobs:
       - name: Test
         run: yarn test
         working-directory: ${{ env.server-directory }}/src
+      - name: Vulnerability check
+        run: yarn audit
+        working-directory: ${{ env.server-directory }}/src
   lambda-deploy:
     runs-on: ubuntu-latest
     needs: lambda-check
