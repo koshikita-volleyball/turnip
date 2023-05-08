@@ -326,7 +326,7 @@ Resources:
   TmpPricesFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-screener
+      FunctionName: !Sub ${AWS::StackName}-tmp-prices
       PackageType: Image
       ImageConfig:
         Command: [ "app.tmp_prices_handler" ]
