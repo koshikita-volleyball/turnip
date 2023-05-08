@@ -24,14 +24,9 @@ import { getBusinessDaysFromJQuants, saveBusinessDaysToS3 } from './model/jpx_bu
 import { getBusinessDays } from './analysis/jpx_business_day'
 import dayjs from './common/dayjs'
 import FinsStatementsStruct from './interface/jquants/fins_statements'
+import { CORS_HEADERS } from './common/const'
 
 dotenv.config()
-
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS,PATCH',
-  'Access-Control-Allow-Headers': 'Content-Type',
-}
 
 export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
   try {
