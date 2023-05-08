@@ -1,3 +1,5 @@
+console*.ts
+
 *.http
 
 /**/*.js
