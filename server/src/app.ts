@@ -596,21 +596,6 @@ export const screener_handler = async (event: APIGatewayEvent): Promise<APIGatew
   }
 }
 
-export const tmp_prices_handler = async (
-  event: APIGatewayEvent,
-): Promise<APIGatewayProxyResult> => {
-  const from = event.queryStringParameters?.from
-  const to = event.queryStringParameters?.to
-
-  const prices = await getDailyQuotesByPeriod(from, to)
-
-  return {
-    statusCode: 200,
-    headers: CORS_HEADERS,
-    body: JSON.stringify(prices),
-  }
-}
-
 // テクニカル系のハンドラー
 
 /**

@@ -83,30 +83,3 @@ const _getDailyQuotesByStock = async (
 //   }
 //   return result.Items.map(item => unmarshall(item) as PricesDailyQuotesStruct)
 // }
-
-export const getDailyQuotesByPeriod = async (from?: string, to?: string): Promise<PricesDailyQuotesStruct[]> => {
-  
-  const { from: defaultFrom, to: defaultTo } = getDefaultPeriod()
-  
-  const ddb = new AWS.DynamoDB()
-  const params = {
-    TableName: GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
-    FilterExpression: '#Date BETWEEN :From AND :To',
-    ExpressionAttributeValues: {
-      ':From': {
-        S: from ?? defaultFrom,
-      },
-      ':To': {
-        S: to ?? defaultTo,
-      },
-    },
-    ExpressionAttributeNames: {
-      '#Date': 'Date',
-    },
-  }
-  const result = await ddb.scan(params).promise()
-  if (!result.Items) {
-    return []
-  }
-  return result.Items.map(item => unmarshall(item) as PricesDailyQuotesStruct)
-}
