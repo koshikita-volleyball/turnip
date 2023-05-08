@@ -1,6 +1,6 @@
 /* eslint-disable */
-import express from 'express';
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import express from 'express'
+import { APIGatewayProxyEvent } from 'aws-lambda'
 import {
   lambdaHandler,
   business_day_handler,
@@ -8,11 +8,11 @@ import {
   listed_info_handler,
   prices_daily_quotes_handler,
   fins_statements_handler,
-} from './app';
+} from './app'
 
-const app = express();
+const app = express()
 
-app.listen(3000);
+app.listen(3000)
 
 // <パス>: <関数>
 const path_func_map = {
@@ -29,26 +29,26 @@ for (const [path, func] of Object.entries(path_func_map)) {
   // パスに対して関数を設定
   app.get(path, async (req: express.Request, res: express.Response) => {
     // クエリストリングを取得して、queryStringParametersに設定
-    const query = req.query;
-    const queryStringParameters = {} as { [key: string]: string };
+    const query = req.query
+    const queryStringParameters = {} as { [key: string]: string }
     for (const [key, value] of Object.entries(query)) {
-      queryStringParameters[key] = value as string;
+      queryStringParameters[key] = value as string
     }
 
     // イベントオブジェクトを作成
-    const event: APIGatewayProxyEvent = {} as APIGatewayProxyEvent;
-    event.queryStringParameters = queryStringParameters;
+    const event: APIGatewayProxyEvent = {} as APIGatewayProxyEvent
+    event.queryStringParameters = queryStringParameters
 
-    const response = await func(event);
+    const response = await func(event)
 
     // レスポンスヘッダにCORSを設定
-    const headers = response.headers || {};
-    headers['Content-Type'] = 'application/json';
-    const body = response.body || '';
+    const headers = response.headers || {}
+    headers['Content-Type'] = 'application/json'
+    const body = response.body || ''
     // ヘッダをループ
     for (const [key, value] of Object.entries(headers)) {
-      res.setHeader(key, value as string);
+      res.setHeader(key, value as string)
     }
-    return res.send(body);
-  });
+    return res.send(body)
+  })
 }
