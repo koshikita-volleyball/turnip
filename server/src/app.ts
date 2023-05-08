@@ -596,6 +596,29 @@ export const screener_handler = async (event: APIGatewayEvent): Promise<APIGatew
   }
 }
 
+export const tmp_prices_handler = async (
+  event: APIGatewayEvent,
+): Promise<APIGatewayProxyResult> => {
+  const { page } = getPaginationParams(event)
+  const date = event.queryStringParameters?.date
+
+  if (!date) {
+    return {
+      statusCode: 400,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({ message: 'date is required' }),
+    }
+  }
+
+  const prices = await getDailyQuotes({ date })
+
+  return {
+    statusCode: 200,
+    headers: CORS_HEADERS,
+    body: JSON.stringify(paginate(prices, page)),
+  }
+}
+
 // テクニカル系のハンドラー
 
 /**
