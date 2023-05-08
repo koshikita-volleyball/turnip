@@ -33,7 +33,8 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
-export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const lambdaHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   try {
     return {
       statusCode: 200,
@@ -56,7 +57,8 @@ export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
   }
 }
 
-export const business_day_handler = async (): Promise<APIGatewayProxyResult> => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const business_day_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   try {
     const dates = await getBusinessDays()
     return {

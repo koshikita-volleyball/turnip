@@ -22,12 +22,14 @@
     "prettier:write": "prettier --write .",
     "prettier:check": "prettier --check .",
     "check": "yarn lint && yarn prettier:check",
+    "server": "ts-node server.ts",
     "console": "ts-node console.ts",
     "test": "tsc && mocha tests/unit/"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.115",
     "@types/chai": "^4.3.5",
+    "@types/express": "^4.17.17",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.16.3",
     "@types/node-fetch": "2.x",
