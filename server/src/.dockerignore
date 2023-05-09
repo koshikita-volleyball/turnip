@@ -4,4 +4,4 @@ node_modules/
 .prettierignore
 .prettierrc.json
 tsconfig.eslint.json
-tsconfig.json
+*.js
