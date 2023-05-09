@@ -6,7 +6,7 @@ interface HttpResponseErrorType extends Error {
   response: APIGatewayProxyResult
 }
 
-class HttpResponseError extends Error implements HttpResponseErrorType {
+export class HttpResponseError extends Error implements HttpResponseErrorType {
   statusCode: number
   response: APIGatewayProxyResult
   constructor(name: string, statusCode: number, message: string) {

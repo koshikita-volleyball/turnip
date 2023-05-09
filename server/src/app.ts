@@ -14,6 +14,7 @@ import { getStockByCode, getStocks } from './model/stock'
 import {
   getIndicatorParams,
   getPaginationParams,
+  getStockCodedParams,
   getStockCommonFilterParams,
 } from './common/query_parser'
 import paginate from './common/pagination'
@@ -25,6 +26,7 @@ import { getBusinessDays } from './analysis/jpx_business_day'
 import dayjs from './common/dayjs'
 import FinsStatementsStruct from './interface/jquants/fins_statements'
 import { CORS_HEADERS } from './common/const'
+import { HttpResponseError, InternalServerError } from './interface/turnip/error'
 
 dotenv.config()
 
@@ -580,6 +582,24 @@ export const screener_handler = async (event: APIGatewayEvent): Promise<APIGatew
     statusCode: 200,
     headers: CORS_HEADERS,
     body: JSON.stringify({ stockCommonFilter, indicatorParams }),
+  }
+}
+
+export const tmp_code_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+  try {
+    const { code } = getStockCodedParams(event, {code: true})
+    return {
+      statusCode: 200,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({ code }),
+    }
+  } catch (err: unknown) {
+    if (err instanceof HttpResponseError) {
+      return err.response
+    }
+    const message = err instanceof Error ? err.message : JSON.stringify(err)
+    console.error(message)
+    return new InternalServerError(message).response
   }
 }
 

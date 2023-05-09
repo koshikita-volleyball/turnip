@@ -2,6 +2,7 @@ import { APIGatewayEvent } from 'aws-lambda'
 import { CrossOverIndicator, GrowthRateIndicator, Indicator } from '../interface/jquants/indicator'
 import dayjs from '../common/dayjs'
 import { getBusinessDays } from '../analysis/jpx_business_day'
+import { BadRequestError } from '../interface/turnip/error'
 
 type Required<T extends object> = boolean | (keyof T)[]
 
@@ -50,7 +51,8 @@ const _parseList = (str: string | undefined): string[] | undefined => {
 export const getStockCodedParams = (event: APIGatewayEvent): StockCode => {
   const code = event.queryStringParameters?.code
   if (!code) {
-    throw new Error('Missing required parameter: code')
+    // throw new Error('Missing required parameter: code')
+    throw new BadRequestError('Missing required parameter: code')
   }
   return { code }
 }
