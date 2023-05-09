@@ -33,34 +33,11 @@ import { api, APIFn } from './common/handler'
 dotenv.config()
 
 export const hello_handler: APIGatewayProxyHandler = async event => {
-  const fn: APIFn = async () => {
+  const fn: APIFn = () => {
     return 'Hello World'
   }
   return api(fn, event)
 }
-
-// export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
-//   try {
-//     return {
-//       statusCode: 200,
-//       headers: CORS_HEADERS,
-//       body: JSON.stringify({
-//         message: 'hello world',
-//       }),
-//     }
-//   } catch (err: unknown) {
-//     if (err instanceof Error) {
-//       console.error(`[ERROR] ${err.message}`)
-//     }
-//     return {
-//       statusCode: 500,
-//       headers: CORS_HEADERS,
-//       body: JSON.stringify({
-//         message: err,
-//       }),
-//     }
-//   }
-// }
 
 export const business_day_handler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = async () => {
@@ -69,28 +46,6 @@ export const business_day_handler: APIGatewayProxyHandler = async event => {
   }
   return api(fn, event)
 }
-
-// export const business_day_handler = async (): Promise<APIGatewayProxyResult> => {
-//   try {
-//     const dates = await getBusinessDays()
-//     return {
-//       statusCode: 200,
-//       headers: CORS_HEADERS,
-//       body: JSON.stringify(dates),
-//     }
-//   } catch (err) {
-//     if (err instanceof Error) {
-//       console.error(`[ERROR] ${err.message}`)
-//     }
-//     return {
-//       statusCode: 500,
-//       headers: CORS_HEADERS,
-//       body: JSON.stringify({
-//         message: err,
-//       }),
-//     }
-//   }
-// }
 
 export const business_day_update_handler = async (): Promise<void> => {
   try {
@@ -132,35 +87,6 @@ export const listed_info_handler: APIGatewayProxyHandler = async event => {
   return api(fn, event)
 }
 
-// export const listed_info_handler = async (
-//   event: APIGatewayEvent,
-// ): Promise<APIGatewayProxyResult> => {
-//   try {
-//     const { page } = getPaginationParams(event)
-//     const stockCommonFilterParams = getStockCommonFilterParams(event)
-//     const company_name = event.queryStringParameters?.company_name
-
-//     const stocks = await getStocks({ ...stockCommonFilterParams, company_name })
-
-//     return {
-//       statusCode: 200,
-//       headers: CORS_HEADERS,
-//       body: JSON.stringify(paginate<Stock>(stocks, page)),
-//     }
-//   } catch (err: unknown) {
-//     if (err instanceof Error) {
-//       console.error(`[ERROR] ${err.message}`)
-//     }
-//     return {
-//       statusCode: 500,
-//       headers: CORS_HEADERS,
-//       body: JSON.stringify({
-//         message: err,
-//       }),
-//     }
-//   }
-// }
-
 export const prices_daily_quotes_handler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = async event => {
     const code = event.queryStringParameters?.code
@@ -175,46 +101,6 @@ export const prices_daily_quotes_handler: APIGatewayProxyHandler = async event =
   }
   return api(fn, event)
 }
-
-// export const prices_daily_quotes_handler = async (
-//   event: APIGatewayEvent,
-// ): Promise<APIGatewayProxyResult> => {
-//   try {
-//     const code = event.queryStringParameters?.code
-//     const date = event.queryStringParameters?.date
-//     const from = event.queryStringParameters?.from
-//     const to = event.queryStringParameters?.to
-
-//     if (!code) {
-//       return {
-//         statusCode: 400,
-//         headers: CORS_HEADERS,
-//         body: JSON.stringify({
-//           message: 'code is required.',
-//         }),
-//       }
-//     }
-
-//     const dailyQuotes = await getDailyQuotes({ code, date, from, to })
-
-//     return {
-//       statusCode: 200,
-//       headers: CORS_HEADERS,
-//       body: JSON.stringify(dailyQuotes),
-//     }
-//   } catch (err) {
-//     if (err instanceof Error) {
-//       console.error(`[ERROR] ${err.message}`)
-//     }
-//     return {
-//       statusCode: 500,
-//       headers: CORS_HEADERS,
-//       body: JSON.stringify({
-//         message: err,
-//       }),
-//     }
-//   }
-// }
 
 export const fins_statements_handler = async (
   event: APIGatewayEvent,
