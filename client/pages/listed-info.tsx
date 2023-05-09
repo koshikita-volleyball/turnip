@@ -121,6 +121,20 @@ export default function AboutPage() {
           </div>
         ) : (
           <>
+            <FilteringBlock
+              useFiltering={useFiltering}
+              setUseFiltering={setUseFiltering}
+              company_name={company_name}
+              setCompanyName={setCompanyName}
+              market_code={market_code}
+              setMarketCode={setMarketCode}
+              sector_17_code={sector_17_code}
+              setSector17Code={setSector17Code}
+              sector_33_code={sector_33_code}
+              setSector33Code={setSector33Code}
+              afterChange={() => setPage(1)}
+            />
+            <hr />
             <div className="d-flex justify-content-between align-items-center mt-3">
               <Button
                 variant="primary"
@@ -140,19 +154,6 @@ export default function AboutPage() {
                 次へ
               </Button>
             </div>
-            <FilteringBlock
-              useFiltering={useFiltering}
-              setUseFiltering={setUseFiltering}
-              company_name={company_name}
-              setCompanyName={setCompanyName}
-              market_code={market_code}
-              setMarketCode={setMarketCode}
-              sector_17_code={sector_17_code}
-              setSector17Code={setSector17Code}
-              sector_33_code={sector_33_code}
-              setSector33Code={setSector33Code}
-              afterChange={() => setPage(1)}
-            />
             <Table className="table table-striped table-hover mt-3">
               <thead>
                 <tr>

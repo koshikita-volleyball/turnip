@@ -33,106 +33,90 @@ export default function FilteringBlock(props: {
 
   return (
     <>
-      <div className="mt-3">
-        {useFiltering ? (
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => {
-              setUseFiltering(false)
+      <div className="mt-3 p-3 bg-light border">
+        <Form.Label className='d-flex mt-3'>
+          <Form.Check
+            type="checkbox"
+            onChange={(e) => {
+              setUseFiltering(e.target.checked)
               afterChange()
             }}
-          >
-            条件を指定しない
-          </Button>
-        ) : (
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => {
-              setUseFiltering(true)
+            className="me-3"
+          />
+          絞り込みを使用する。
+        </Form.Label>
+        <Form>
+          <Form.Group className="mt-3">
+            <Form.Label>銘柄名</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="銘柄名"
+              value={company_name}
+              onChange={(e) => {
+                setCompanyName(e.target.value)
+                afterChange()
+              }}
+            />
+          </Form.Group>
+        </Form>
+        <Form.Group className="mt-3">
+          <Form.Label>市場</Form.Label>
+          <Form.Control
+            as="select"
+            onChange={(e) => {
+              const value = e.target.value
+              setMarketCode(value)
               afterChange()
             }}
+            value={market_code}
           >
-            条件を指定して検索
-          </Button>
-        )}
+            <option value="">指定しない</option>
+            {MarketInfo.map((item) => (
+              <option key={item.code} value={item.code}>
+                {item.name}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
+        <Form.Group className="mt-3">
+          <Form.Label>17業種</Form.Label>
+          <Form.Control
+            as="select"
+            onChange={(e) => {
+              const value = e.target.value
+              setSector17Code(value)
+              afterChange()
+            }}
+            value={sector_17_code}
+          >
+            <option value="">指定しない</option>
+            {Sector17Info.map((item) => (
+              <option key={item.code} value={item.code}>
+                {item.name}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
+        <Form.Group className="mt-3">
+          <Form.Label>33業種</Form.Label>
+          <Form.Control
+            as="select"
+            onChange={(e) => {
+              const value = e.target.value
+              setSector33Code(value)
+              afterChange()
+            }}
+            value={sector_33_code}
+          >
+            <option value="">指定しない</option>
+            {Sector33Info.map((item) => (
+              <option key={item.code} value={item.code}>
+                {item.name}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
       </div>
-      {useFiltering && (
-        <div className="mt-3 p-3 bg-light border">
-          <Form>
-            <Form.Group className="mt-3">
-              <Form.Label>銘柄名</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="銘柄名"
-                value={company_name}
-                onChange={(e) => {
-                  setCompanyName(e.target.value)
-                  afterChange()
-                }}
-              />
-            </Form.Group>
-          </Form>
-          <Form.Group className="mt-3">
-            <Form.Label>市場</Form.Label>
-            <Form.Control
-              as="select"
-              onChange={(e) => {
-                const value = e.target.value
-                setMarketCode(value)
-                afterChange()
-              }}
-              value={market_code}
-            >
-              <option value="">指定しない</option>
-              {MarketInfo.map((item) => (
-                <option key={item.code} value={item.code}>
-                  {item.name}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
-          <Form.Group className="mt-3">
-            <Form.Label>17業種</Form.Label>
-            <Form.Control
-              as="select"
-              onChange={(e) => {
-                const value = e.target.value
-                setSector17Code(value)
-                afterChange()
-              }}
-              value={sector_17_code}
-            >
-              <option value="">指定しない</option>
-              {Sector17Info.map((item) => (
-                <option key={item.code} value={item.code}>
-                  {item.name}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
-          <Form.Group className="mt-3">
-            <Form.Label>33業種</Form.Label>
-            <Form.Control
-              as="select"
-              onChange={(e) => {
-                const value = e.target.value
-                setSector33Code(value)
-                afterChange()
-              }}
-              value={sector_33_code}
-            >
-              <option value="">指定しない</option>
-              {Sector33Info.map((item) => (
-                <option key={item.code} value={item.code}>
-                  {item.name}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
-        </div>
-      )}
     </>
   )
 }
