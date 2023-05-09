@@ -135,8 +135,8 @@ jobs:
       - name: Install dependencies
         run: yarn install # --production --frozen-lockfile
         working-directory: ${{ env.client-directory }}
-        env:
-          NODE_ENV: production
+        # env:
+        #   NODE_ENV: production
       - name: Generating .env.local
         run: |
           echo "${{ secrets.NEXTJS_ENV_LOCAL }}" > .env.local
