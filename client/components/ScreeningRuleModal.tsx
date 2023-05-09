@@ -3,15 +3,19 @@ import Modal from 'react-modal'
 import {
   MovingAverageType,
   OHLC,
-  ScreeningConditionCrossOverStruct,
-  ScreeningConditionGrowthRateStruct,
-  ScreeningConditionStructs,
-} from '../interface/screening_condition'
+  ScreeningRuleCrossOverStruct,
+  ScreeningRuleGrowthRateStruct,
+  ScreeningRuleStructs,
+} from '../interface/screening_rule'
 import { Alert, Button, Form } from 'react-bootstrap'
 import dayjs from 'dayjs'
 
 const customStyles = {
+  overlay: {
+    zIndex: 999,
+  },
   content: {
+    position: 'relative',
     top: '50%',
     left: '50%',
     right: 'auto',
@@ -25,16 +29,17 @@ const customStyles = {
   },
 }
 
-export default function ScreeningConditionModal(props: {
+export default function ScreeningRuleModal(props: {
   modalIsOpen: boolean
   closeModal: () => void
-  conditions: ScreeningConditionStructs[]
-  setConditions: Dispatch<SetStateAction<ScreeningConditionStructs[]>>
+  rules: ScreeningRuleStructs[]
+  setRules: Dispatch<SetStateAction<ScreeningRuleStructs[]>>
 }) {
-  const { modalIsOpen, closeModal, conditions, setConditions } = props
+  const { modalIsOpen, closeModal, rules, setRules } = props
 
-  const [selectedCondition, setSelectedCondition] =
-    useState<ScreeningConditionStructs | null>(null)
+  const [selectedRule, setSelectedRule] = useState<ScreeningRuleStructs | null>(
+    null,
+  )
 
   return (
     <>
@@ -49,37 +54,36 @@ export default function ScreeningConditionModal(props: {
               <Form.Label>条件</Form.Label>
               <Form.Control
                 as="select"
-                value={selectedCondition?.type || ''}
+                value={selectedRule?.type || ''}
                 onChange={(e) => {
                   if (!e.target.value) {
-                    setSelectedCondition(null)
+                    setSelectedRule(null)
                     return
                   }
                   const type = e.target.value
                   if (type === 'growth_rate') {
-                    setSelectedCondition({
+                    setSelectedRule({
                       type: 'growth_rate',
                       positive: true,
                       collapsed: true,
                       threshold: 1.5,
                       up: true,
                       ohlc:
-                        (
-                          selectedCondition as ScreeningConditionGrowthRateStruct
-                        )?.ohlc || ('close' as OHLC),
+                        (selectedRule as ScreeningRuleGrowthRateStruct)?.ohlc ||
+                        ('close' as OHLC),
                       before: dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
                       after: dayjs().format('YYYY-MM-DD'),
-                    } as unknown as ScreeningConditionGrowthRateStruct)
+                    } as unknown as ScreeningRuleGrowthRateStruct)
                   }
                   if (type === 'cross_over') {
-                    setSelectedCondition({
+                    setSelectedRule({
                       type: 'cross_over',
                       positive: true,
                       line1: 'close' as MovingAverageType,
                       line2: 'ma_25' as MovingAverageType,
                       from: dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
                       to: dayjs().format('YYYY-MM-DD'),
-                    } as unknown as ScreeningConditionCrossOverStruct)
+                    } as unknown as ScreeningRuleCrossOverStruct)
                   }
                 }}
               >
@@ -90,11 +94,10 @@ export default function ScreeningConditionModal(props: {
             </Form.Group>
 
             {/* 成長率 */}
-            {selectedCondition?.type === 'growth_rate' && (
+            {selectedRule?.type === 'growth_rate' && (
               <>
                 {(() => {
-                  const condition =
-                    selectedCondition as ScreeningConditionGrowthRateStruct
+                  const Rule = selectedRule as ScreeningRuleGrowthRateStruct
                   return (
                     <>
                       <Alert variant="secondary" className="mt-3">
@@ -105,10 +108,10 @@ export default function ScreeningConditionModal(props: {
                         <Form.Check
                           type="checkbox"
                           label="上昇"
-                          checked={selectedCondition.positive}
+                          checked={selectedRule.positive}
                           onChange={(e) => {
-                            setSelectedCondition({
-                              ...selectedCondition,
+                            setSelectedRule({
+                              ...selectedRule,
                               positive: e.target.checked,
                             })
                           }}
@@ -118,11 +121,11 @@ export default function ScreeningConditionModal(props: {
                         <Form.Label>株価上昇率の閾値</Form.Label>
                         <Form.Control
                           type="number"
-                          value={condition.threshold}
+                          value={Rule.threshold}
                           step={0.1}
                           onChange={(e) => {
-                            setSelectedCondition({
-                              ...selectedCondition,
+                            setSelectedRule({
+                              ...selectedRule,
                               threshold: Number(e.target.value),
                             })
                           }}
@@ -132,15 +135,12 @@ export default function ScreeningConditionModal(props: {
                         <Form.Label>OHLC</Form.Label>
                         <Form.Control
                           as="select"
-                          value={
-                            (condition as ScreeningConditionGrowthRateStruct)
-                              .ohlc
-                          }
+                          value={(Rule as ScreeningRuleGrowthRateStruct).ohlc}
                           onChange={(e) => {
-                            setSelectedCondition({
-                              ...selectedCondition,
+                            setSelectedRule({
+                              ...selectedRule,
                               ohlc: e.target.value as OHLC,
-                            } as unknown as ScreeningConditionGrowthRateStruct)
+                            } as unknown as ScreeningRuleGrowthRateStruct)
                           }}
                         >
                           <option value="open">始値</option>
@@ -154,10 +154,10 @@ export default function ScreeningConditionModal(props: {
                         <Form.Group className="d-flex justify-content-between align-items-center">
                           <Form.Control
                             type="date"
-                            value={condition.before}
+                            value={Rule.before}
                             onChange={(e) => {
-                              setSelectedCondition({
-                                ...selectedCondition,
+                              setSelectedRule({
+                                ...selectedRule,
                                 before: e.target.value,
                               })
                             }}
@@ -165,10 +165,10 @@ export default function ScreeningConditionModal(props: {
                           ～
                           <Form.Control
                             type="date"
-                            value={condition.after}
+                            value={Rule.after}
                             onChange={(e) => {
-                              setSelectedCondition({
-                                ...selectedCondition,
+                              setSelectedRule({
+                                ...selectedRule,
                                 after: e.target.value,
                               })
                             }}
@@ -182,11 +182,10 @@ export default function ScreeningConditionModal(props: {
             )}
 
             {/* クロスオーバー */}
-            {selectedCondition?.type === 'cross_over' && (
+            {selectedRule?.type === 'cross_over' && (
               <>
                 {(() => {
-                  const condition =
-                    selectedCondition as ScreeningConditionCrossOverStruct
+                  const Rule = selectedRule as ScreeningRuleCrossOverStruct
 
                   return (
                     <>
@@ -198,12 +197,12 @@ export default function ScreeningConditionModal(props: {
                         <Form.Label>Line 1</Form.Label>
                         <Form.Control
                           as="select"
-                          value={condition.line1}
+                          value={Rule.line1}
                           onChange={(e) => {
-                            setSelectedCondition({
-                              ...selectedCondition,
+                            setSelectedRule({
+                              ...selectedRule,
                               line1: e.target.value as MovingAverageType,
-                            } as unknown as ScreeningConditionCrossOverStruct)
+                            } as unknown as ScreeningRuleCrossOverStruct)
                           }}
                         >
                           <option value="close">終値 (0日移動平均線)</option>
@@ -215,12 +214,12 @@ export default function ScreeningConditionModal(props: {
                         <Form.Label>Line 2</Form.Label>
                         <Form.Control
                           as="select"
-                          value={condition.line2}
+                          value={Rule.line2}
                           onChange={(e) => {
-                            setSelectedCondition({
-                              ...selectedCondition,
+                            setSelectedRule({
+                              ...selectedRule,
                               line2: e.target.value as MovingAverageType,
-                            } as unknown as ScreeningConditionCrossOverStruct)
+                            } as unknown as ScreeningRuleCrossOverStruct)
                           }}
                         >
                           <option value="close">終値 (0日移動平均線)</option>
@@ -228,7 +227,7 @@ export default function ScreeningConditionModal(props: {
                           <option value="ma_50">50日移動平均線</option>
                         </Form.Control>
                       </Form.Group>
-                      {condition.line1 === condition.line2 && (
+                      {Rule.line1 === Rule.line2 && (
                         <Alert variant="danger" className="mt-3">
                           `Line 1`と`Line 2`が同じです。
                         </Alert>
@@ -238,10 +237,10 @@ export default function ScreeningConditionModal(props: {
                         <Form.Group className="d-flex justify-content-between align-items-center">
                           <Form.Control
                             type="date"
-                            value={condition.from}
+                            value={Rule.from}
                             onChange={(e) => {
-                              setSelectedCondition({
-                                ...selectedCondition,
+                              setSelectedRule({
+                                ...selectedRule,
                                 from: e.target.value,
                               })
                             }}
@@ -249,10 +248,10 @@ export default function ScreeningConditionModal(props: {
                           ～
                           <Form.Control
                             type="date"
-                            value={condition.to}
+                            value={Rule.to}
                             onChange={(e) => {
-                              setSelectedCondition({
-                                ...selectedCondition,
+                              setSelectedRule({
+                                ...selectedRule,
                                 to: e.target.value,
                               })
                             }}
@@ -269,24 +268,26 @@ export default function ScreeningConditionModal(props: {
               variant="primary"
               className="d-block mt-5 mx-auto"
               onClick={() => {
-                if (selectedCondition) {
-                  setConditions([...conditions, selectedCondition])
+                if (selectedRule) {
+                  setRules([...rules, { ...selectedRule }])
                 }
                 closeModal()
               }}
               disabled={
-                selectedCondition === null ||
-                (selectedCondition.type === 'cross_over' &&
-                  (selectedCondition as ScreeningConditionCrossOverStruct)
-                    .line1 ===
-                    (selectedCondition as ScreeningConditionCrossOverStruct)
-                      .line2)
+                selectedRule === null ||
+                (selectedRule.type === 'cross_over' &&
+                  (selectedRule as ScreeningRuleCrossOverStruct).line1 ===
+                    (selectedRule as ScreeningRuleCrossOverStruct).line2)
               }
             >
               追加
             </Button>
           </Form>
         }
+        <Button
+          className="btn-close position-absolute top-0 end-0 text-danger"
+          onClick={closeModal}
+        ></Button>
       </Modal>
     </>
   )
