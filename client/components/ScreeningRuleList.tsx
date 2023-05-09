@@ -1,9 +1,9 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import {
-  ScreeningConditionCrossOverStruct,
-  ScreeningConditionGrowthRateStruct,
-  ScreeningConditionStructs,
-} from '../interface/screening_condition'
+  ScreeningRuleCrossOverStruct,
+  ScreeningRuleGrowthRateStruct,
+  ScreeningRuleStructs,
+} from '../interface/screening_rule'
 import { Alert, Table } from 'react-bootstrap'
 import {
   Trash,
@@ -12,54 +12,54 @@ import {
 } from 'react-bootstrap-icons'
 import dayjs from '../src/dayjs'
 
-export default function ScreeningConditionList(props: {
-  conditions: ScreeningConditionStructs[]
-  setConditions: Dispatch<SetStateAction<ScreeningConditionStructs[]>>
+export default function ScreeningRuleList(props: {
+  rules: ScreeningRuleStructs[]
+  setRules: Dispatch<SetStateAction<ScreeningRuleStructs[]>>
 }) {
-  const { conditions } = props
+  const { rules, setRules } = props
 
-  if (conditions.length === 0) {
+  if (rules.length === 0) {
     return <Alert variant="warning">ルールがありません。</Alert>
   }
 
   return (
     <div>
-      {conditions.map((_condition, index) => {
+      {rules.map((_Rule, index) => {
         return (
           <Alert key={index} variant="info" className="position-relative">
             {(() => {
-              if (_condition.collapsed) {
+              if (_Rule.collapsed) {
                 return (
                   <>
                     <ChevronDoubleDown
                       onClick={() => {
-                        const _conditions = [...conditions]
-                        _conditions[index].collapsed = false
-                        props.setConditions(_conditions)
+                        const _Rules = [...rules]
+                        _Rules[index].collapsed = false
+                        setRules(_Rules)
                       }}
                       role="button"
                       className="me-3"
                     />
                     Rule #{index + 1} |{' '}
                     {(() => {
-                      if (_condition.type === 'growth_rate') return '株価上昇率'
-                      if (_condition.type === 'cross_over')
+                      if (_Rule.type === 'growth_rate') return '株価上昇率'
+                      if (_Rule.type === 'cross_over')
                         return 'クロスオーバー'
                     })()}
                   </>
                 )
               }
 
-              if (_condition.type === 'growth_rate') {
-                const condition =
-                  _condition as ScreeningConditionGrowthRateStruct
+              if (_Rule.type === 'growth_rate') {
+                const Rule =
+                  _Rule as ScreeningRuleGrowthRateStruct
                 return (
                   <>
                     <ChevronDoubleUp
                       onClick={() => {
-                        const _conditions = [...conditions]
-                        _conditions[index].collapsed = true
-                        props.setConditions(_conditions)
+                        const _Rules = [...rules]
+                        _Rules[index].collapsed = true
+                        props.setRules(_Rules)
                       }}
                       role="button"
                       className="me-3"
@@ -74,16 +74,16 @@ export default function ScreeningConditionList(props: {
                         <tr>
                           <th className="w-25">株価上昇率の閾値</th>
                           <td>
-                            {condition.up ? 'over' : 'under'}{' '}
-                            {condition.threshold}%
+                            {Rule.up ? 'over' : 'under'}{' '}
+                            {Rule.threshold}%
                           </td>
                         </tr>
                         <tr>
                           <th className="w-25">期間</th>
                           <td>
-                            {condition.before} - {condition.after} |{' '}
-                            {dayjs(condition.after).diff(
-                              dayjs(condition.before),
+                            {Rule.before} - {Rule.after} |{' '}
+                            {dayjs(Rule.after).diff(
+                              dayjs(Rule.before),
                               'day',
                             ) + 1}
                             day(s)
@@ -93,12 +93,12 @@ export default function ScreeningConditionList(props: {
                           <th className="w-25">OHLC</th>
                           <td>
                             {(() => {
-                              if (condition.ohlc === 'open') return '始値'
-                              if (condition.ohlc === 'high') return '高値'
-                              if (condition.ohlc === 'low') return '安値'
-                              if (condition.ohlc === 'close') return '終値'
+                              if (Rule.ohlc === 'open') return '始値'
+                              if (Rule.ohlc === 'high') return '高値'
+                              if (Rule.ohlc === 'low') return '安値'
+                              if (Rule.ohlc === 'close') return '終値'
                             })()}
-                            ({condition.ohlc.toUpperCase()})
+                            ({Rule.ohlc.toUpperCase()})
                           </td>
                         </tr>
                       </tbody>
@@ -107,16 +107,16 @@ export default function ScreeningConditionList(props: {
                 )
               }
 
-              if (_condition.type === 'cross_over') {
-                const condition =
-                  _condition as ScreeningConditionCrossOverStruct
+              if (_Rule.type === 'cross_over') {
+                const Rule =
+                  _Rule as ScreeningRuleCrossOverStruct
                 return (
                   <>
                     <ChevronDoubleUp
                       onClick={() => {
-                        const _conditions = [...conditions]
-                        _conditions[index].collapsed = true
-                        props.setConditions(_conditions)
+                        const _Rules = [...rules]
+                        _Rules[index].collapsed = true
+                        props.setRules(_Rules)
                       }}
                       role="button"
                       className="me-3"
@@ -130,18 +130,18 @@ export default function ScreeningConditionList(props: {
                         </tr>
                         <tr>
                           <th className="w-25">Line 1</th>
-                          <td>{condition.line1}</td>
+                          <td>{Rule.line1}</td>
                         </tr>
                         <tr>
                           <th className="w-25">Line 2</th>
-                          <td>{condition.line2}</td>
+                          <td>{Rule.line2}</td>
                         </tr>
                         <tr>
                           <th className="w-25">期間</th>
                           <td>
-                            {condition.from} - {condition.to} |{' '}
-                            {dayjs(condition.to).diff(
-                              dayjs(condition.from),
+                            {Rule.from} - {Rule.to} |{' '}
+                            {dayjs(Rule.to).diff(
+                              dayjs(Rule.from),
                               'day',
                             ) + 1}
                             day(s)
@@ -160,9 +160,9 @@ export default function ScreeningConditionList(props: {
               role="button"
               onClick={() => {
                 if (confirm(`Rule #${index + 1} を削除しますか？`)) {
-                  const _conditions = [...conditions]
-                  _conditions.splice(index, 1)
-                  props.setConditions(_conditions)
+                  const _Rules = [...rules]
+                  _Rules.splice(index, 1)
+                  props.setRules(_Rules)
                 }
               }}
             />

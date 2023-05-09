@@ -2,15 +2,15 @@ import React, { useState } from 'react'
 import Modal from 'react-modal'
 
 import Layout from '../components/Layout'
-import { ScreeningConditionStructs } from '../interface/screening_condition'
-import ScreeningConditionModal from '../components/ScreeningConditionModal'
+import { ScreeningRuleStructs } from '../interface/screening_rule'
+import ScreeningRuleModal from '../components/ScreeningRuleModal'
 import { Button } from 'react-bootstrap'
-import ScreeningConditionList from '../components/ScreeningConditionList'
+import ScreeningRuleList from '../components/ScreeningRuleList'
 
 Modal.setAppElement('#Modal')
 
 export default function ContactPage() {
-  const [conditions, setConditions] = useState<ScreeningConditionStructs[]>([])
+  const [rules, setRules] = useState<ScreeningRuleStructs[]>([])
 
   const [modalIsOpen, setIsOpen] = React.useState(false)
 
@@ -20,9 +20,9 @@ export default function ContactPage() {
   return (
     <Layout>
       <div id="Screening">
-        <ScreeningConditionList
-          conditions={conditions}
-          setConditions={setConditions}
+        <ScreeningRuleList
+          rules={rules}
+          setRules={setRules}
         />
         <Button
           variant="info"
@@ -31,11 +31,11 @@ export default function ContactPage() {
         >
           スクリーニングルールを追加
         </Button>
-        <ScreeningConditionModal
+        <ScreeningRuleModal
           modalIsOpen={modalIsOpen}
           closeModal={closeModal}
-          conditions={conditions}
-          setConditions={setConditions}
+          rules={rules}
+          setRules={setRules}
         />
       </div>
     </Layout>
