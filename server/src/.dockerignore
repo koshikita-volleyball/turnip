@@ -5,3 +5,4 @@ node_modules/
 .prettierrc.json
 tsconfig.eslint.json
 tsconfig.json
+*.js
