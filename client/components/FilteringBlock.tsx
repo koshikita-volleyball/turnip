@@ -1,5 +1,6 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
+import { BsArrowsCollapse, BsArrowsExpand } from 'react-icons/bs'
 
 import { MarketInfo, Sector17Info, Sector33Info } from '../data/export'
 
@@ -31,9 +32,34 @@ export default function FilteringBlock(props: {
     afterChange,
   } = props
 
+  const [collapsed, setCollapsed] = useState(true)
+
+  if (collapsed) {
+    return (
+      <>
+      <div className='bg-light mt-2 p-3 d-flex align-items-center'>
+        <BsArrowsExpand
+          className="d-block me-3"
+          role='button'
+          onClick={() => setCollapsed(false)}
+        />
+          <span role='button' onClick={() => setCollapsed(false)}>絞り込み条件を表示する。</span>
+        </div>
+      </>
+    )
+  }
+
   return (
     <>
-      <div className="mt-3 p-3 bg-light border">
+      <div className="mt-2 p-3 bg-light border">
+        <div className='d-flex align-items-center'>
+          <BsArrowsCollapse
+            className="d-block me-3"
+            role='button'
+            onClick={() => setCollapsed(true)}
+          />
+          <span role='button' onClick={() => setCollapsed(true)}>絞り込み条件を非表示にする。</span>
+        </div>
         <Form.Label className='d-flex mt-3'>
           <Form.Check
             type="checkbox"
