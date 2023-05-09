@@ -127,7 +127,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: ${{ env.node-version }}
       - name: Setup Pages
         uses: actions/configure-pages@v2
         with:
