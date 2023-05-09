@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
-import { Button, Form } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import { BsArrowsCollapse, BsArrowsExpand } from 'react-icons/bs'
 
 import { MarketInfo, Sector17Info, Sector33Info } from '../data/export'
