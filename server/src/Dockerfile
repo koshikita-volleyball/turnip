@@ -1,7 +1,7 @@
 FROM node:18 as build
 WORKDIR /app
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+RUN yarn install
 COPY . .
 RUN yarn compile
 RUN rm -rf node_modules/ && rm -rf *.ts
@@ -9,5 +9,5 @@ RUN rm -rf node_modules/ && rm -rf *.ts
 FROM public.ecr.aws/lambda/nodejs:18 as production
 ENV NODE_ENV production
 COPY package.json package-lock.json ./
-RUN npm install --production --frozen-lockfile
+RUN npm install --production
 COPY --from=build /app/ ./
