@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import useSWR from 'swr'
 import setting from '../setting'
-import { Alert, Button, Form, Spinner, Table } from 'react-bootstrap'
+import { Alert, Button, Spinner, Table } from 'react-bootstrap'
 import ListedInfoStruct from '../interface/listed_info'
 import { useRouter } from 'next/router'
-import { MarketInfo, Sector17Info, Sector33Info } from '../data/export'
 import Link from 'next/link'
+import FilteringBlock from '../components/FilteringBlock'
 
 const fetcher = (url: string) =>
   fetch(url).then((r) => (r.ok ? r.json() : null))
@@ -32,7 +32,7 @@ const make_params = ({
 
 export default function AboutPage() {
   const [page, setPage] = useState(1)
-  const [useCondition, setUseCondition] = useState(true)
+  const [useFiltering, setUseFiltering] = useState(true)
   const [company_name, setCompanyName] = useState('')
   const [market_code, setMarketCode] = useState<string>('')
   const [sector_17_code, setSector17Code] = useState<string>('')
@@ -168,107 +168,20 @@ export default function AboutPage() {
             </Table>
           </>
         )}
-        <div className="mt-3">
-          {useCondition ? (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                setUseCondition(false)
-                setPage(1)
-              }}
-            >
-              条件を指定しない
-            </Button>
-          ) : (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                setUseCondition(true)
-                setPage(1)
-              }}
-            >
-              条件を指定して検索
-            </Button>
-          )}
-        </div>
-        {useCondition && (
-          <div className="mt-3 p-3 bg-light border">
-            <Form>
-              <Form.Group className="mt-3">
-                <Form.Label>銘柄名</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="銘柄名"
-                  value={company_name}
-                  onChange={(e) => {
-                    setCompanyName(e.target.value)
-                    setPage(1)
-                  }}
-                />
-              </Form.Group>
-            </Form>
-            <Form.Group className="mt-3">
-              <Form.Label>市場</Form.Label>
-              <Form.Control
-                as="select"
-                onChange={(e) => {
-                  const value = e.target.value
-                  setMarketCode(value)
-                  setPage(1)
-                }}
-                value={market_code}
-              >
-                <option value="">指定しない</option>
-                {MarketInfo.map((item) => (
-                  <option key={item.code} value={item.code}>
-                    {item.name}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-            <Form.Group className="mt-3">
-              <Form.Label>17業種</Form.Label>
-              <Form.Control
-                as="select"
-                onChange={(e) => {
-                  const value = e.target.value
-                  setSector17Code(value)
-                  setPage(1)
-                }}
-                value={sector_17_code}
-              >
-                <option value="">指定しない</option>
-                {Sector17Info.map((item) => (
-                  <option key={item.code} value={item.code}>
-                    {item.name}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-            <Form.Group className="mt-3">
-              <Form.Label>33業種</Form.Label>
-              <Form.Control
-                as="select"
-                onChange={(e) => {
-                  const value = e.target.value
-                  setSector33Code(value)
-                  setPage(1)
-                }}
-                value={sector_33_code}
-              >
-                <option value="">指定しない</option>
-                {Sector33Info.map((item) => (
-                  <option key={item.code} value={item.code}>
-                    {item.name}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-          </div>
-        )}
       </div>
+      <FilteringBlock
+        useFiltering={useFiltering}
+        setUseFiltering={setUseFiltering}
+        company_name={company_name}
+        setCompanyName={setCompanyName}
+        market_code={market_code}
+        setMarketCode={setMarketCode}
+        sector_17_code={sector_17_code}
+        setSector17Code={setSector17Code}
+        sector_33_code={sector_33_code}
+        setSector33Code={setSector33Code}
+        afterChange={() => setPage(1)}
+      />
     </Layout>
   )
 }
