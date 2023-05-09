@@ -41,6 +41,7 @@ export default function FilteringBlock(props: {
               setUseFiltering(e.target.checked)
               afterChange()
             }}
+            checked={useFiltering}
             className="me-3"
           />
           絞り込みを使用する。
