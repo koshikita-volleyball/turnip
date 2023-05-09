@@ -32,7 +32,7 @@ import { api, APIFn } from './common/handler'
 
 dotenv.config()
 
-export const hello_handler: APIGatewayProxyHandler = async event => {
+export const lambdaHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = () => {
     return 'Hello World'
   }
