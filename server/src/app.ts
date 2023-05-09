@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/require-await */
 import dotenv from 'dotenv'
-import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda'
+import { APIGatewayEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 import JQuantsClient from './common/jquants_client'
 import ListedInfoStruct from './interface/jquants/listed_info'
 import { GetRefreshToken } from './common/get_id_token'
@@ -12,6 +12,7 @@ import GetProcessEnv from './common/process_env'
 import { notify } from './common/slack'
 import { getStockByCode, getStocks } from './model/stock'
 import {
+  check_required,
   getIndicatorParams,
   getPaginationParams,
   getStockCodedParams,
@@ -26,54 +27,70 @@ import { getBusinessDays } from './analysis/jpx_business_day'
 import dayjs from './common/dayjs'
 import FinsStatementsStruct from './interface/jquants/fins_statements'
 import { CORS_HEADERS } from './common/const'
-import { HttpResponseError, InternalServerError } from './interface/turnip/error'
+import { NotFoundError } from './interface/turnip/error'
+import { api, APIFn } from './common/handler'
 
 dotenv.config()
 
-export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
-  try {
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({
-        message: 'hello world',
-      }),
-    }
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.error(`[ERROR] ${err.message}`)
-    }
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({
-        message: err,
-      }),
-    }
+export const hello_handler: APIGatewayProxyHandler = async event => {
+  const fn: APIFn = async () => {
+    return 'Hello World'
   }
+  return api(fn, event)
 }
 
-export const business_day_handler = async (): Promise<APIGatewayProxyResult> => {
-  try {
+// export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
+//   try {
+//     return {
+//       statusCode: 200,
+//       headers: CORS_HEADERS,
+//       body: JSON.stringify({
+//         message: 'hello world',
+//       }),
+//     }
+//   } catch (err: unknown) {
+//     if (err instanceof Error) {
+//       console.error(`[ERROR] ${err.message}`)
+//     }
+//     return {
+//       statusCode: 500,
+//       headers: CORS_HEADERS,
+//       body: JSON.stringify({
+//         message: err,
+//       }),
+//     }
+//   }
+// }
+
+export const business_day_handler: APIGatewayProxyHandler = async event => {
+  const fn: APIFn = async () => {
     const dates = await getBusinessDays()
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify(dates),
-    }
-  } catch (err) {
-    if (err instanceof Error) {
-      console.error(`[ERROR] ${err.message}`)
-    }
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({
-        message: err,
-      }),
-    }
+    return JSON.stringify(dates)
   }
+  return api(fn, event)
 }
+
+// export const business_day_handler = async (): Promise<APIGatewayProxyResult> => {
+//   try {
+//     const dates = await getBusinessDays()
+//     return {
+//       statusCode: 200,
+//       headers: CORS_HEADERS,
+//       body: JSON.stringify(dates),
+//     }
+//   } catch (err) {
+//     if (err instanceof Error) {
+//       console.error(`[ERROR] ${err.message}`)
+//     }
+//     return {
+//       statusCode: 500,
+//       headers: CORS_HEADERS,
+//       body: JSON.stringify({
+//         message: err,
+//       }),
+//     }
+//   }
+// }
 
 export const business_day_update_handler = async (): Promise<void> => {
   try {
@@ -87,108 +104,117 @@ export const business_day_update_handler = async (): Promise<void> => {
   }
 }
 
-export const info_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-  try {
-    const code = event.queryStringParameters?.code
-
-    if (!code) {
-      return {
-        statusCode: 400,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({
-          message: 'code is required',
-        }),
-      }
-    }
-
+export const info_handler: APIGatewayProxyHandler = async event => {
+  const fn: APIFn = async event => {
+    const { code: _code } = getStockCodedParams(event)
+    const code = check_required('code', _code)
     const stock = await getStockByCode(code)
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify(stock),
+    if (!stock) {
+      throw new NotFoundError(`code: ${code} is not found`)
     }
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.error(`[ERROR] ${err.message}`)
-    }
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({
-        message: err,
-      }),
-    }
+    return JSON.stringify('hello')
   }
+  return api(fn, event)
 }
 
-export const listed_info_handler = async (
-  event: APIGatewayEvent,
-): Promise<APIGatewayProxyResult> => {
-  try {
+export const listed_info_handler: APIGatewayProxyHandler = async event => {
+  const fn: APIFn = async event => {
+    // get params
     const { page } = getPaginationParams(event)
     const stockCommonFilterParams = getStockCommonFilterParams(event)
     const company_name = event.queryStringParameters?.company_name
 
+    // get stocks from dynamodb
     const stocks = await getStocks({ ...stockCommonFilterParams, company_name })
 
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify(paginate<Stock>(stocks, page)),
-    }
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.error(`[ERROR] ${err.message}`)
-    }
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({
-        message: err,
-      }),
-    }
+    return JSON.stringify(paginate<Stock>(stocks, page))
   }
+  return api(fn, event)
 }
 
-export const prices_daily_quotes_handler = async (
-  event: APIGatewayEvent,
-): Promise<APIGatewayProxyResult> => {
-  try {
+// export const listed_info_handler = async (
+//   event: APIGatewayEvent,
+// ): Promise<APIGatewayProxyResult> => {
+//   try {
+//     const { page } = getPaginationParams(event)
+//     const stockCommonFilterParams = getStockCommonFilterParams(event)
+//     const company_name = event.queryStringParameters?.company_name
+
+//     const stocks = await getStocks({ ...stockCommonFilterParams, company_name })
+
+//     return {
+//       statusCode: 200,
+//       headers: CORS_HEADERS,
+//       body: JSON.stringify(paginate<Stock>(stocks, page)),
+//     }
+//   } catch (err: unknown) {
+//     if (err instanceof Error) {
+//       console.error(`[ERROR] ${err.message}`)
+//     }
+//     return {
+//       statusCode: 500,
+//       headers: CORS_HEADERS,
+//       body: JSON.stringify({
+//         message: err,
+//       }),
+//     }
+//   }
+// }
+
+export const prices_daily_quotes_handler: APIGatewayProxyHandler = async event => {
+  const fn: APIFn = async event => {
     const code = event.queryStringParameters?.code
     const date = event.queryStringParameters?.date
     const from = event.queryStringParameters?.from
     const to = event.queryStringParameters?.to
-
-    if (!code) {
-      return {
-        statusCode: 400,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({
-          message: 'code is required.',
-        }),
-      }
-    }
+    check_required('code', code)
 
     const dailyQuotes = await getDailyQuotes({ code, date, from, to })
 
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify(dailyQuotes),
-    }
-  } catch (err) {
-    if (err instanceof Error) {
-      console.error(`[ERROR] ${err.message}`)
-    }
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({
-        message: err,
-      }),
-    }
+    return JSON.stringify(dailyQuotes)
   }
+  return api(fn, event)
 }
+
+// export const prices_daily_quotes_handler = async (
+//   event: APIGatewayEvent,
+// ): Promise<APIGatewayProxyResult> => {
+//   try {
+//     const code = event.queryStringParameters?.code
+//     const date = event.queryStringParameters?.date
+//     const from = event.queryStringParameters?.from
+//     const to = event.queryStringParameters?.to
+
+//     if (!code) {
+//       return {
+//         statusCode: 400,
+//         headers: CORS_HEADERS,
+//         body: JSON.stringify({
+//           message: 'code is required.',
+//         }),
+//       }
+//     }
+
+//     const dailyQuotes = await getDailyQuotes({ code, date, from, to })
+
+//     return {
+//       statusCode: 200,
+//       headers: CORS_HEADERS,
+//       body: JSON.stringify(dailyQuotes),
+//     }
+//   } catch (err) {
+//     if (err instanceof Error) {
+//       console.error(`[ERROR] ${err.message}`)
+//     }
+//     return {
+//       statusCode: 500,
+//       headers: CORS_HEADERS,
+//       body: JSON.stringify({
+//         message: err,
+//       }),
+//     }
+//   }
+// }
 
 export const fins_statements_handler = async (
   event: APIGatewayEvent,
@@ -584,72 +610,3 @@ export const screener_handler = async (event: APIGatewayEvent): Promise<APIGatew
     body: JSON.stringify({ stockCommonFilter, indicatorParams }),
   }
 }
-
-export const tmp_code_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-  try {
-    const { code } = getStockCodedParams(event, {code: true})
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({ code }),
-    }
-  } catch (err: unknown) {
-    if (err instanceof HttpResponseError) {
-      return err.response
-    }
-    const message = err instanceof Error ? err.message : JSON.stringify(err)
-    console.error(message)
-    return new InternalServerError(message).response
-  }
-}
-
-// テクニカル系のハンドラー
-
-/**
- * 前営業日からの終値の変化率が一定以上の銘柄を返す。
- */
-
-// export const growth_rate_close_handler = async (): // event: APIGatewayEvent,
-// Promise<APIGatewayProxyResult> => {
-// 閾値を取得
-// const threshold = event.queryStringParameters?.threshold
-
-// const res: GrowthRateClose[] = []
-
-// const dates = await getBusinessDays()
-// const { daily_quotes: daily_quotes_before } = await JQuantsClient<{
-//   daily_quotes: PricesDailyQuotesStruct[]
-// }>('/v1/prices/daily_quotes', {
-//   date: dates[dates.length - 2].format('YYYY-MM-DD'),
-// })
-
-// const { daily_quotes: daily_quotes_after } = await JQuantsClient<{
-//   daily_quotes: PricesDailyQuotesStruct[]
-// }>('/v1/prices/daily_quotes', {
-//   date: dates[dates.length - 1].format('YYYY-MM-DD'),
-// })
-
-// for (const dq_before of daily_quotes_before) {
-//   const dq_after = daily_quotes_after.find(dq => dq.Code === dq_before.Code)
-//   if (!dq_after || !dq_before.Close || !dq_after.Close) continue
-
-//   const growth_rate = (dq_after.Close - dq_before.Close) / dq_before.Close
-//   if (!threshold || growth_rate > parseFloat(threshold)) {
-//     res.push({
-//       code: dq_before.Code,
-//       growth_rate,
-//       daily_quotes: {
-//         before: dq_before,
-//         after: dq_after,
-//       },
-//     })
-//   }
-// }
-// res.sort((a, b) => b.growth_rate - a.growth_rate)
-
-//   return {
-//     statusCode: 500,
-//     headers: CORS_HEADERS,
-//     body: 'not implemented',
-//   }
-// }

@@ -141,7 +141,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-hello
       PackageType: Image
       ImageConfig:
-        Command: [ "app.lambdaHandler" ]
+        Command: [ "app.hello_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
