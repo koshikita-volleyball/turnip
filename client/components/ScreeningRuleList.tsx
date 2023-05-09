@@ -19,7 +19,11 @@ export default function ScreeningRuleList(props: {
   const { rules, setRules } = props
 
   if (rules.length === 0) {
-    return <Alert variant="warning" className='mt-3'>ルールがありません。</Alert>
+    return (
+      <Alert variant="warning" className="mt-3">
+        ルールがありません。
+      </Alert>
+    )
   }
 
   return (

@@ -18,14 +18,10 @@ function make_uri(
     sector_17_code: string
     sector_33_code: string
   },
-  rules: ScreeningRuleStructs[]
-  ) {
-  const {
-    company_name,
-    market_code,
-    sector_17_code,
-    sector_33_code,
-  } = filtering
+  rules: ScreeningRuleStructs[],
+) {
+  const { company_name, market_code, sector_17_code, sector_33_code } =
+    filtering
 
   rules.forEach((rule) => {
     delete rule.collapsed
@@ -38,7 +34,11 @@ function make_uri(
     `${market_code !== '' ? `&market_codes=${market_code}` : ''}` +
     `${sector_17_code !== '' ? `&sector_17_codes=${sector_17_code}` : ''}` +
     `${sector_33_code !== '' ? `&sector_33_codes=${sector_33_code}` : ''}` +
-    `${rules.length !== 0 ? `&conditions=${encodeURI(JSON.stringify(rules, null, 0))}` : ''}`
+    `${
+      rules.length !== 0
+        ? `&conditions=${encodeURI(JSON.stringify(rules, null, 0))}`
+        : ''
+    }`
   )
 }
 
@@ -64,7 +64,7 @@ export default function ContactPage() {
         sector_17_code,
         sector_33_code,
       },
-      rules
+      rules,
     )
     console.log(uri)
   }

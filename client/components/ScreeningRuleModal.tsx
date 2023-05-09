@@ -269,7 +269,7 @@ export default function ScreeningRuleModal(props: {
               className="d-block mt-5 mx-auto"
               onClick={() => {
                 if (selectedRule) {
-                  setRules([...rules, {...selectedRule}])
+                  setRules([...rules, { ...selectedRule }])
                 }
                 closeModal()
               }}
@@ -284,7 +284,10 @@ export default function ScreeningRuleModal(props: {
             </Button>
           </Form>
         }
-        <Button className="btn-close position-absolute top-0 end-0 text-danger" onClick={closeModal}></Button>
+        <Button
+          className="btn-close position-absolute top-0 end-0 text-danger"
+          onClick={closeModal}
+        ></Button>
       </Modal>
     </>
   )
