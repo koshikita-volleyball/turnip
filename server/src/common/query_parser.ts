@@ -1,5 +1,8 @@
 import { APIGatewayEvent } from 'aws-lambda'
-import { Indicator } from '../interface/jquants/indicator'
+import { CrossOverIndicator, GrowthRateIndicator, Indicator } from '../interface/jquants/indicator'
+import { notify } from './slack'
+import dayjs from '../common/dayjs'
+import { getBusinessDays } from '../analysis/jpx_business_day'
 
 type Required<T extends object> = boolean | (keyof T)[]
 
@@ -94,14 +97,55 @@ export const getPaginationParams = (event: APIGatewayEvent): PaginationParams =>
   page: parseInt(event.queryStringParameters?.page || '1'),
 })
 
-export const getIndicatorParams = (event: APIGatewayEvent): Indicator[] => {
+export const getIndicatorParams = async (event: APIGatewayEvent): Promise<Indicator[]> => {
   try {
     const conditions = event.queryStringParameters?.conditions
     if (!conditions) return []
-    const indicator = JSON.parse(decodeURI(conditions)) as Indicator[]
-    return indicator
+    return Promise.all((JSON.parse(decodeURI(conditions)) as Indicator[]).map(_parseIndicator))
   } catch (e) {
     console.error(e)
   }
   return []
+}
+
+const _parseIndicator = async (indicator: Indicator): Promise<Indicator> => {
+  const businessDays = await getBusinessDays()
+  const now = dayjs()
+  if (indicator.type === 'growth_rate') {
+    return _parseGrowthRateIndicator(indicator, businessDays)
+  } else if (indicator.type === 'cross_over') {
+    return _parseCrossOverIndicator(indicator, now)
+  }
+  throw new Error('Unknown indicator type')
+}
+
+const _parseGrowthRateIndicator = (
+  indicator: GrowthRateIndicator,
+  businessDays: string[],
+): GrowthRateIndicator => {
+  if (!indicator.threshold) {
+    throw new Error('`threshold` is required for growth_rate indicator')
+  }
+  return {
+    ...indicator,
+    threshold: indicator.threshold,
+    up: indicator.up || true,
+    before: indicator.before || businessDays[businessDays.length - 2],
+    after: indicator.after || businessDays[businessDays.length - 1],
+    positive: indicator.positive || true,
+  }
+}
+
+const _parseCrossOverIndicator = (indicator: CrossOverIndicator, now: dayjs.Dayjs) => {
+  if (!indicator.from) {
+    throw new Error('`from` is required for cross_over indicator')
+  }
+  return {
+    ...indicator,
+    line1: indicator.line1 || 'close',
+    line2: indicator.line2 || 'ma_25',
+    from: indicator.from,
+    to: indicator.to || now.format('YYYY-MM-DD'),
+    positive: indicator.positive || true,
+  }
 }

@@ -21,23 +21,28 @@
     "start": "next start",
     "type-check": "tsc",
     "lint": "eslint .",
-    "prettify": "prettier --write ."
+    "prettier:write": "prettier --write .",
+    "prettier:check": "prettier --check ."
   },
   "dependencies": {
+    "@splidejs/react-splide": "^0.7.12",
     "@types/bootstrap": "^5.2.6",
     "@types/react-bootstrap": "^0.32.32",
     "bootstrap": "^5.2.3",
+    "dayjs": "^1.11.7",
     "next": "^13.3.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.3",
+    "react-bootstrap-icons": "^1.10.3",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
+    "react-modal": "^3.16.1",
     "sass": "^1.62.0",
     "swr": "^2.1.5"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",
-    "@types/node": "^18.15.11",
+    "@types/node": "^20.1.0",
     "@types/react": "^18.0.35",
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/parser": "^5.58.0",

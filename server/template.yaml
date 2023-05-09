@@ -52,6 +52,22 @@ Resources:
       BillingMode: PAY_PER_REQUEST
       TableName: !Sub ${AWS::StackName}-prices-daily-quotes
 
+  FinsStatementsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: LocalCode
+          AttributeType: S
+        - AttributeName: DisclosedDate
+          AttributeType: S
+      KeySchema:
+        - AttributeName: LocalCode
+          KeyType: HASH
+        - AttributeName: DisclosedDate
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      TableName: !Sub ${AWS::StackName}-fins-statements
+
   MyLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -101,6 +117,16 @@ Resources:
                   - dynamodb:Query
                   - dynamodb:Scan
                 Resource: !GetAtt PricesDailyQuotesTable.Arn
+              - Sid: AllowFinsStatementsTable
+                Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource: !GetAtt FinsStatementsTable.Arn
               - Sid: AllowCloudWatchLogs
                 Effect: Allow
                 Action:
@@ -191,7 +217,7 @@ Resources:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
       Dockerfile: Dockerfile
-  
+
   ListedInfoFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -228,6 +254,27 @@ Resources:
           Type: Api
           Properties:
             Path: /api/prices-daily-quotes
+            Method: get
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
+
+  FinsStatementsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-fins-statements
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.fins_statements_handler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MyApiGateway:
+          Type: Api
+          Properties:
+            Path: /api/fins-statements
             Method: get
     Metadata:
       DockerTag: nodejs18.x-v1
@@ -274,7 +321,7 @@ Resources:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
       Dockerfile: Dockerfile
-  
+
   RefreshTokenUpdaterFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -342,6 +389,26 @@ Resources:
       PackageType: Image
       ImageConfig:
         Command: [ "app.prices_daily_quotes_updater_handler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 10 * * ? *)
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
+
+  FinsStatementsUpdaterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-statements-updater
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.fins_statements_updater_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64

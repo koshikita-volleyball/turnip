@@ -47,6 +47,12 @@ jobs:
       - name: Test
         run: yarn test
         working-directory: ${{ env.server-directory }}/src
+      - name: Vulnerability check
+        run: yarn audit
+        working-directory: ${{ env.server-directory }}/src
+      - name: Deprication check
+        run: yarn outdated
+        working-directory: ${{ env.server-directory }}/src
   nextjs-check:
     runs-on: ubuntu-latest
     steps:
@@ -60,6 +66,15 @@ jobs:
       - name: Lint
         run: yarn lint
         working-directory: ${{ env.client-directory }}
+      - name: Prettier
+        run: yarn prettier:check
+        working-directory: ${{ env.client-directory }}
       - name: Test
         run: yarn test
+        working-directory: ${{ env.client-directory }}
+      - name: Vulnerability check
+        run: yarn audit
+        working-directory: ${{ env.client-directory }}
+      - name: Deprication check
+        run: yarn outdated
         working-directory: ${{ env.client-directory }}
