@@ -135,6 +135,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --production --frozen-lockfile
         working-directory: ${{ env.client-directory }}
+        env:
+          NODE_ENV: production
       - name: Generating .env.local
         run: |
           echo "${{ secrets.NEXTJS_ENV_LOCAL }}" > .env.local
@@ -159,6 +161,8 @@ jobs:
         working-directory: ${{ env.client-directory }}
       - name: Build with Next.js
         run: yarn build
+        env:
+          NODE_ENV: production
         working-directory: ${{ env.client-directory }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
