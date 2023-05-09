@@ -35,7 +35,15 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ env.node-version }}
-      - name: Install dependencies
+      - uses: actions/cache@v3
+        id: node_modules_cache_id
+        env:
+          cache-name: cache-node-modules-server
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+      - run: echo '${{ toJSON(steps.node_modules_cache_id.outputs) }}'
+      - if: ${{ steps.node_modules_cache_id.outputs.cache-hit != 'true' }}
         run: yarn install
         working-directory: ${{ env.server-directory }}/src
       - name: Lint
@@ -63,7 +71,7 @@ jobs:
       - uses: actions/cache@v3
         id: node_modules_cache_id
         env:
-          cache-name: cache-node-modules
+          cache-name: cache-node-modules-client
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
