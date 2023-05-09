@@ -159,7 +159,7 @@ export default function ScreeningConditionList(props: {
               className="position-absolute top-0 end-0 text-danger fs-2 fw-bold"
               role="button"
               onClick={() => {
-                if (confirm('削除しますか？')) {
+                if (confirm(`Rule #${index + 1} を削除しますか？`)) {
                   const _conditions = [...conditions]
                   _conditions.splice(index, 1)
                   props.setConditions(_conditions)
