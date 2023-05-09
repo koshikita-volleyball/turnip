@@ -7,7 +7,7 @@ import ScreeningConditionModal from '../components/ScreeningConditionModal'
 import { Button } from 'react-bootstrap'
 import ScreeningConditionList from '../components/ScreeningConditionList'
 
-Modal.setAppElement('#ScreeningModal')
+Modal.setAppElement('#Modal')
 
 export default function ContactPage() {
   const [conditions, setConditions] = useState<ScreeningConditionStructs[]>([])
@@ -19,7 +19,7 @@ export default function ContactPage() {
 
   return (
     <Layout>
-      <div id="ScreeningModal">
+      <div id="Screening">
         <ScreeningConditionList
           conditions={conditions}
           setConditions={setConditions}
