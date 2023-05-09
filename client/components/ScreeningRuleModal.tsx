@@ -269,7 +269,7 @@ export default function ScreeningRuleModal(props: {
               className="d-block mt-5 mx-auto"
               onClick={() => {
                 if (selectedRule) {
-                  setRules([...rules, selectedRule])
+                  setRules([...rules, {...selectedRule}])
                 }
                 closeModal()
               }}
