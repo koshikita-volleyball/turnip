@@ -23,7 +23,7 @@ export default function ScreeningRuleList(props: {
   }
 
   return (
-    <div>
+    <div className='mt-3'>
       {rules.map((_Rule, index) => {
         return (
           <Alert key={index} variant="info" className="position-relative">
