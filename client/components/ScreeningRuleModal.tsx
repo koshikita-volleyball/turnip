@@ -33,8 +33,9 @@ export default function ScreeningRuleModal(props: {
 }) {
   const { modalIsOpen, closeModal, rules, setRules } = props
 
-  const [selectedRule, setSelectedRule] =
-    useState<ScreeningRuleStructs | null>(null)
+  const [selectedRule, setSelectedRule] = useState<ScreeningRuleStructs | null>(
+    null,
+  )
 
   return (
     <>
@@ -64,9 +65,8 @@ export default function ScreeningRuleModal(props: {
                       threshold: 1.5,
                       up: true,
                       ohlc:
-                        (
-                          selectedRule as ScreeningRuleGrowthRateStruct
-                        )?.ohlc || ('close' as OHLC),
+                        (selectedRule as ScreeningRuleGrowthRateStruct)?.ohlc ||
+                        ('close' as OHLC),
                       before: dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
                       after: dayjs().format('YYYY-MM-DD'),
                     } as unknown as ScreeningRuleGrowthRateStruct)
@@ -93,8 +93,7 @@ export default function ScreeningRuleModal(props: {
             {selectedRule?.type === 'growth_rate' && (
               <>
                 {(() => {
-                  const Rule =
-                    selectedRule as ScreeningRuleGrowthRateStruct
+                  const Rule = selectedRule as ScreeningRuleGrowthRateStruct
                   return (
                     <>
                       <Alert variant="secondary" className="mt-3">
@@ -132,10 +131,7 @@ export default function ScreeningRuleModal(props: {
                         <Form.Label>OHLC</Form.Label>
                         <Form.Control
                           as="select"
-                          value={
-                            (Rule as ScreeningRuleGrowthRateStruct)
-                              .ohlc
-                          }
+                          value={(Rule as ScreeningRuleGrowthRateStruct).ohlc}
                           onChange={(e) => {
                             setSelectedRule({
                               ...selectedRule,
@@ -185,8 +181,7 @@ export default function ScreeningRuleModal(props: {
             {selectedRule?.type === 'cross_over' && (
               <>
                 {(() => {
-                  const Rule =
-                    selectedRule as ScreeningRuleCrossOverStruct
+                  const Rule = selectedRule as ScreeningRuleCrossOverStruct
 
                   return (
                     <>
@@ -277,10 +272,8 @@ export default function ScreeningRuleModal(props: {
               disabled={
                 selectedRule === null ||
                 (selectedRule.type === 'cross_over' &&
-                  (selectedRule as ScreeningRuleCrossOverStruct)
-                    .line1 ===
-                    (selectedRule as ScreeningRuleCrossOverStruct)
-                      .line2)
+                  (selectedRule as ScreeningRuleCrossOverStruct).line1 ===
+                    (selectedRule as ScreeningRuleCrossOverStruct).line2)
               }
             >
               追加

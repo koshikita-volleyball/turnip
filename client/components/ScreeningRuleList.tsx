@@ -43,16 +43,14 @@ export default function ScreeningRuleList(props: {
                     Rule #{index + 1} |{' '}
                     {(() => {
                       if (_Rule.type === 'growth_rate') return '株価上昇率'
-                      if (_Rule.type === 'cross_over')
-                        return 'クロスオーバー'
+                      if (_Rule.type === 'cross_over') return 'クロスオーバー'
                     })()}
                   </>
                 )
               }
 
               if (_Rule.type === 'growth_rate') {
-                const Rule =
-                  _Rule as ScreeningRuleGrowthRateStruct
+                const Rule = _Rule as ScreeningRuleGrowthRateStruct
                 return (
                   <>
                     <ChevronDoubleUp
@@ -74,18 +72,15 @@ export default function ScreeningRuleList(props: {
                         <tr>
                           <th className="w-25">株価上昇率の閾値</th>
                           <td>
-                            {Rule.up ? 'over' : 'under'}{' '}
-                            {Rule.threshold}%
+                            {Rule.up ? 'over' : 'under'} {Rule.threshold}%
                           </td>
                         </tr>
                         <tr>
                           <th className="w-25">期間</th>
                           <td>
                             {Rule.before} - {Rule.after} |{' '}
-                            {dayjs(Rule.after).diff(
-                              dayjs(Rule.before),
-                              'day',
-                            ) + 1}
+                            {dayjs(Rule.after).diff(dayjs(Rule.before), 'day') +
+                              1}
                             day(s)
                           </td>
                         </tr>
@@ -108,8 +103,7 @@ export default function ScreeningRuleList(props: {
               }
 
               if (_Rule.type === 'cross_over') {
-                const Rule =
-                  _Rule as ScreeningRuleCrossOverStruct
+                const Rule = _Rule as ScreeningRuleCrossOverStruct
                 return (
                   <>
                     <ChevronDoubleUp
@@ -140,10 +134,7 @@ export default function ScreeningRuleList(props: {
                           <th className="w-25">期間</th>
                           <td>
                             {Rule.from} - {Rule.to} |{' '}
-                            {dayjs(Rule.to).diff(
-                              dayjs(Rule.from),
-                              'day',
-                            ) + 1}
+                            {dayjs(Rule.to).diff(dayjs(Rule.from), 'day') + 1}
                             day(s)
                           </td>
                         </tr>

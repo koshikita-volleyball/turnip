@@ -20,10 +20,7 @@ export default function ContactPage() {
   return (
     <Layout>
       <div id="Screening">
-        <ScreeningRuleList
-          rules={rules}
-          setRules={setRules}
-        />
+        <ScreeningRuleList rules={rules} setRules={setRules} />
         <Button
           variant="info"
           className="d-block mx-auto mt-3"

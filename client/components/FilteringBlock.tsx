@@ -17,7 +17,6 @@ export default function FilteringBlock(props: {
   setSector33Code: Dispatch<SetStateAction<string>>
   afterChange: () => void
 }) {
-
   const {
     useFiltering,
     setUseFiltering,
@@ -37,13 +36,15 @@ export default function FilteringBlock(props: {
   if (collapsed) {
     return (
       <>
-      <div className='bg-light mt-2 p-3 d-flex align-items-center'>
-        <BsArrowsExpand
-          className="d-block me-3"
-          role='button'
-          onClick={() => setCollapsed(false)}
-        />
-          <span role='button' onClick={() => setCollapsed(false)}>絞り込み条件を表示する。</span>
+        <div className="bg-light mt-2 p-3 d-flex align-items-center">
+          <BsArrowsExpand
+            className="d-block me-3"
+            role="button"
+            onClick={() => setCollapsed(false)}
+          />
+          <span role="button" onClick={() => setCollapsed(false)}>
+            絞り込み条件を表示する。
+          </span>
         </div>
       </>
     )
@@ -52,15 +53,17 @@ export default function FilteringBlock(props: {
   return (
     <>
       <div className="mt-2 p-3 bg-light border">
-        <div className='d-flex align-items-center'>
+        <div className="d-flex align-items-center">
           <BsArrowsCollapse
             className="d-block me-3"
-            role='button'
+            role="button"
             onClick={() => setCollapsed(true)}
           />
-          <span role='button' onClick={() => setCollapsed(true)}>絞り込み条件を非表示にする。</span>
+          <span role="button" onClick={() => setCollapsed(true)}>
+            絞り込み条件を非表示にする。
+          </span>
         </div>
-        <Form.Label className='d-flex mt-3'>
+        <Form.Label className="d-flex mt-3">
           <Form.Check
             type="checkbox"
             onChange={(e) => {
