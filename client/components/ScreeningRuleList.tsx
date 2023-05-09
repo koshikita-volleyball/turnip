@@ -19,14 +19,14 @@ export default function ScreeningRuleList(props: {
   const { rules, setRules } = props
 
   if (rules.length === 0) {
-    return <Alert variant="warning">ルールがありません。</Alert>
+    return <Alert variant="warning" className='mt-3'>ルールがありません。</Alert>
   }
 
   return (
-    <div className='mt-3'>
+    <>
       {rules.map((_Rule, index) => {
         return (
-          <Alert key={index} variant="info" className="position-relative">
+          <Alert key={index} variant="info" className="mt-3 position-relative">
             {(() => {
               if (_Rule.collapsed) {
                 return (
@@ -160,6 +160,6 @@ export default function ScreeningRuleList(props: {
           </Alert>
         )
       })}
-    </div>
+    </>
   )
 }

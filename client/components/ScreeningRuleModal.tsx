@@ -11,6 +11,9 @@ import { Alert, Button, Form } from 'react-bootstrap'
 import dayjs from 'dayjs'
 
 const customStyles = {
+  overlay: {
+    zIndex: 999,
+  },
   content: {
     top: '50%',
     left: '50%',
