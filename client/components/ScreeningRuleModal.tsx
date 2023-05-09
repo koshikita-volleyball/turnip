@@ -15,6 +15,7 @@ const customStyles = {
     zIndex: 999,
   },
   content: {
+    position: 'relative',
     top: '50%',
     left: '50%',
     right: 'auto',
@@ -283,6 +284,7 @@ export default function ScreeningRuleModal(props: {
             </Button>
           </Form>
         }
+        <Button className="btn-close position-absolute top-0 end-0 text-danger" onClick={closeModal}></Button>
       </Modal>
     </>
   )
