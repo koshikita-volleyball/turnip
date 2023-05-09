@@ -133,7 +133,7 @@ jobs:
         with:
           static_site_generator: next
       - name: Install dependencies
-        run: yarn install --production --frozen-lockfile
+        run: yarn install # --production --frozen-lockfile
         working-directory: ${{ env.client-directory }}
         env:
           NODE_ENV: production
