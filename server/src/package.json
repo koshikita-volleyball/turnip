@@ -6,23 +6,22 @@
   "repository": "https://github.com/koshikita-volleyball/turnip.git",
   "author": "koshikita-volleyball",
   "license": "Apache-2.0",
-  "dependencies": {
-    "@aws-sdk/util-dynamodb": "^3.326.0",
-    "@slack/web-api": "^6.8.1",
-    "aws-sdk": "^2.1370.0",
-    "axios": ">=0.21.1",
-    "dayjs": "^1.11.7",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "typescript": "^5.0.4"
-  },
   "scripts": {
+    "compile": "tsc",
     "lint": "eslint .",
     "prettier:write": "prettier --write .",
     "prettier:check": "prettier --check .",
     "check": "yarn lint && yarn prettier:check",
     "server": "ts-node server.ts",
     "test": "tsc && mocha tests/unit/"
+  },
+  "dependencies": {
+    "@aws-sdk/util-dynamodb": "^3.326.0",
+    "@slack/web-api": "^6.8.1",
+    "aws-sdk": "^2.1370.0",
+    "axios": ">=0.21.1",
+    "dayjs": "^1.11.7",
+    "dotenv": "^16.0.3"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.115",
@@ -37,6 +36,8 @@
     "eslint-config-prettier": "^8.8.0",
     "mocha": "^10.1.0",
     "prettier": "^2.8.8",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "express": "^4.18.2",
+    "typescript": "^5.0.4"
   }
 }
