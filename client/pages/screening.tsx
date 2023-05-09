@@ -54,6 +54,13 @@ export default function ContactPage() {
           rules={rules}
           setRules={setRules}
         />
+        <hr />
+        <Button
+          variant="primary"
+          className="d-block mx-auto w-100 mt-3"
+        >
+          スクリーニングを実行
+        </Button>
       </div>
     </Layout>
   )
