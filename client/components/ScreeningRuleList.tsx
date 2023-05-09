@@ -145,7 +145,6 @@ export default function ScreeningRuleList(props: {
               }
               return null
             })()}
-            {JSON.stringify(_rule)}
             <Trash
               className="position-absolute top-0 end-0 text-danger fs-2 fw-bold"
               role="button"
