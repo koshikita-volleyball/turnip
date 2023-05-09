@@ -24,40 +24,40 @@ export default function ScreeningRuleList(props: {
 
   return (
     <>
-      {rules.map((_Rule, index) => {
+      {rules.map((_rule, index) => {
         return (
           <Alert key={index} variant="info" className="mt-3 position-relative">
             {(() => {
-              if (_Rule.collapsed) {
+              if (_rule.collapsed) {
                 return (
                   <>
                     <ChevronDoubleDown
                       onClick={() => {
-                        const _Rules = [...rules]
-                        _Rules[index].collapsed = false
-                        setRules(_Rules)
+                        const _rules = [...rules]
+                        _rules[index].collapsed = false
+                        setRules(_rules)
                       }}
                       role="button"
                       className="me-3"
                     />
                     Rule #{index + 1} |{' '}
                     {(() => {
-                      if (_Rule.type === 'growth_rate') return '株価上昇率'
-                      if (_Rule.type === 'cross_over') return 'クロスオーバー'
+                      if (_rule.type === 'growth_rate') return '株価上昇率'
+                      if (_rule.type === 'cross_over') return 'クロスオーバー'
                     })()}
                   </>
                 )
               }
 
-              if (_Rule.type === 'growth_rate') {
-                const Rule = _Rule as ScreeningRuleGrowthRateStruct
+              if (_rule.type === 'growth_rate') {
+                const rule = _rule as ScreeningRuleGrowthRateStruct
                 return (
                   <>
                     <ChevronDoubleUp
                       onClick={() => {
-                        const _Rules = [...rules]
-                        _Rules[index].collapsed = true
-                        props.setRules(_Rules)
+                        const _rules = [...rules]
+                        _rules[index].collapsed = true
+                        setRules(_rules)
                       }}
                       role="button"
                       className="me-3"
@@ -72,14 +72,14 @@ export default function ScreeningRuleList(props: {
                         <tr>
                           <th className="w-25">株価上昇率の閾値</th>
                           <td>
-                            {Rule.up ? 'over' : 'under'} {Rule.threshold}%
+                            {rule.up ? 'over' : 'under'} {rule.threshold}%
                           </td>
                         </tr>
                         <tr>
                           <th className="w-25">期間</th>
                           <td>
-                            {Rule.before} - {Rule.after} |{' '}
-                            {dayjs(Rule.after).diff(dayjs(Rule.before), 'day') +
+                            {rule.before} - {rule.after} |{' '}
+                            {dayjs(rule.after).diff(dayjs(rule.before), 'day') +
                               1}
                             day(s)
                           </td>
@@ -88,12 +88,12 @@ export default function ScreeningRuleList(props: {
                           <th className="w-25">OHLC</th>
                           <td>
                             {(() => {
-                              if (Rule.ohlc === 'open') return '始値'
-                              if (Rule.ohlc === 'high') return '高値'
-                              if (Rule.ohlc === 'low') return '安値'
-                              if (Rule.ohlc === 'close') return '終値'
+                              if (rule.ohlc === 'open') return '始値'
+                              if (rule.ohlc === 'high') return '高値'
+                              if (rule.ohlc === 'low') return '安値'
+                              if (rule.ohlc === 'close') return '終値'
                             })()}
-                            ({Rule.ohlc.toUpperCase()})
+                            ({rule.ohlc.toUpperCase()})
                           </td>
                         </tr>
                       </tbody>
@@ -102,15 +102,15 @@ export default function ScreeningRuleList(props: {
                 )
               }
 
-              if (_Rule.type === 'cross_over') {
-                const Rule = _Rule as ScreeningRuleCrossOverStruct
+              if (_rule.type === 'cross_over') {
+                const Rule = _rule as ScreeningRuleCrossOverStruct
                 return (
                   <>
                     <ChevronDoubleUp
                       onClick={() => {
-                        const _Rules = [...rules]
-                        _Rules[index].collapsed = true
-                        props.setRules(_Rules)
+                        const _rules = [...rules]
+                        _rules[index].collapsed = true
+                        props.setRules(_rules)
                       }}
                       role="button"
                       className="me-3"
@@ -143,17 +143,17 @@ export default function ScreeningRuleList(props: {
                   </>
                 )
               }
-
               return null
             })()}
+            {JSON.stringify(_rule)}
             <Trash
               className="position-absolute top-0 end-0 text-danger fs-2 fw-bold"
               role="button"
               onClick={() => {
                 if (confirm(`Rule #${index + 1} を削除しますか？`)) {
-                  const _Rules = [...rules]
-                  _Rules.splice(index, 1)
-                  props.setRules(_Rules)
+                  const _rules = [...rules]
+                  _rules.splice(index, 1)
+                  setRules(_rules)
                 }
               }}
             />
