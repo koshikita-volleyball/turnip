@@ -8,11 +8,11 @@
     "type": "git",
     "url": "https://github.com/koshikita-volleyball/turnip.git"
   },
+  "private": false,
   "engines": {
     "node": ">=16.0.0",
     "yarn": ">=1.22.0"
   },
-  "private": false,
   "scripts": {
     "dev": "yarn develop",
     "develop": "next",
@@ -26,8 +26,6 @@
   },
   "dependencies": {
     "@splidejs/react-splide": "^0.7.12",
-    "@types/bootstrap": "^5.2.6",
-    "@types/react-bootstrap": "^0.32.32",
     "bootstrap": "^5.2.3",
     "dayjs": "^1.11.7",
     "next": "^13.3.0",
@@ -46,6 +44,8 @@
     "@types/react": "^18.0.35",
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/parser": "^5.58.0",
+    "@types/bootstrap": "^5.2.6",
+    "@types/react-bootstrap": "^0.32.32",
     "chart.js": "^4.3.0",
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^8.8.0",

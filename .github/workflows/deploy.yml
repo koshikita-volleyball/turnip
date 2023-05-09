@@ -127,14 +127,16 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: ${{ env.node-version }}
       - name: Setup Pages
         uses: actions/configure-pages@v2
         with:
           static_site_generator: next
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --production --frozen-lockfile
         working-directory: ${{ env.client-directory }}
+        env:
+          NODE_ENV: production
       - name: Generating .env.local
         run: |
           echo "${{ secrets.NEXTJS_ENV_LOCAL }}" > .env.local
@@ -159,6 +161,8 @@ jobs:
         working-directory: ${{ env.client-directory }}
       - name: Build with Next.js
         run: yarn build
+        env:
+          NODE_ENV: production
         working-directory: ${{ env.client-directory }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
