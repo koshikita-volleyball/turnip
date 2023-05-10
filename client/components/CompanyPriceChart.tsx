@@ -13,7 +13,7 @@ const dataset_setting = {
 const options = {
   maintainAspectRatio: false,
   responsive: true,
-};
+}
 
 const title = <h2 className="mt-5">💹 株価情報</h2>
 
@@ -72,7 +72,11 @@ export default function CompanyPriceChart(props: {
   return (
     <>
       {title}
-      <Line data={graphData} options={options} style={{ width: '100%', minHeight: '300px', maxHeight: '350px' }} />
+      <Line
+        data={graphData}
+        options={options}
+        style={{ width: '100%', minHeight: '300px', maxHeight: '350px' }}
+      />
       <hr />
     </>
   )
