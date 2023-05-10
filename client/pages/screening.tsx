@@ -85,7 +85,10 @@ export default function ContactPage() {
           setSector33Code={setSector33Code}
           afterChange={() => {}}
         />
-        <ScreeningConditionList conditions={conditions} setConditions={setConditions} />
+        <ScreeningConditionList
+          conditions={conditions}
+          setConditions={setConditions}
+        />
         <Button
           variant="info"
           className="d-block mx-auto mt-3"
