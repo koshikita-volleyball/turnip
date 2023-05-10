@@ -34,11 +34,7 @@ function make_uri(
     `${market_code !== '' ? `&market_codes=${market_code}` : ''}` +
     `${sector_17_code !== '' ? `&sector_17_codes=${sector_17_code}` : ''}` +
     `${sector_33_code !== '' ? `&sector_33_codes=${sector_33_code}` : ''}` +
-    `${
-      rules.length !== 0
-        ? `&rules=${encodeURI(JSON.stringify(rules))}`
-        : ''
-    }`
+    `${rules.length !== 0 ? `&rules=${encodeURI(JSON.stringify(rules))}` : ''}`
   )
 }
 
