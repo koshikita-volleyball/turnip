@@ -8,6 +8,7 @@ RUN rm -rf node_modules/ && rm -rf *.ts
 
 FROM public.ecr.aws/lambda/nodejs:18 as production
 ENV NODE_ENV production
-COPY package.json package-lock.json ./
-RUN npm install --production --frozen-lockfile
+RUN npm install --global yarn
+COPY package.json yarn.lock ./
+RUN yarn install --production --frozen-lockfile
 COPY --from=build /app/ ./
