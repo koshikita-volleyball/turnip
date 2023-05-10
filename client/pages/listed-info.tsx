@@ -32,6 +32,7 @@ const make_params = ({
   `${sector_33_code !== '' ? `&sector_33_codes=${sector_33_code}` : ''}`
 
 export default function AboutPage() {
+  const [firstLock, setFirstLock] = useState(false)
   const [page, setPage] = useState(1)
   const [useFiltering, setUseFiltering] = useState(true)
   const [company_name, setCompanyName] = useState('')
@@ -85,6 +86,7 @@ export default function AboutPage() {
     if (sector_17_code) setSector17Code(sector_17_code as string)
     const sector_33_code = router.query.sector_33_codes
     if (sector_33_code) setSector33Code(sector_33_code as string)
+    setFirstLock(true)
   }, [
     router.query.company_name,
     router.query.market_codes,
@@ -94,6 +96,7 @@ export default function AboutPage() {
   ])
 
   useEffect(() => {
+    if (!firstLock) return
     const query = {}
     if (page !== 1) query['page'] = page
     if (company_name !== '') query['company_name'] = company_name
