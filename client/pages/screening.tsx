@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import Modal from 'react-modal'
 
 import Layout from '../components/Layout'
-import { ScreeningRuleStructs } from '../interface/screening_condition'
-import ScreeningConditionModal from '../components/ScreeningConditionModal'
+import { ScreeningRuleStructs } from '../interface/screening_rule'
+import ScreeningRuleModal from '../components/ScreeningRuleModal'
 import { Button } from 'react-bootstrap'
-import ScreeningConditionList from '../components/ScreeningConditionList'
+import ScreeningRuleList from '../components/ScreeningRuleList'
 import FilteringBlock from '../components/FilteringBlock'
 import setting from '../setting'
 
@@ -85,7 +85,7 @@ export default function ContactPage() {
           setSector33Code={setSector33Code}
           afterChange={() => {}}
         />
-        <ScreeningConditionList conditions={rules} setConditions={setRules} />
+        <ScreeningRuleList rules={rules} setRules={setRules} />
         <Button
           variant="info"
           className="d-block mx-auto mt-3"
@@ -93,11 +93,11 @@ export default function ContactPage() {
         >
           スクリーニングルールを追加
         </Button>
-        <ScreeningConditionModal
+        <ScreeningRuleModal
           modalIsOpen={modalIsOpen}
           closeModal={closeModal}
-          conditions={rules}
-          setConditions={setRules}
+          rules={rules}
+          setRules={setRules}
         />
         <hr />
         <Button
