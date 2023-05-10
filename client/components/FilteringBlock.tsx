@@ -1,8 +1,8 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import { BsArrowsCollapse, BsArrowsExpand } from 'react-icons/bs'
-
 import { MarketInfo, Sector17Info, Sector33Info } from '../data/export'
+import { Button } from 'react-bootstrap'
 
 export default function FilteringBlock(props: {
   useFiltering: boolean
@@ -32,6 +32,11 @@ export default function FilteringBlock(props: {
   } = props
 
   const [collapsed, setCollapsed] = useState(true)
+
+  const [tmp_company_name, setTmpCompanyName] = useState(company_name)
+  const [tmp_market_code, setTmpMarketCode] = useState(market_code)
+  const [tmp_sector_17_code, setTmpSector17Code] = useState(sector_17_code)
+  const [tmp_sector_33_code, setTmpSector33Code] = useState(sector_33_code)
 
   if (collapsed) {
     return (
@@ -81,10 +86,10 @@ export default function FilteringBlock(props: {
             <Form.Control
               type="text"
               placeholder="銘柄名"
-              value={company_name}
+              value={tmp_company_name}
               onChange={(e) => {
-                setCompanyName(e.target.value)
-                afterChange()
+                const value = e.target.value
+                setTmpCompanyName(value)
               }}
             />
           </Form.Group>
@@ -95,10 +100,9 @@ export default function FilteringBlock(props: {
             as="select"
             onChange={(e) => {
               const value = e.target.value
-              setMarketCode(value)
-              afterChange()
+              setTmpMarketCode(value)
             }}
-            value={market_code}
+            value={tmp_market_code}
           >
             <option value="">指定しない</option>
             {MarketInfo.map((item) => (
@@ -114,10 +118,9 @@ export default function FilteringBlock(props: {
             as="select"
             onChange={(e) => {
               const value = e.target.value
-              setSector17Code(value)
-              afterChange()
+              setTmpSector17Code(value)
             }}
-            value={sector_17_code}
+            value={tmp_sector_17_code}
           >
             <option value="">指定しない</option>
             {Sector17Info.map((item) => (
@@ -133,10 +136,9 @@ export default function FilteringBlock(props: {
             as="select"
             onChange={(e) => {
               const value = e.target.value
-              setSector33Code(value)
-              afterChange()
+              setTmpSector33Code(value)
             }}
-            value={sector_33_code}
+            value={tmp_sector_33_code}
           >
             <option value="">指定しない</option>
             {Sector33Info.map((item) => (
@@ -146,6 +148,19 @@ export default function FilteringBlock(props: {
             ))}
           </Form.Control>
         </Form.Group>
+        <Button
+          variant="secondary"
+          className="d-block mt-3 mx-auto w-50"
+          onClick={() => {
+            setCompanyName(tmp_company_name)
+            setMarketCode(tmp_market_code)
+            setSector17Code(tmp_sector_17_code)
+            setSector33Code(tmp_sector_33_code)
+            afterChange()
+          }}
+        >
+          絞り込みを適用する
+        </Button>
       </div>
     </>
   )
