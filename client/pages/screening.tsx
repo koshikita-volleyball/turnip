@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Modal from 'react-modal'
 
 import Layout from '../components/Layout'
-import { ScreeningConditionStructs } from '../interface/screening_condition'
+import { ScreeningRuleStructs } from '../interface/screening_condition'
 import ScreeningConditionModal from '../components/ScreeningConditionModal'
 import { Button } from 'react-bootstrap'
 import ScreeningConditionList from '../components/ScreeningConditionList'
@@ -18,13 +18,13 @@ function make_uri(
     sector_17_code: string
     sector_33_code: string
   },
-  conditions: ScreeningConditionStructs[],
+  rules: ScreeningRuleStructs[],
 ) {
   const { company_name, market_code, sector_17_code, sector_33_code } =
     filtering
 
-  conditions.forEach((condition) => {
-    delete condition.collapsed
+  rules.forEach((rule) => {
+    delete rule.collapsed
   })
 
   return (
@@ -35,8 +35,8 @@ function make_uri(
     `${sector_17_code !== '' ? `&sector_17_codes=${sector_17_code}` : ''}` +
     `${sector_33_code !== '' ? `&sector_33_codes=${sector_33_code}` : ''}` +
     `${
-      conditions.length !== 0
-        ? `&conditions=${encodeURI(JSON.stringify(conditions, null, 0))}`
+      rules.length !== 0
+        ? `&conditions=${encodeURI(JSON.stringify(rules, null, 0))}`
         : ''
     }`
   )
@@ -49,7 +49,7 @@ export default function ContactPage() {
   const [sector_17_code, setSector17Code] = useState<string>('')
   const [sector_33_code, setSector33Code] = useState<string>('')
 
-  const [conditions, setConditions] = useState<ScreeningConditionStructs[]>([])
+  const [rules, setRules] = useState<ScreeningRuleStructs[]>([])
 
   const [modalIsOpen, setIsOpen] = React.useState(false)
 
@@ -64,7 +64,7 @@ export default function ContactPage() {
         sector_17_code,
         sector_33_code,
       },
-      conditions,
+      rules,
     )
     console.log(uri)
   }
@@ -85,7 +85,7 @@ export default function ContactPage() {
           setSector33Code={setSector33Code}
           afterChange={() => {}}
         />
-        <ScreeningConditionList conditions={conditions} setConditions={setConditions} />
+        <ScreeningConditionList conditions={rules} setConditions={setRules} />
         <Button
           variant="info"
           className="d-block mx-auto mt-3"
@@ -96,8 +96,8 @@ export default function ContactPage() {
         <ScreeningConditionModal
           modalIsOpen={modalIsOpen}
           closeModal={closeModal}
-          conditions={conditions}
-          setConditions={setConditions}
+          conditions={rules}
+          setConditions={setRules}
         />
         <hr />
         <Button
