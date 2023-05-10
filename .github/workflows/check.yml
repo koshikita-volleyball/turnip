@@ -25,16 +25,19 @@ on:
 env:
   client-directory: ./client
   server-directory: ./server
-  node-version: 18
+  node-version: [16, 18]
 
 jobs:
   lambda-check:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ${{ env.node-version }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ env.node-version }}
+          node-version: ${{ matrix.node-version }}
       - uses: actions/cache@v3
         id: node_modules_cache_id
         env:
@@ -63,11 +66,14 @@ jobs:
         working-directory: ${{ env.server-directory }}/src
   nextjs-check:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ${{ env.node-version }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ env.node-version }}
+          node-version: ${{ matrix.node-version }}
       - uses: actions/cache@v3
         id: node_modules_cache_id
         env:
