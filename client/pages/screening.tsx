@@ -36,7 +36,7 @@ function make_uri(
     `${sector_33_code !== '' ? `&sector_33_codes=${sector_33_code}` : ''}` +
     `${
       rules.length !== 0
-        ? `&conditions=${encodeURI(JSON.stringify(rules, null, 0))}`
+        ? `&rules=${encodeURI(JSON.stringify(rules, null, 0))}`
         : ''
     }`
   )
