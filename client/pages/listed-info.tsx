@@ -107,12 +107,6 @@ export default function AboutPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, company_name, market_code, sector_17_code, sector_33_code])
 
-  if (data === null) {
-    return (
-      <></>
-    )
-  }
-
   return (
     <Layout>
       <div id="ListedInfo">
