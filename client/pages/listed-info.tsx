@@ -47,8 +47,8 @@ export default function AboutPage() {
     error,
   }: {
     data: {
-      data: ListedInfoStruct[],
-      pagination: PaginationStruct,
+      data: ListedInfoStruct[]
+      pagination: PaginationStruct
     }
     error: any
   } = useSWR(
