@@ -7,6 +7,7 @@ import ListedInfoStruct from '../interface/listed_info'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import FilteringBlock from '../components/FilteringBlock'
+import PaginationStruct from '../interface/pagination'
 
 const fetcher = (url: string) =>
   fetch(url).then((r) => (r.ok ? r.json() : null))
@@ -44,7 +45,10 @@ export default function AboutPage() {
     data: data,
     error,
   }: {
-    data: { data: ListedInfoStruct[] }
+    data: {
+      data: ListedInfoStruct[],
+      pagination: PaginationStruct,
+    }
     error: any
   } = useSWR(
     `${setting.apiPath}/api/listed_info` +
@@ -103,6 +107,12 @@ export default function AboutPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, company_name, market_code, sector_17_code, sector_33_code])
 
+  if (data === null) {
+    return (
+      <></>
+    )
+  }
+
   return (
     <Layout>
       <div id="ListedInfo">
@@ -139,17 +149,17 @@ export default function AboutPage() {
               <Button
                 variant="primary"
                 onClick={() => setPage(page - 1)}
-                disabled={page === 1}
+                disabled={data.pagination.hasPrev === false}
               >
                 前へ
               </Button>
               <Alert variant="info" className="text-center mx-1 my-0 px-3 py-1">
-                Page {page}
+                Page {page} / {data.pagination?.totalPages || 'xxx'}
               </Alert>
               <Button
                 variant="primary"
                 onClick={() => setPage(page + 1)}
-                disabled={data.data.length === 0}
+                disabled={data.pagination.hasNext === false}
               >
                 次へ
               </Button>
