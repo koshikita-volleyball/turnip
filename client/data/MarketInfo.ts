@@ -11,4 +11,8 @@ const MarketInfo = [
   { code: '0113', name: 'グロース' },
 ]
 
-export default MarketInfo
+const active_markets = ['0111', '0112', '0113']
+
+export default MarketInfo.filter((market) =>
+  active_markets.includes(market.code),
+)
