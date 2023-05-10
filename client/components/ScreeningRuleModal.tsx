@@ -97,7 +97,7 @@ export default function ScreeningRuleModal(props: {
             {selectedRule?.type === 'growth_rate' && (
               <>
                 {(() => {
-                  const Rule = selectedRule as ScreeningRuleGrowthRateStruct
+                  const rule = selectedRule as ScreeningRuleGrowthRateStruct
                   return (
                     <>
                       <Alert variant="secondary" className="mt-3">
@@ -121,7 +121,7 @@ export default function ScreeningRuleModal(props: {
                         <Form.Label>株価上昇率の閾値</Form.Label>
                         <Form.Control
                           type="number"
-                          value={Rule.threshold}
+                          value={rule.threshold}
                           step={0.1}
                           onChange={(e) => {
                             setSelectedRule({
@@ -135,7 +135,7 @@ export default function ScreeningRuleModal(props: {
                         <Form.Label>OHLC</Form.Label>
                         <Form.Control
                           as="select"
-                          value={(Rule as ScreeningRuleGrowthRateStruct).ohlc}
+                          value={(rule as ScreeningRuleGrowthRateStruct).ohlc}
                           onChange={(e) => {
                             setSelectedRule({
                               ...selectedRule,
@@ -154,7 +154,7 @@ export default function ScreeningRuleModal(props: {
                         <Form.Group className="d-flex justify-content-between align-items-center">
                           <Form.Control
                             type="date"
-                            value={Rule.before}
+                            value={rule.before}
                             onChange={(e) => {
                               setSelectedRule({
                                 ...selectedRule,
@@ -165,7 +165,7 @@ export default function ScreeningRuleModal(props: {
                           ～
                           <Form.Control
                             type="date"
-                            value={Rule.after}
+                            value={rule.after}
                             onChange={(e) => {
                               setSelectedRule({
                                 ...selectedRule,
@@ -185,7 +185,7 @@ export default function ScreeningRuleModal(props: {
             {selectedRule?.type === 'cross_over' && (
               <>
                 {(() => {
-                  const Rule = selectedRule as ScreeningRuleCrossOverStruct
+                  const rule = selectedRule as ScreeningRuleCrossOverStruct
 
                   return (
                     <>
@@ -197,7 +197,7 @@ export default function ScreeningRuleModal(props: {
                         <Form.Label>Line 1</Form.Label>
                         <Form.Control
                           as="select"
-                          value={Rule.line1}
+                          value={rule.line1}
                           onChange={(e) => {
                             setSelectedRule({
                               ...selectedRule,
@@ -214,7 +214,7 @@ export default function ScreeningRuleModal(props: {
                         <Form.Label>Line 2</Form.Label>
                         <Form.Control
                           as="select"
-                          value={Rule.line2}
+                          value={rule.line2}
                           onChange={(e) => {
                             setSelectedRule({
                               ...selectedRule,
@@ -227,7 +227,7 @@ export default function ScreeningRuleModal(props: {
                           <option value="ma_50">50日移動平均線</option>
                         </Form.Control>
                       </Form.Group>
-                      {Rule.line1 === Rule.line2 && (
+                      {rule.line1 === rule.line2 && (
                         <Alert variant="danger" className="mt-3">
                           `Line 1`と`Line 2`が同じです。
                         </Alert>
@@ -237,7 +237,7 @@ export default function ScreeningRuleModal(props: {
                         <Form.Group className="d-flex justify-content-between align-items-center">
                           <Form.Control
                             type="date"
-                            value={Rule.from}
+                            value={rule.from}
                             onChange={(e) => {
                               setSelectedRule({
                                 ...selectedRule,
@@ -248,7 +248,7 @@ export default function ScreeningRuleModal(props: {
                           ～
                           <Form.Control
                             type="date"
-                            value={Rule.to}
+                            value={rule.to}
                             onChange={(e) => {
                               setSelectedRule({
                                 ...selectedRule,
