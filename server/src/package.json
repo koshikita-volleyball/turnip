@@ -6,6 +6,10 @@
   "repository": "https://github.com/koshikita-volleyball/turnip.git",
   "author": "koshikita-volleyball",
   "license": "Apache-2.0",
+  "engines": {
+    "node": ">=16.0.0",
+    "yarn": ">=1.22.0"
+  },
   "scripts": {
     "compile": "tsc",
     "lint": "eslint .",
