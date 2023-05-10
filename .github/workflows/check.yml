@@ -25,7 +25,7 @@ on:
 env:
   client-directory: ./client
   server-directory: ./server
-  node-version: [16, 18]
+  node-version: [18.x]
 
 jobs:
   lambda-check:
