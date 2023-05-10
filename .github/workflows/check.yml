@@ -25,14 +25,13 @@ on:
 env:
   client-directory: ./client
   server-directory: ./server
-  node-version: [18.x]
 
 jobs:
   lambda-check:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: ${{ env.node-version }}
+        node-version: [18.x]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -68,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: ${{ env.node-version }}
+        node-version: [18.x]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
