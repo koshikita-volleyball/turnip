@@ -47,14 +47,16 @@ export default function ScreeningConditionList(props: {
                     Condition #{index + 1} |{' '}
                     {(() => {
                       if (_condition.type === 'growth_rate') return '株価上昇率'
-                      if (_condition.type === 'cross_over') return 'クロスオーバー'
+                      if (_condition.type === 'cross_over')
+                        return 'クロスオーバー'
                     })()}
                   </>
                 )
               }
 
               if (_condition.type === 'growth_rate') {
-                const condition = _condition as ScreeningConditionGrowthRateStruct
+                const condition =
+                  _condition as ScreeningConditionGrowthRateStruct
                 return (
                   <>
                     <ChevronDoubleUp
@@ -76,15 +78,18 @@ export default function ScreeningConditionList(props: {
                         <tr>
                           <th className="w-25">株価上昇率の閾値</th>
                           <td>
-                            {condition.up ? 'over' : 'under'} {condition.threshold}%
+                            {condition.up ? 'over' : 'under'}{' '}
+                            {condition.threshold}%
                           </td>
                         </tr>
                         <tr>
                           <th className="w-25">期間</th>
                           <td>
                             {condition.before} - {condition.after} |{' '}
-                            {dayjs(condition.after).diff(dayjs(condition.before), 'day') +
-                              1}
+                            {dayjs(condition.after).diff(
+                              dayjs(condition.before),
+                              'day',
+                            ) + 1}
                             day(s)
                           </td>
                         </tr>
@@ -107,7 +112,8 @@ export default function ScreeningConditionList(props: {
               }
 
               if (_condition.type === 'cross_over') {
-                const condition = _condition as ScreeningConditionCrossOverStruct
+                const condition =
+                  _condition as ScreeningConditionCrossOverStruct
                 return (
                   <>
                     <ChevronDoubleUp
@@ -138,7 +144,10 @@ export default function ScreeningConditionList(props: {
                           <th className="w-25">期間</th>
                           <td>
                             {condition.from} - {condition.to} |{' '}
-                            {dayjs(condition.to).diff(dayjs(condition.from), 'day') + 1}
+                            {dayjs(condition.to).diff(
+                              dayjs(condition.from),
+                              'day',
+                            ) + 1}
                             day(s)
                           </td>
                         </tr>

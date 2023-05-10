@@ -37,9 +37,8 @@ export default function ScreeningConditionModal(props: {
 }) {
   const { modalIsOpen, closeModal, conditions, setConditions } = props
 
-  const [selectedCondition, setSelectedCondition] = useState<ScreeningConditionStructs | null>(
-    null,
-  )
+  const [selectedCondition, setSelectedCondition] =
+    useState<ScreeningConditionStructs | null>(null)
 
   return (
     <>
@@ -69,8 +68,9 @@ export default function ScreeningConditionModal(props: {
                       threshold: 1.5,
                       up: true,
                       ohlc:
-                        (selectedCondition as ScreeningConditionGrowthRateStruct)?.ohlc ||
-                        ('close' as OHLC),
+                        (
+                          selectedCondition as ScreeningConditionGrowthRateStruct
+                        )?.ohlc || ('close' as OHLC),
                       before: dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
                       after: dayjs().format('YYYY-MM-DD'),
                     } as unknown as ScreeningConditionGrowthRateStruct)
@@ -97,7 +97,8 @@ export default function ScreeningConditionModal(props: {
             {selectedCondition?.type === 'growth_rate' && (
               <>
                 {(() => {
-                  const condition = selectedCondition as ScreeningConditionGrowthRateStruct
+                  const condition =
+                    selectedCondition as ScreeningConditionGrowthRateStruct
                   return (
                     <>
                       <Alert variant="secondary" className="mt-3">
@@ -135,7 +136,10 @@ export default function ScreeningConditionModal(props: {
                         <Form.Label>OHLC</Form.Label>
                         <Form.Control
                           as="select"
-                          value={(condition as ScreeningConditionGrowthRateStruct).ohlc}
+                          value={
+                            (condition as ScreeningConditionGrowthRateStruct)
+                              .ohlc
+                          }
                           onChange={(e) => {
                             setSelectedCondition({
                               ...selectedCondition,
@@ -185,7 +189,8 @@ export default function ScreeningConditionModal(props: {
             {selectedCondition?.type === 'cross_over' && (
               <>
                 {(() => {
-                  const condition = selectedCondition as ScreeningConditionCrossOverStruct
+                  const condition =
+                    selectedCondition as ScreeningConditionCrossOverStruct
 
                   return (
                     <>
@@ -276,8 +281,10 @@ export default function ScreeningConditionModal(props: {
               disabled={
                 selectedCondition === null ||
                 (selectedCondition.type === 'cross_over' &&
-                  (selectedCondition as ScreeningConditionCrossOverStruct).line1 ===
-                    (selectedCondition as ScreeningConditionCrossOverStruct).line2)
+                  (selectedCondition as ScreeningConditionCrossOverStruct)
+                    .line1 ===
+                    (selectedCondition as ScreeningConditionCrossOverStruct)
+                      .line2)
               }
             >
               追加
