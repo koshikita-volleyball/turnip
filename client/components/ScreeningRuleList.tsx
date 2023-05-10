@@ -107,7 +107,7 @@ export default function ScreeningRuleList(props: {
               }
 
               if (_rule.type === 'cross_over') {
-                const Rule = _rule as ScreeningRuleCrossOverStruct
+                const rule = _rule as ScreeningRuleCrossOverStruct
                 return (
                   <>
                     <ChevronDoubleUp
@@ -128,17 +128,17 @@ export default function ScreeningRuleList(props: {
                         </tr>
                         <tr>
                           <th className="w-25">Line 1</th>
-                          <td>{Rule.line1}</td>
+                          <td>{rule.line1}</td>
                         </tr>
                         <tr>
                           <th className="w-25">Line 2</th>
-                          <td>{Rule.line2}</td>
+                          <td>{rule.line2}</td>
                         </tr>
                         <tr>
                           <th className="w-25">期間</th>
                           <td>
-                            {Rule.from} - {Rule.to} |{' '}
-                            {dayjs(Rule.to).diff(dayjs(Rule.from), 'day') + 1}
+                            {rule.from} - {rule.to} |{' '}
+                            {dayjs(rule.to).diff(dayjs(rule.from), 'day') + 1}
                             day(s)
                           </td>
                         </tr>
