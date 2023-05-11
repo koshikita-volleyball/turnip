@@ -146,7 +146,7 @@ export const slack_notify_handler = async (): Promise<void> => {
   const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
     logLevel: LogLevel.DEBUG,
   })
-  const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
+  const channel = GetProcessEnv('SLACK_CHANNEL_NOTICE')
   const result = await slackClient.chat.postMessage({
     text: '朝７時だよ！ :tori:',
     channel,
@@ -170,7 +170,7 @@ export const refresh_token_updater_handler = async (): Promise<void> => {
       logLevel: LogLevel.DEBUG,
     })
     const THREE_BACK_QUOTES = '```'
-    const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
+    const channel = GetProcessEnv('SLACK_CHANNEL_NOTICE')
     const result = await slackClient.chat.postMessage({
       text: `:tori::tori::tori: リフレッシュトークンを更新しました！ :tori::tori::tori:\n\n${THREE_BACK_QUOTES}\n${refresh_token}\n${THREE_BACK_QUOTES}`,
       channel,
@@ -211,7 +211,7 @@ export const id_token_updater_handler = async (): Promise<void> => {
         logLevel: LogLevel.DEBUG,
       })
       const THREE_BACK_QUOTE = '```'
-      const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
+      const channel = GetProcessEnv('SLACK_CHANNEL_NOTICE')
       const result = await slackClient.chat.postMessage({
         text: `:tori::tori::tori: IDトークンを更新しました :tori::tori::tori:\n\n${THREE_BACK_QUOTE}${id_token}${THREE_BACK_QUOTE}`,
         channel,
@@ -256,7 +256,7 @@ export const listed_info_updater_handler = async (): Promise<void> => {
     const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
       logLevel: LogLevel.DEBUG,
     })
-    const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
+    const channel = GetProcessEnv('SLACK_CHANNEL_NOTICE')
     const result = await slackClient.chat.postMessage({
       text: `:tori::tori::tori: 銘柄情報を更新しました！ :tori::tori::tori:`,
       channel,
@@ -304,7 +304,7 @@ export const prices_daily_quotes_updater_handler = async (): Promise<void> => {
     const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
       logLevel: LogLevel.DEBUG,
     })
-    const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
+    const channel = GetProcessEnv('SLACK_CHANNEL_NOTICE')
     const result = await slackClient.chat.postMessage({
       text: `:tori::tori::tori: 株価四本値情報を更新しました！ :tori::tori::tori:`,
       channel,
@@ -473,7 +473,7 @@ export const fins_statements_updater_handler = async (): Promise<void> => {
     const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
       logLevel: LogLevel.DEBUG,
     })
-    const channel = GetProcessEnv('SLACK_NOTICE_CHANNEL')
+    const channel = GetProcessEnv('SLACK_CHANNEL_NOTICE')
     const result = await slackClient.chat.postMessage({
       text: `:tori::tori::tori: 財務情報を更新しました！ :tori::tori::tori:`,
       channel,
