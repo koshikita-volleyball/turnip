@@ -9,9 +9,6 @@ on:
       - 'client/*'
       - 'common/*'
       - 'hotfix'
-      - 'refactoring'
-      - 'feature/*'
-      - 'bugfix/*'
 
 env:
   client-directory: ./client
