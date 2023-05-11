@@ -18,12 +18,21 @@ import { getFinsStatements } from './model/fins_statements'
 import { CORS_HEADERS } from './common/const'
 import { NotFoundError } from './interface/turnip/error'
 import { api, APIFn } from './common/handler'
+import { getBusinessDays } from './analysis/jpx_business_day'
 
 dotenv.config()
 
 export const lambdaHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = () => {
     return 'Hello World'
+  }
+  return api(fn, event)
+}
+
+export const business_day_handler: APIGatewayProxyHandler = async event => {
+  const fn: APIFn = async () => {
+    const dates = await getBusinessDays()
+    return JSON.stringify(dates)
   }
   return api(fn, event)
 }

@@ -1,9 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await */
-import { APIGatewayProxyHandler } from 'aws-lambda'
-import { APIFn, api } from './common/handler'
-import { getBusinessDays } from './analysis/jpx_business_day'
 import { getBusinessDaysFromJQuants, saveBusinessDaysToS3 } from './model/jpx_business_day'
-import { notify } from './common/slack'
 import GetIdToken, { GetRefreshToken } from './common/get_id_token'
 import AWS from 'aws-sdk'
 import GetProcessEnv from './common/process_env'
@@ -13,28 +9,28 @@ import ListedInfoStruct from './interface/jquants/listed_info'
 import dayjs from 'dayjs'
 import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
 import FinsStatementsStruct from './interface/jquants/fins_statements'
-
-export const business_day_handler: APIGatewayProxyHandler = async event => {
-  const fn: APIFn = async () => {
-    const dates = await getBusinessDays()
-    return JSON.stringify(dates)
-  }
-  return api(fn, event)
-}
+import Logger, { makeCodeBlock } from './common/logger'
 
 export const business_day_update_handler = async (): Promise<void> => {
+  const function_name = 'business_day_update_handler'
   try {
     const dates = await getBusinessDaysFromJQuants()
     await saveBusinessDaysToS3(dates)
-    await notify('営業日情報を更新しました :spiral_calendar_pad:')
+    Logger.log(function_name, '営業日情報を更新しました！ :spiral_calendar_pad:')
   } catch (err) {
     if (err instanceof Error) {
-      console.error(`[ERROR] ${err.message}`)
+      Logger.error(
+        function_name,
+        `:tori::tori::tori: 営業日情報の更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+          err.message,
+        )}`,
+      )
     }
   }
 }
 
 export const refresh_token_updater_handler = async (): Promise<void> => {
+  const function_name = 'refresh_token_updater_handler'
   try {
     const refresh_token = await GetRefreshToken()
     const s3 = new AWS.S3()
@@ -46,24 +42,21 @@ export const refresh_token_updater_handler = async (): Promise<void> => {
       Body: refresh_token,
     }
     await s3.putObject(params).promise()
-    const slackClient = new WebClient(process.env.SLACK_API_TOKEN, {
-      logLevel: LogLevel.DEBUG,
-    })
-    const THREE_BACK_QUOTES = '```'
-    const channel = GetProcessEnv('SLACK_CHANNEL_NOTICE')
-    const result = await slackClient.chat.postMessage({
-      text: `:tori::tori::tori: リフレッシュトークンを更新しました！ :tori::tori::tori:\n\n${THREE_BACK_QUOTES}\n${refresh_token}\n${THREE_BACK_QUOTES}`,
-      channel,
-    })
-    console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
+    Logger.log(
+      function_name,
+      `:tori::tori::tori: リフレッシュトークンを更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+        refresh_token,
+      )}`,
+    )
   } catch (err: unknown) {
     if (err instanceof Error) {
-      console.error(`[ERROR] ${err.message}`)
+      Logger.error(function_name, err.message)
     }
   }
 }
 
 export const id_token_updater_handler = async (): Promise<void> => {
+  const function_name = 'id_token_updater_handler'
   try {
     // S3からリフレッシュトークンを取得
     const bucket = GetProcessEnv('S3_BUCKET_NAME')
@@ -85,29 +78,29 @@ export const id_token_updater_handler = async (): Promise<void> => {
         Body: id_token,
       }
       await s3.putObject(params).promise()
-
-      // Slackに通知
-      const slackClient = new WebClient(process.env.SLACK_API_TOKEN, {
-        logLevel: LogLevel.DEBUG,
-      })
-      const THREE_BACK_QUOTE = '```'
-      const channel = GetProcessEnv('SLACK_CHANNEL_NOTICE')
-      const result = await slackClient.chat.postMessage({
-        text: `:tori::tori::tori: IDトークンを更新しました :tori::tori::tori:\n\n${THREE_BACK_QUOTE}${id_token}${THREE_BACK_QUOTE}`,
-        channel,
-      })
-      console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
+      Logger.log(
+        function_name,
+        `:tori::tori::tori: IDトークンを更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+          id_token,
+        )}`,
+      )
     } else {
-      console.log('refresh_token.txt is empty')
+      Logger.error(function_name, 'リフレッシュトークンが取得できませんでした！')
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
-      console.error(`[ERROR] ${err.message}`)
+      Logger.error(
+        function_name,
+        `:tori::tori::tori: IDトークンの更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+          err.message,
+        )}`,
+      )
     }
   }
 }
 
 export const listed_info_updater_handler = async (): Promise<void> => {
+  const function_name = 'listed_info_updater_handler'
   try {
     const { info: stocks } = await JQuantsClient<{ info: ListedInfoStruct[] }>('/v1/listed/info')
     // DynamoDBに保存
@@ -132,16 +125,13 @@ export const listed_info_updater_handler = async (): Promise<void> => {
       }
       await dynamoClient.put(params).promise()
     }
-    // Slackに通知
-    const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
-      logLevel: LogLevel.DEBUG,
-    })
-    const channel = GetProcessEnv('SLACK_CHANNEL_NOTICE')
-    const result = await slackClient.chat.postMessage({
-      text: `:tori::tori::tori: 銘柄情報を更新しました！ :tori::tori::tori:`,
-      channel,
-    })
-    console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
+    const item_count = stocks.length
+    Logger.log(
+      function_name,
+      `:tori::tori::tori: 銘柄情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+        `更新件数: ${item_count}件`,
+      )}`,
+    )
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.error(`[ERROR] ${err.message}`)
@@ -150,6 +140,7 @@ export const listed_info_updater_handler = async (): Promise<void> => {
 }
 
 export const prices_daily_quotes_updater_handler = async (): Promise<void> => {
+  const function_name = 'prices_daily_quotes_updater_handler'
   try {
     const today = dayjs().format('YYYY-MM-DD')
     const { daily_quotes: prices } = await JQuantsClient<{
@@ -180,24 +171,27 @@ export const prices_daily_quotes_updater_handler = async (): Promise<void> => {
       }
       await dynamoClient.put(params).promise()
     }
-    // Slackに通知
-    const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
-      logLevel: LogLevel.DEBUG,
-    })
-    const channel = GetProcessEnv('SLACK_CHANNEL_NOTICE')
-    const result = await slackClient.chat.postMessage({
-      text: `:tori::tori::tori: 株価四本値情報を更新しました！ :tori::tori::tori:`,
-      channel,
-    })
-    console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
+    const item_count = prices.length
+    Logger.log(
+      function_name,
+      `:tori::tori::tori: 株価四本値情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+        `更新件数: ${item_count}件`,
+      )}`,
+    )
   } catch (err: unknown) {
     if (err instanceof Error) {
-      console.error(`[ERROR] ${err.message}`)
+      Logger.error(
+        function_name,
+        `:tori::tori::tori: 株価四本値情報の更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+          err.message,
+        )}`,
+      )
     }
   }
 }
 
 export const fins_statements_updater_handler = async (): Promise<void> => {
+  const function_name = 'fins_statements_updater_handler'
   try {
     const today = dayjs().format('YYYY-MM-DD')
     const { statements: statements } = await JQuantsClient<{
@@ -359,9 +353,21 @@ export const fins_statements_updater_handler = async (): Promise<void> => {
       channel,
     })
     console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
+    const item_count = statements.length
+    Logger.log(
+      function_name,
+      `:tori::tori::tori: 財務情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+        `更新件数: ${item_count}件`,
+      )}`,
+    )
   } catch (err: unknown) {
     if (err instanceof Error) {
-      console.error(`[ERROR] ${err.message}`)
+      Logger.error(
+        function_name,
+        `:tori::tori::tori: 財務情報の更新に失敗しました！:tori::tori::tori:\n\n${makeCodeBlock(
+          err.message,
+        )}`,
+      )
     }
   }
 }
