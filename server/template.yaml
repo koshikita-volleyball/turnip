@@ -321,6 +321,27 @@ Resources:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
       Dockerfile: Dockerfile
+  
+  TmpCodeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-tmp-code
+      PackageType: Image
+      ImageConfig:
+        Command: [ "app.tmp_code_handler" ]
+      Role: !GetAtt MyLambdaRole.Arn
+      Architectures:
+      - x86_64
+      Events:
+        MyApiGateway:
+          Type: Api
+          Properties:
+            Path: /api/tmp_code
+            Method: get
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./src
+      Dockerfile: Dockerfile
 
   RefreshTokenUpdaterFunction:
     Type: AWS::Serverless::Function
