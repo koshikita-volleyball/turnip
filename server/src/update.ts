@@ -19,7 +19,12 @@ export const business_day_update_handler = async (): Promise<void> => {
     Logger.log(function_name, '営業日情報を更新しました！ :spiral_calendar_pad:')
   } catch (err) {
     if (err instanceof Error) {
-      Logger.error(function_name, `:tori::tori::tori: 営業日情報の更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(err.message)}`)
+      Logger.error(
+        function_name,
+        `:tori::tori::tori: 営業日情報の更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+          err.message,
+        )}`,
+      )
     }
   }
 }
@@ -37,7 +42,12 @@ export const refresh_token_updater_handler = async (): Promise<void> => {
       Body: refresh_token,
     }
     await s3.putObject(params).promise()
-    Logger.log(function_name, `:tori::tori::tori: リフレッシュトークンを更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(refresh_token)}`)
+    Logger.log(
+      function_name,
+      `:tori::tori::tori: リフレッシュトークンを更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+        refresh_token,
+      )}`,
+    )
   } catch (err: unknown) {
     if (err instanceof Error) {
       Logger.error(function_name, err.message)
@@ -68,13 +78,23 @@ export const id_token_updater_handler = async (): Promise<void> => {
         Body: id_token,
       }
       await s3.putObject(params).promise()
-      Logger.log(function_name, `:tori::tori::tori: IDトークンを更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(id_token)}`)
+      Logger.log(
+        function_name,
+        `:tori::tori::tori: IDトークンを更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+          id_token,
+        )}`,
+      )
     } else {
       Logger.error(function_name, 'リフレッシュトークンが取得できませんでした！')
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
-      Logger.error(function_name, `:tori::tori::tori: IDトークンの更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(err.message)}`)
+      Logger.error(
+        function_name,
+        `:tori::tori::tori: IDトークンの更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+          err.message,
+        )}`,
+      )
     }
   }
 }
@@ -106,7 +126,12 @@ export const listed_info_updater_handler = async (): Promise<void> => {
       await dynamoClient.put(params).promise()
     }
     const item_count = stocks.length
-    Logger.log(function_name, `:tori::tori::tori: 銘柄情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(`更新件数: ${item_count}件`)}`)
+    Logger.log(
+      function_name,
+      `:tori::tori::tori: 銘柄情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+        `更新件数: ${item_count}件`,
+      )}`,
+    )
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.error(`[ERROR] ${err.message}`)
@@ -147,10 +172,20 @@ export const prices_daily_quotes_updater_handler = async (): Promise<void> => {
       await dynamoClient.put(params).promise()
     }
     const item_count = prices.length
-    Logger.log(function_name, `:tori::tori::tori: 株価四本値情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(`更新件数: ${item_count}件`)}`)
+    Logger.log(
+      function_name,
+      `:tori::tori::tori: 株価四本値情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+        `更新件数: ${item_count}件`,
+      )}`,
+    )
   } catch (err: unknown) {
     if (err instanceof Error) {
-      Logger.error(function_name, `:tori::tori::tori: 株価四本値情報の更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(err.message)}`)
+      Logger.error(
+        function_name,
+        `:tori::tori::tori: 株価四本値情報の更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+          err.message,
+        )}`,
+      )
     }
   }
 }
@@ -319,10 +354,20 @@ export const fins_statements_updater_handler = async (): Promise<void> => {
     })
     console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
     const item_count = statements.length
-    Logger.log(function_name, `:tori::tori::tori: 財務情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(`更新件数: ${item_count}件`)}`)
+    Logger.log(
+      function_name,
+      `:tori::tori::tori: 財務情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
+        `更新件数: ${item_count}件`,
+      )}`,
+    )
   } catch (err: unknown) {
     if (err instanceof Error) {
-      Logger.error(function_name, `:tori::tori::tori: 財務情報の更新に失敗しました！:tori::tori::tori:\n\n${makeCodeBlock(err.message)}`)
+      Logger.error(
+        function_name,
+        `:tori::tori::tori: 財務情報の更新に失敗しました！:tori::tori::tori:\n\n${makeCodeBlock(
+          err.message,
+        )}`,
+      )
     }
   }
 }
