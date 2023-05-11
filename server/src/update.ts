@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await */
+import './common/initializer'
 import { getBusinessDaysFromJQuants, saveBusinessDaysToS3 } from './model/jpx_business_day'
 import GetIdToken, { GetRefreshToken } from './common/get_id_token'
 import AWS from 'aws-sdk'
