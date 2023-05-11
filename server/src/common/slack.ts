@@ -1,7 +1,7 @@
 import { WebClient, LogLevel } from '@slack/web-api'
 import GetProcessEnv from './process_env'
 
-type Category = 'notice' | 'log' | 'error'
+type Category = 'notice' | 'info' | 'error'
 
 const getChannel = (category: Category): string => {
   if (category === 'notice') {
