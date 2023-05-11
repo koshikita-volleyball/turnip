@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await */
-import dotenv from 'dotenv'
+import './common/initializer'
 import { APIGatewayEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 import { WebClient, LogLevel } from '@slack/web-api'
 import GetProcessEnv from './common/process_env'
@@ -19,8 +19,6 @@ import { CORS_HEADERS } from './common/const'
 import { NotFoundError } from './interface/turnip/error'
 import { api, APIFn } from './common/handler'
 import { getBusinessDays } from './analysis/jpx_business_day'
-
-dotenv.config()
 
 export const lambdaHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = () => {
