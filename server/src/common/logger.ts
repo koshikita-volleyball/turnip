@@ -23,4 +23,10 @@ class Logger {
   }
 }
 
+const THREE_BACK_QUOTES = '```'
+function makeCodeBlock(text: string) {
+  return `${THREE_BACK_QUOTES}${text}${THREE_BACK_QUOTES}`
+}
+
 export default Logger
+export { makeCodeBlock }
