@@ -1,6 +1,5 @@
 import { APIGatewayEvent } from 'aws-lambda'
 import { CrossOverIndicator, GrowthRateIndicator, Indicator } from '../interface/jquants/indicator'
-import { notify } from './slack'
 import dayjs from '../common/dayjs'
 import { getBusinessDays } from '../analysis/jpx_business_day'
 

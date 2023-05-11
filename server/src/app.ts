@@ -58,9 +58,7 @@ export const lambdaHandler = async (event: APIGatewayEvent): Promise<APIGatewayP
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const business_day_handler = async (
-  event: APIGatewayEvent,
-): Promise<APIGatewayProxyResult> => {
+export const business_day_handler = async (): Promise<APIGatewayProxyResult> => {
   try {
     const dates = await getBusinessDays()
     return {
