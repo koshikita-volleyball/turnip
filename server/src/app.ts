@@ -487,17 +487,15 @@ export const fins_statements_updater_handler = async (): Promise<void> => {
   }
 }
 
-export const screener_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-  const { page } = getPaginationParams(event)
-  const stockCommonFilter = getStockCommonFilterParams(event)
-  const indicatorParams = await getIndicatorParams(event)
+export const screener_handler: APIGatewayProxyHandler = async event => {
+  const fn: APIFn = async () => {
+    const { page } = getPaginationParams(event)
+    const stockCommonFilter = getStockCommonFilterParams(event)
+    const indicatorParams = await getIndicatorParams(event)
 
-  const stocks = await getStocks(stockCommonFilter)
-  const screenedStocks = await screener(stocks, indicatorParams)
-
-  return {
-    statusCode: 200,
-    headers: CORS_HEADERS,
-    body: JSON.stringify({ ...paginate(screenedStocks, page), indicatorParams }),
+    const stocks = await getStocks(stockCommonFilter)
+    const screenedStocks = await screener(stocks, indicatorParams)
+    return JSON.stringify({ ...paginate(screenedStocks, page), indicatorParams })
   }
+  return api(fn, event)
 }
