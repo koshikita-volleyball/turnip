@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/require-await */
-import { APIGatewayProxyHandler } from "aws-lambda"
-import { APIFn, api } from "./common/handler"
-import { getBusinessDays } from "./analysis/jpx_business_day"
-import { getBusinessDaysFromJQuants, saveBusinessDaysToS3 } from "./model/jpx_business_day"
-import { notify } from "./common/slack"
-import GetIdToken, { GetRefreshToken } from "./common/get_id_token"
-import AWS from "aws-sdk"
-import GetProcessEnv from "./common/process_env"
-import { LogLevel, WebClient } from "@slack/web-api"
-import JQuantsClient from "./common/jquants_client"
-import ListedInfoStruct from "./interface/jquants/listed_info"
-import dayjs from "dayjs"
-import PricesDailyQuotesStruct from "./interface/jquants/prices_daily_quotes"
-import FinsStatementsStruct from "./interface/jquants/fins_statements"
+import { APIGatewayProxyHandler } from 'aws-lambda'
+import { APIFn, api } from './common/handler'
+import { getBusinessDays } from './analysis/jpx_business_day'
+import { getBusinessDaysFromJQuants, saveBusinessDaysToS3 } from './model/jpx_business_day'
+import { notify } from './common/slack'
+import GetIdToken, { GetRefreshToken } from './common/get_id_token'
+import AWS from 'aws-sdk'
+import GetProcessEnv from './common/process_env'
+import { LogLevel, WebClient } from '@slack/web-api'
+import JQuantsClient from './common/jquants_client'
+import ListedInfoStruct from './interface/jquants/listed_info'
+import dayjs from 'dayjs'
+import PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
+import FinsStatementsStruct from './interface/jquants/fins_statements'
 
 export const business_day_handler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = async () => {
@@ -148,7 +148,6 @@ export const listed_info_updater_handler = async (): Promise<void> => {
     }
   }
 }
-
 
 export const prices_daily_quotes_updater_handler = async (): Promise<void> => {
   try {
