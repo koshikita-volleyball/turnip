@@ -2,11 +2,10 @@ import { APIGatewayEvent } from 'aws-lambda'
 import { CrossOverIndicator, GrowthRateIndicator, Indicator } from '../interface/jquants/indicator'
 import dayjs from '../common/dayjs'
 import { getBusinessDays } from '../analysis/jpx_business_day'
-
-type Required<T extends object> = boolean | (keyof T)[]
+import { BadRequestError } from '../interface/turnip/error'
 
 type StockCode = {
-  code: string
+  code?: string
 }
 
 type StockCommonFilter = {
@@ -20,7 +19,7 @@ type Date = {
   date?: string
 }
 
-type DatePeriod = {
+type Period = {
   from?: string
   to?: string
 }
@@ -29,68 +28,33 @@ type PaginationParams = {
   page: number
 }
 
-const _check_required = <T extends object>(params: T, required: Required<T>): T => {
-  if (typeof required === 'boolean' && !required) return params
-
-  const keys = (typeof required === 'boolean' ? Object.keys(params) : required) as (keyof T)[]
-  keys.forEach(require => {
-    if (!params[require]) {
-      throw new Error(`Missing required parameter: ${String(require)}`)
-    }
-  })
-
-  return params
-}
-
-const _parseList = (str: string | undefined): string[] | undefined => {
-  if (!str) return undefined
-  return str.split(',')
+export const check_required = <T>(name: string, value: T | undefined) => {
+  if (value === undefined || value === null) {
+    throw new BadRequestError(`Missing required parameter: ${name}`)
+  }
+  return value
 }
 
 export const getStockCodedParams = (event: APIGatewayEvent): StockCode => {
   const code = event.queryStringParameters?.code
-  if (!code) {
-    throw new Error('Missing required parameter: code')
-  }
   return { code }
 }
 
-export const getStockCommonFilterParams = (
-  event: APIGatewayEvent,
-  required: Required<StockCommonFilter> = false,
-): StockCommonFilter => {
-  return _check_required<StockCommonFilter>(
-    {
-      codes: _parseList(event.queryStringParameters?.codes),
-      sector_17_codes: _parseList(event.queryStringParameters?.sector_17_codes),
-      sector_33_codes: _parseList(event.queryStringParameters?.sector_33_codes),
-      market_codes: _parseList(event.queryStringParameters?.market_codes),
-    },
-    required,
-  )
-}
+export const getStockCommonFilterParams = (event: APIGatewayEvent): StockCommonFilter => ({
+  codes: _parseList(event.queryStringParameters?.codes),
+  sector_17_codes: _parseList(event.queryStringParameters?.sector_17_codes),
+  sector_33_codes: _parseList(event.queryStringParameters?.sector_33_codes),
+  market_codes: _parseList(event.queryStringParameters?.market_codes),
+})
 
-export const getDateParams = (event: APIGatewayEvent, required: Required<Date> = false): Date => {
-  return _check_required<Date>(
-    {
-      date: event.queryStringParameters?.date,
-    },
-    required,
-  )
-}
+export const getDateParams = (event: APIGatewayEvent): Date => ({
+  date: event.queryStringParameters?.date,
+})
 
-export const getDatePeriodParams = (
-  event: APIGatewayEvent,
-  required: Required<DatePeriod> = false,
-): DatePeriod => {
-  return _check_required<DatePeriod>(
-    {
-      from: event.queryStringParameters?.from,
-      to: event.queryStringParameters?.to,
-    },
-    required,
-  )
-}
+export const getPeriodParams = (event: APIGatewayEvent): Period => ({
+  from: event.queryStringParameters?.from,
+  to: event.queryStringParameters?.to,
+})
 
 export const getPaginationParams = (event: APIGatewayEvent): PaginationParams => ({
   page: parseInt(event.queryStringParameters?.page || '1'),
@@ -147,4 +111,9 @@ const _parseCrossOverIndicator = (indicator: CrossOverIndicator, now: dayjs.Dayj
     to: indicator.to || now.format('YYYY-MM-DD'),
     positive: indicator.positive || true,
   }
+}
+
+const _parseList = (str: string | undefined): string[] | undefined => {
+  if (!str) return undefined
+  return str.split(',')
 }

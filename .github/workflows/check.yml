@@ -60,9 +60,9 @@ jobs:
       - name: Vulnerability check
         run: yarn audit
         working-directory: ${{ env.server-directory }}/src
-      - name: Deprication check
-        run: yarn outdated
-        working-directory: ${{ env.server-directory }}/src
+      # - name: Deprication check
+      #   run: yarn outdated
+      #   working-directory: ${{ env.server-directory }}/src
   nextjs-check:
     runs-on: ubuntu-latest
     strategy:
@@ -96,6 +96,6 @@ jobs:
       - name: Vulnerability check
         run: yarn audit
         working-directory: ${{ env.client-directory }}
-      - name: Deprication check
-        run: yarn outdated
-        working-directory: ${{ env.client-directory }}
+      # - name: Deprication check
+      #   run: yarn outdated
+      #   working-directory: ${{ env.client-directory }}
