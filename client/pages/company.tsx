@@ -57,19 +57,6 @@ export default function Company() {
   return (
     <Layout>
       <div id="Company">
-        {/* 全てのブロックが表示されていなければローディングを表示する。 */}
-        {!info && !prices && !statements && (
-          <div className="my-5 d-flex justify-content-between">
-            <Spinner animation="grow" variant="primary" />
-            <Spinner animation="grow" variant="secondary" />
-            <Spinner animation="grow" variant="success" />
-            <Spinner animation="grow" variant="danger" />
-            <Spinner animation="grow" variant="warning" />
-            <Spinner animation="grow" variant="info" />
-            <Spinner animation="grow" variant="light" />
-            <Spinner animation="grow" variant="dark" />
-          </div>
-        )}
         <div>
           <h1>🌟 銘柄情報詳細</h1>
           {/* 銘柄基本情報 */}

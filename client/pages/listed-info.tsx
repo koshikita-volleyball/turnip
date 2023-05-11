@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import useSWR from 'swr'
 import setting from '../setting'
-import { Alert, Button, Form, Spinner, Table } from 'react-bootstrap'
+import { Alert, Button, Spinner, Table } from 'react-bootstrap'
 import ListedInfoStruct from '../interface/listed_info'
 import { useRouter } from 'next/router'
-import { MarketInfo, Sector17Info, Sector33Info } from '../data/export'
 import Link from 'next/link'
+import FilteringBlock from '../components/FilteringBlock'
+import PaginationStruct from '../interface/pagination'
 
 const fetcher = (url: string) =>
   fetch(url).then((r) => (r.ok ? r.json() : null))
@@ -31,8 +32,9 @@ const make_params = ({
   `${sector_33_code !== '' ? `&sector_33_codes=${sector_33_code}` : ''}`
 
 export default function AboutPage() {
+  const [firstLock, setFirstLock] = useState(false)
   const [page, setPage] = useState(1)
-  const [useCondition, setUseCondition] = useState(true)
+  const [useFiltering, setUseFiltering] = useState(true)
   const [company_name, setCompanyName] = useState('')
   const [market_code, setMarketCode] = useState<string>('')
   const [sector_17_code, setSector17Code] = useState<string>('')
@@ -44,7 +46,10 @@ export default function AboutPage() {
     data: data,
     error,
   }: {
-    data: { data: ListedInfoStruct[] }
+    data: {
+      data: ListedInfoStruct[]
+      pagination: PaginationStruct
+    }
     error: any
   } = useSWR(
     `${setting.apiPath}/api/listed_info` +
@@ -81,6 +86,7 @@ export default function AboutPage() {
     if (sector_17_code) setSector17Code(sector_17_code as string)
     const sector_33_code = router.query.sector_33_codes
     if (sector_33_code) setSector33Code(sector_33_code as string)
+    setFirstLock(true)
   }, [
     router.query.company_name,
     router.query.market_codes,
@@ -90,6 +96,7 @@ export default function AboutPage() {
   ])
 
   useEffect(() => {
+    if (!firstLock) return
     const query = {}
     if (page !== 1) query['page'] = page
     if (company_name !== '') query['company_name'] = company_name
@@ -121,21 +128,35 @@ export default function AboutPage() {
           </div>
         ) : (
           <>
+            <FilteringBlock
+              useFiltering={useFiltering}
+              setUseFiltering={setUseFiltering}
+              company_name={company_name}
+              setCompanyName={setCompanyName}
+              market_code={market_code}
+              setMarketCode={setMarketCode}
+              sector_17_code={sector_17_code}
+              setSector17Code={setSector17Code}
+              sector_33_code={sector_33_code}
+              setSector33Code={setSector33Code}
+              afterChange={() => setPage(1)}
+            />
+            <hr />
             <div className="d-flex justify-content-between align-items-center mt-3">
               <Button
                 variant="primary"
                 onClick={() => setPage(page - 1)}
-                disabled={page === 1}
+                disabled={data.pagination.hasPrev === false}
               >
                 前へ
               </Button>
               <Alert variant="info" className="text-center mx-1 my-0 px-3 py-1">
-                Page {page}
+                Page {page} / {data.pagination?.totalPages || 'xxx'}
               </Alert>
               <Button
                 variant="primary"
                 onClick={() => setPage(page + 1)}
-                disabled={data.data.length === 0}
+                disabled={data.pagination.hasNext === false}
               >
                 次へ
               </Button>
@@ -167,106 +188,6 @@ export default function AboutPage() {
               </tbody>
             </Table>
           </>
-        )}
-        <div className="mt-3">
-          {useCondition ? (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                setUseCondition(false)
-                setPage(1)
-              }}
-            >
-              条件を指定しない
-            </Button>
-          ) : (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                setUseCondition(true)
-                setPage(1)
-              }}
-            >
-              条件を指定して検索
-            </Button>
-          )}
-        </div>
-        {useCondition && (
-          <div className="mt-3 p-3 bg-light border">
-            <Form>
-              <Form.Group className="mt-3">
-                <Form.Label>銘柄名</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="銘柄名"
-                  value={company_name}
-                  onChange={(e) => {
-                    setCompanyName(e.target.value)
-                    setPage(1)
-                  }}
-                />
-              </Form.Group>
-            </Form>
-            <Form.Group className="mt-3">
-              <Form.Label>市場</Form.Label>
-              <Form.Control
-                as="select"
-                onChange={(e) => {
-                  const value = e.target.value
-                  setMarketCode(value)
-                  setPage(1)
-                }}
-                value={market_code}
-              >
-                <option value="">指定しない</option>
-                {MarketInfo.map((item) => (
-                  <option key={item.code} value={item.code}>
-                    {item.name}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-            <Form.Group className="mt-3">
-              <Form.Label>17業種</Form.Label>
-              <Form.Control
-                as="select"
-                onChange={(e) => {
-                  const value = e.target.value
-                  setSector17Code(value)
-                  setPage(1)
-                }}
-                value={sector_17_code}
-              >
-                <option value="">指定しない</option>
-                {Sector17Info.map((item) => (
-                  <option key={item.code} value={item.code}>
-                    {item.name}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-            <Form.Group className="mt-3">
-              <Form.Label>33業種</Form.Label>
-              <Form.Control
-                as="select"
-                onChange={(e) => {
-                  const value = e.target.value
-                  setSector33Code(value)
-                  setPage(1)
-                }}
-                value={sector_33_code}
-              >
-                <option value="">指定しない</option>
-                {Sector33Info.map((item) => (
-                  <option key={item.code} value={item.code}>
-                    {item.name}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-          </div>
         )}
       </div>
     </Layout>
