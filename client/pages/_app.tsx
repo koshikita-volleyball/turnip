@@ -5,6 +5,7 @@ import { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import '../styles/styles.scss'
+import '../styles/common.scss'
 import '../styles/menu.scss'
 
 import '../styles/index.scss'

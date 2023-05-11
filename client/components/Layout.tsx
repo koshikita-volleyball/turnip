@@ -37,6 +37,7 @@ const Layout = ({
         children
       )}
     </div>
+    <div id="Modal"></div>
     {footer && (
       <footer>
         <a
