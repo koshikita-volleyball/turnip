@@ -1,16 +1,6 @@
 name: Check
 
 on:
-  push:
-    branches:
-      - 'main'
-      - 'server/*'
-      - 'client/*'
-      - 'common/*'
-      - 'hotfix'
-      - 'refactoring'
-      - 'feature/*'
-      - 'bugfix/*'
   pull_request:
     branches:
       - 'main'
