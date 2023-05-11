@@ -13,11 +13,11 @@ class Logger {
     const level_str = level === 'info' ? ':large_blue_circle: Info' : ':red_circle: Error'
     return `【Level】${level_str}\n【時刻】${dateTime}\n【関数名】${funcName}\n【メッセージ】${text}`
   }
-  static static log(funcName: string, text: string) {
+  static log(funcName: string, text: string) {
     console.log(this._format_log('info', funcName, text))
     notify(this._format_slack('info', funcName, text), 'info').then().catch(console.error)
   }
-  static static error(funcName: string, text: string) {
+  static error(funcName: string, text: string) {
     console.error(this._format_log('error', funcName, text))
     notify(this._format_slack('error', funcName, text), 'error').then().catch(console.error)
   }
