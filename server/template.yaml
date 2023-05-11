@@ -141,7 +141,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-hello
       PackageType: Image
       ImageConfig:
-        Command: [ "app.lambdaHandler" ]
+        Command: [ "api.lambdaHandler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -162,7 +162,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-business-day
       PackageType: Image
       ImageConfig:
-        Command: [ "app.business_day_handler" ]
+        Command: [ "api.business_day_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -183,7 +183,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-business-day-update
       PackageType: Image
       ImageConfig:
-        Command: [ "app.business_day_update_handler" ]
+        Command: [ "update.business_day_update_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -203,7 +203,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-info
       PackageType: Image
       ImageConfig:
-        Command: [ "app.info_handler" ]
+        Command: [ "api.info_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -224,7 +224,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-listed-info
       PackageType: Image
       ImageConfig:
-        Command: [ "app.listed_info_handler" ]
+        Command: [ "api.listed_info_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -245,7 +245,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-prices-daily_quotes
       PackageType: Image
       ImageConfig:
-        Command: [ "app.prices_daily_quotes_handler" ]
+        Command: [ "api.prices_daily_quotes_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -266,7 +266,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-fins-statements
       PackageType: Image
       ImageConfig:
-        Command: [ "app.fins_statements_handler" ]
+        Command: [ "api.fins_statements_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -287,7 +287,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-slack-notify
       PackageType: Image
       ImageConfig:
-        Command: [ "app.slack_notify_handler" ]
+        Command: [ "update.slack_notify_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -307,7 +307,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-screener
       PackageType: Image
       ImageConfig:
-        Command: [ "app.screener_handler" ]
+        Command: [ "api.screener_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -321,14 +321,14 @@ Resources:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
       Dockerfile: Dockerfile
-  
+
   TmpCodeFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-tmp-code
       PackageType: Image
       ImageConfig:
-        Command: [ "app.tmp_code_handler" ]
+        Command: [ "api.tmp_code_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -349,7 +349,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-refresh-token-updater
       PackageType: Image
       ImageConfig:
-        Command: [ "app.refresh_token_updater_handler" ]
+        Command: [ "update.refresh_token_updater_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -369,7 +369,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-id-token-updater
       PackageType: Image
       ImageConfig:
-        Command: [ "app.id_token_updater_handler" ]
+        Command: [ "update.id_token_updater_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -389,7 +389,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-listed-info-updater
       PackageType: Image
       ImageConfig:
-        Command: [ "app.listed_info_updater_handler" ]
+        Command: [ "update.listed_info_updater_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -409,7 +409,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-daily-quotes-updater
       PackageType: Image
       ImageConfig:
-        Command: [ "app.prices_daily_quotes_updater_handler" ]
+        Command: [ "update.prices_daily_quotes_updater_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
@@ -429,7 +429,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-statements-updater
       PackageType: Image
       ImageConfig:
-        Command: [ "app.fins_statements_updater_handler" ]
+        Command: [ "update.fins_statements_updater_handler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
