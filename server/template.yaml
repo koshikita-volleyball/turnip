@@ -311,7 +311,7 @@ Resources:
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
-      MemorySize: 3008
+      MemorySize: 10240
       Events:
         MyApiGateway:
           Type: Api
