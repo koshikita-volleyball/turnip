@@ -130,13 +130,11 @@ export const slack_notify_handler = async (): Promise<void> => {
   console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
 }
 
-export const screener_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-  const stockCommonFilter = getStockCommonFilterParams(event)
-  const indicatorParams = await getIndicatorParams(event)
-
-  return {
-    statusCode: 200,
-    headers: CORS_HEADERS,
-    body: JSON.stringify({ stockCommonFilter, indicatorParams }),
+export const screener_handler: APIGatewayProxyHandler = async event => {
+  const fn: APIFn = async event => {
+    const stockCommonFilter = getStockCommonFilterParams(event)
+    const indicatorParams = await getIndicatorParams(event)
+    return JSON.stringify({ stockCommonFilter, indicatorParams })
   }
+  return api(fn, event)
 }
