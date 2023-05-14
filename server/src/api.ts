@@ -19,6 +19,7 @@ import { CORS_HEADERS } from './common/const'
 import { NotFoundError } from './interface/turnip/error'
 import { api, APIFn } from './common/handler'
 import { getBusinessDays } from './screener/utils'
+import screener from './screener/screener'
 
 export const lambdaHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = () => {
@@ -134,7 +135,11 @@ export const screener_handler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = async event => {
     const stockCommonFilter = getStockCommonFilterParams(event)
     const indicatorParams = await getIndicatorParams(event)
-    return JSON.stringify({ stockCommonFilter, indicatorParams })
+
+    const stocks = await getStocks(stockCommonFilter)
+
+    const screendStocks = await screener(stocks, indicatorParams)
+    return JSON.stringify({ params: {stockCommonFilter, indicatorParams}, screendStocks })
   }
   return api(fn, event)
 }
