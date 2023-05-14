@@ -62,9 +62,9 @@ export const getPaginationParams = (event: APIGatewayEvent): PaginationParams =>
 
 export const getIndicatorParams = async (event: APIGatewayEvent): Promise<Indicator[]> => {
   try {
-    const conditions = event.queryStringParameters?.conditions
-    if (!conditions) return []
-    return Promise.all((JSON.parse(decodeURI(conditions)) as Indicator[]).map(_parseIndicator))
+    const rules = event.queryStringParameters?.rules
+    if (!rules) return []
+    return Promise.all((JSON.parse(decodeURI(rules)) as Indicator[]).map(_parseIndicator))
   } catch (e) {
     console.error(e)
   }
