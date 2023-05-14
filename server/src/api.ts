@@ -18,7 +18,7 @@ import { getFinsStatements } from './model/fins_statements'
 import { CORS_HEADERS } from './common/const'
 import { NotFoundError } from './interface/turnip/error'
 import { api, APIFn } from './common/handler'
-import { getBusinessDays } from './analysis/jpx_business_day'
+import { getBusinessDays } from './screener/utils'
 
 export const lambdaHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = () => {
