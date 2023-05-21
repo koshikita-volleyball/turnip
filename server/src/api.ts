@@ -87,7 +87,7 @@ export const finsStatementsHandler = async (
     const from = event.queryStringParameters?.from
     const to = event.queryStringParameters?.to
 
-    if (!code) {
+    if (code === undefined) {
       return {
         statusCode: 400,
         headers: CORS_HEADERS,
