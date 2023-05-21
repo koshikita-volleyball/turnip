@@ -19,7 +19,9 @@
     "build": "next build && next export -o ./dist",
     "test": "jest",
     "start": "next start",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "lint:check": "eslint --ext .",
+    "lint:fix": "eslint --ext . --fix"
   },
   "dependencies": {
     "@splidejs/react-splide": "^0.7.12",
