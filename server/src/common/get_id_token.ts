@@ -1,4 +1,4 @@
-import { base_uri } from './const'
+import { baseUri } from './const'
 import GetProcessEnv from './process_env'
 
 interface RefreshTokenResponseStruct {
@@ -19,7 +19,7 @@ function GetMailAddressAndPassword (): {
 
 async function GetRefreshToken (): Promise<string> {
   const { mailaddress, password } = GetMailAddressAndPassword()
-  const response_refresh_token = await fetch(`${base_uri}/v1/token/auth_user`, {
+  const responseRefreshToken = await fetch(`${baseUri}/v1/token/auth_user`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -29,20 +29,20 @@ async function GetRefreshToken (): Promise<string> {
       password
     })
   })
-  const refresh_token = ((await response_refresh_token.json()) as RefreshTokenResponseStruct)
+  const refreshToken = ((await responseRefreshToken.json()) as RefreshTokenResponseStruct)
     .refreshToken
-  return refresh_token
+  return refreshToken
 }
 
-async function GetIdToken (refresh_token: string): Promise<string> {
-  const response_id_token = await fetch(
-    `${base_uri}/v1/token/auth_refresh?refreshtoken=${refresh_token}`,
+async function GetIdToken (refreshToken: string): Promise<string> {
+  const responseIdToken = await fetch(
+    `${baseUri}/v1/token/auth_refresh?refreshtoken=${refreshToken}`,
     {
       method: 'POST'
     }
   )
-  const id_token = ((await response_id_token.json()) as IdTokenResponseStruct).idToken
-  return id_token
+  const idToken = ((await responseIdToken.json()) as IdTokenResponseStruct).idToken
+  return idToken
 }
 
 export default GetIdToken
