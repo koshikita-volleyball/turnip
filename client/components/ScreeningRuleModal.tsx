@@ -25,7 +25,7 @@ const customStyles = {
     width: '1000px',
     maxWidth: '95vw',
     height: '800px',
-    maxHeight: '95vh%'
+    maxHeight: '95vh'
   }
 }
 
