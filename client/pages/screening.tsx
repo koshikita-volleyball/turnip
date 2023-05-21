@@ -23,10 +23,6 @@ function makeUri (
   const { companyName, marketCode, sector17Code, sector33Code } =
     filtering
 
-  rules.forEach((rule) => {
-    delete rule.collapsed
-  })
-
   return (
     `${setting.apiPath}/api/screener` +
     '?' +
