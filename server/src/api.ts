@@ -41,9 +41,9 @@ export const info_handler: APIGatewayProxyHandler = async event => {
     const code = check_required('code', _code)
     const stock = await getStockByCode(code)
     if (!stock) {
-      throw new NotFoundError(`code: ${code} is not found`)
+      throw new NotFoundError(`code: ${code} is not found.`)
     }
-    return JSON.stringify('hello')
+    return JSON.stringify(stock)
   }
   return api(fn, event)
 }
