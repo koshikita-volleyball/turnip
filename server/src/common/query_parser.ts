@@ -3,6 +3,7 @@ import { type CrossOverIndicator, type GrowthRateIndicator, type Indicator } fro
 import dayjs from '../common/dayjs'
 import { getBusinessDays } from '../analysis/jpx_business_day'
 import { BadRequestError } from '../interface/turnip/error'
+import { type LineType } from '../interface/jquants/line'
 
 interface StockCode {
   code?: string
@@ -28,9 +29,9 @@ interface PaginationParams {
   page: number
 }
 
-export const check_required = <T>(name: string, value: T | undefined) => {
+export const checkRequired = <T>(name: string, value: T | undefined): T => {
   if (value === undefined || value === null) {
-    throw new BadRequestError(`Missing required parameter: ${name}`)
+    throw new BadRequestError(`Missing required parameter: ${name}.`)
   }
   return value
 }
@@ -57,13 +58,13 @@ export const getPeriodParams = (event: APIGatewayEvent): Period => ({
 })
 
 export const getPaginationParams = (event: APIGatewayEvent): PaginationParams => ({
-  page: parseInt(event.queryStringParameters?.page || '1')
+  page: parseInt(event.queryStringParameters?.page ?? '1')
 })
 
 export const getIndicatorParams = async (event: APIGatewayEvent): Promise<Indicator[]> => {
   try {
     const conditions = event.queryStringParameters?.conditions
-    if (!conditions) return []
+    if (conditions === undefined) return []
     return await Promise.all((JSON.parse(decodeURI(conditions)) as Indicator[]).map(_parseIndicator))
   } catch (e) {
     console.error(e)
@@ -79,41 +80,48 @@ const _parseIndicator = async (indicator: Indicator): Promise<Indicator> => {
   } else if (indicator.type === 'cross_over') {
     return _parseCrossOverIndicator(indicator, now)
   }
-  throw new Error('Unknown indicator type')
+  throw new Error('Unknown indicator type.')
 }
 
 const _parseGrowthRateIndicator = (
   indicator: GrowthRateIndicator,
   businessDays: string[]
 ): GrowthRateIndicator => {
-  if (!indicator.threshold) {
-    throw new Error('`threshold` is required for growth_rate indicator')
+  if (indicator.threshold === undefined) {
+    throw new Error('`threshold` is required for growth_rate indicator.')
   }
   return {
     ...indicator,
     threshold: indicator.threshold,
-    up: indicator.up || true,
-    before: indicator.before || businessDays[businessDays.length - 2],
-    after: indicator.after || businessDays[businessDays.length - 1],
+    up: indicator.up ?? true,
+    before: indicator.before ?? businessDays[businessDays.length - 2],
+    after: indicator.after ?? businessDays[businessDays.length - 1],
     positive: indicator.positive || true
   }
 }
 
-const _parseCrossOverIndicator = (indicator: CrossOverIndicator, now: dayjs.Dayjs) => {
-  if (!indicator.from) {
-    throw new Error('`from` is required for cross_over indicator')
+const _parseCrossOverIndicator = (indicator: CrossOverIndicator, now: dayjs.Dayjs): {
+  line1: LineType
+  line2: LineType
+  from: string
+  to: string
+  positive: true
+  type: 'cross_over'
+} => {
+  if (indicator.from === undefined) {
+    throw new Error('`from` is required for cross_over indicator.')
   }
   return {
     ...indicator,
-    line1: indicator.line1 || 'close',
-    line2: indicator.line2 || 'ma_25',
+    line1: indicator.line1 ?? 'close',
+    line2: indicator.line2 ?? 'ma_25',
     from: indicator.from,
-    to: indicator.to || now.format('YYYY-MM-DD'),
+    to: indicator.to ?? now.format('YYYY-MM-DD'),
     positive: indicator.positive || true
   }
 }
 
 const _parseList = (str: string | undefined): string[] | undefined => {
-  if (!str) return undefined
+  if (str === undefined) return undefined
   return str.split(',')
 }

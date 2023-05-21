@@ -5,7 +5,7 @@ import { WebClient, LogLevel } from '@slack/web-api'
 import GetProcessEnv from './common/process_env'
 import { getStockByCode, getStocks } from './model/stock'
 import {
-  check_required,
+  checkRequired,
   getIndicatorParams,
   getPaginationParams,
   getStockCodedParams,
@@ -38,7 +38,7 @@ export const businessDayHandler: APIGatewayProxyHandler = async event => {
 export const infoHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = async event => {
     const { code: _code } = getStockCodedParams(event)
-    const code = check_required('code', _code)
+    const code = checkRequired('code', _code)
     const stock = await getStockByCode(code)
     if (stock == null) {
       throw new NotFoundError(`code: ${code} is not found.`)
@@ -69,7 +69,7 @@ export const pricesDailyQuotesHandler: APIGatewayProxyHandler = async event => {
     const date = event.queryStringParameters?.date
     const from = event.queryStringParameters?.from
     const to = event.queryStringParameters?.to
-    check_required('code', code)
+    checkRequired('code', code)
 
     const dailyQuotes = await getDailyQuotes({ code, date, from, to })
 
