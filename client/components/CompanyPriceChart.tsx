@@ -5,7 +5,7 @@ import type PricesDailyQuotesStruct from '../interface/prices_daily_quotes'
 import { Alert } from 'react-bootstrap'
 ChartJS.register(...registerables)
 
-const dataset_setting = {
+const datasetSetting = {
   borderWidth: 1,
   radius: 1
 }
@@ -19,8 +19,8 @@ const title = <h2 className="mt-5">💹 株価情報</h2>
 
 export default function CompanyPriceChart (props: {
   prices: PricesDailyQuotesStruct[]
-}) {
-  if (!props.prices) {
+}): React.JSX.Element {
+  if (props.prices === null) {
     return (
       <>
         {title}
@@ -46,25 +46,25 @@ export default function CompanyPriceChart (props: {
         label: '高値',
         data: props.prices.map((item) => item.High),
         borderColor: 'red',
-        ...dataset_setting
+        ...datasetSetting
       },
       {
         label: '低値',
         data: props.prices.map((item) => item.Low),
         borderColor: 'blue',
-        ...dataset_setting
+        ...datasetSetting
       },
       {
         label: '始値',
         data: props.prices.map((item) => item.Open),
         borderColor: 'green',
-        ...dataset_setting
+        ...datasetSetting
       },
       {
         label: '終値',
         data: props.prices.map((item) => item.Close),
         borderColor: 'orange',
-        ...dataset_setting
+        ...datasetSetting
       }
     ]
   }
