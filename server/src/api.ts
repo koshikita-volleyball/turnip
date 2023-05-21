@@ -139,7 +139,7 @@ export const screener_handler: APIGatewayProxyHandler = async event => {
     const stocks = await getStocks(stockCommonFilter)
 
     const screendStocks = await screener(stocks, indicatorParams)
-    return JSON.stringify({ params: {stockCommonFilter, indicatorParams}, screendStocks })
+    return JSON.stringify({ params: { stockCommonFilter, indicatorParams }, screendStocks })
   }
   return api(fn, event)
 }
