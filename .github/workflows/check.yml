@@ -37,10 +37,7 @@ jobs:
         run: yarn install
         working-directory: ${{ env.server-directory }}/src
       - name: Lint
-        run: yarn lint
-        working-directory: ${{ env.server-directory }}/src
-      - name: Prettier
-        run: yarn prettier:check
+        run: yarn lint:check
         working-directory: ${{ env.server-directory }}/src
       - name: Test
         run: yarn test
@@ -73,10 +70,7 @@ jobs:
         run: yarn install
         working-directory: ${{ env.client-directory }}
       - name: Lint
-        run: yarn lint
-        working-directory: ${{ env.client-directory }}
-      - name: Prettier
-        run: yarn prettier:check
+        run: yarn lint:check
         working-directory: ${{ env.client-directory }}
       - name: Test
         run: yarn test

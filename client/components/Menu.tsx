@@ -1,12 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
 import pages from '../pages'
 import { Button } from 'react-bootstrap'
 import { BsGearFill } from 'react-icons/bs'
 import setting from '../setting'
 
-function Menu() {
+function Menu () {
   const [current_page, setCurrentPage] = useState<string | null>(null)
   const [menu_open, setMenuOpen] = useState<boolean>(false)
 

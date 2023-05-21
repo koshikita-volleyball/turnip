@@ -2,18 +2,18 @@ const pages = [
   {
     emoji: '🏠',
     path: '/',
-    name: 'ホーム',
+    name: 'ホーム'
   },
   {
     emoji: '📖',
     path: '/listed-info/',
-    name: '銘柄一覧',
+    name: '銘柄一覧'
   },
   {
     emoji: '🔍',
     path: '/screening/',
-    name: '銘柄スクリーニング',
-  },
+    name: '銘柄スクリーニング'
+  }
 ]
 
 export default pages

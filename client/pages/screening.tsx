@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Modal from 'react-modal'
 
 import Layout from '../components/Layout'
-import { ScreeningRuleStructs } from '../interface/screening_rule'
+import { type ScreeningRuleStructs } from '../interface/screening_rule'
 import ScreeningRuleModal from '../components/ScreeningRuleModal'
 import { Button } from 'react-bootstrap'
 import ScreeningRuleList from '../components/ScreeningRuleList'
@@ -11,14 +11,14 @@ import setting from '../setting'
 
 Modal.setAppElement('#Modal')
 
-function make_uri(
+function make_uri (
   filtering: {
     company_name: string
     market_code: string
     sector_17_code: string
     sector_33_code: string
   },
-  rules: ScreeningRuleStructs[],
+  rules: ScreeningRuleStructs[]
 ) {
   const { company_name, market_code, sector_17_code, sector_33_code } =
     filtering
@@ -29,7 +29,7 @@ function make_uri(
 
   return (
     `${setting.apiPath}/api/screener` +
-    `?` +
+    '?' +
     `${company_name !== '' ? `&company_name=${company_name}` : ''}` +
     `${market_code !== '' ? `&market_codes=${market_code}` : ''}` +
     `${sector_17_code !== '' ? `&sector_17_codes=${sector_17_code}` : ''}` +
@@ -38,7 +38,7 @@ function make_uri(
   )
 }
 
-export default function ContactPage() {
+export default function ContactPage () {
   const [useFiltering, setUseFiltering] = useState(true)
   const [company_name, setCompanyName] = useState('')
   const [market_code, setMarketCode] = useState<string>('')
@@ -49,8 +49,8 @@ export default function ContactPage() {
 
   const [modalIsOpen, setIsOpen] = React.useState(false)
 
-  const openModal = () => setIsOpen(true)
-  const closeModal = () => setIsOpen(false)
+  const openModal = () => { setIsOpen(true) }
+  const closeModal = () => { setIsOpen(false) }
 
   const StartScreening = () => {
     const uri = make_uri(
@@ -58,9 +58,9 @@ export default function ContactPage() {
         company_name,
         market_code,
         sector_17_code,
-        sector_33_code,
+        sector_33_code
       },
-      rules,
+      rules
     )
     console.log(uri)
   }

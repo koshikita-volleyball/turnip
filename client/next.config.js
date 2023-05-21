@@ -8,7 +8,7 @@ module.exports = {
   basePath: isProd ? SUB_DIRECTORY : '',
   assetPrefix: isProd ? SUB_DIRECTORY : '',
   publicRuntimeConfig: {
-    basePath: isProd ? SUB_DIRECTORY : '',
+    basePath: isProd ? SUB_DIRECTORY : ''
   },
-  trailingSlash: true,
+  trailingSlash: true
 }

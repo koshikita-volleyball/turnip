@@ -1,10 +1,9 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
-import { Form } from 'react-bootstrap'
+import React, { type Dispatch, type SetStateAction, useState } from 'react'
+import { Form, Button } from 'react-bootstrap'
 import { BsArrowsCollapse, BsArrowsExpand } from 'react-icons/bs'
 import { MarketInfo, Sector17Info, Sector33Info } from '../data/export'
-import { Button } from 'react-bootstrap'
 
-export default function FilteringBlock(props: {
+export default function FilteringBlock (props: {
   useFiltering: boolean
   setUseFiltering: Dispatch<SetStateAction<boolean>>
   company_name: string
@@ -28,7 +27,7 @@ export default function FilteringBlock(props: {
     setSector17Code,
     sector_33_code,
     setSector33Code,
-    afterChange,
+    afterChange
   } = props
 
   const [collapsed, setCollapsed] = useState(true)
@@ -45,9 +44,9 @@ export default function FilteringBlock(props: {
           <BsArrowsExpand
             className="d-block me-3"
             role="button"
-            onClick={() => setCollapsed(false)}
+            onClick={() => { setCollapsed(false) }}
           />
-          <span role="button" onClick={() => setCollapsed(false)}>
+          <span role="button" onClick={() => { setCollapsed(false) }}>
             絞り込み条件を表示する。
           </span>
         </div>
@@ -62,9 +61,9 @@ export default function FilteringBlock(props: {
           <BsArrowsCollapse
             className="d-block me-3"
             role="button"
-            onClick={() => setCollapsed(true)}
+            onClick={() => { setCollapsed(true) }}
           />
-          <span role="button" onClick={() => setCollapsed(true)}>
+          <span role="button" onClick={() => { setCollapsed(true) }}>
             絞り込み条件を非表示にする。
           </span>
         </div>
