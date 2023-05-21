@@ -182,7 +182,7 @@ Resources:
   BusinessDayUpdateFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-business-day-update
+      FunctionName: !Sub ${AWS::StackName}-business-day-updater
       Description: "営業日情報を定期更新するAPI。"
       PackageType: Image
       ImageConfig:
