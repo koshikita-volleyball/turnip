@@ -30,7 +30,7 @@ export const businessDayUpdateHandler = async (): Promise<void> => {
   }
 }
 
-export const refresh_token_updater_handler = async (): Promise<void> => {
+export const refreshTokenUpdateHandler = async (): Promise<void> => {
   const function_name = 'refresh_token_updater_handler'
   try {
     const refresh_token = await GetRefreshToken()

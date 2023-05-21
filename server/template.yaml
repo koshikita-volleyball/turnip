@@ -343,13 +343,13 @@ Resources:
       DockerContext: ./src
       Dockerfile: Dockerfile
 
-  RefreshTokenUpdaterFunction:
+  RefreshTokenUpdateFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-refresh-token-updater
       PackageType: Image
       ImageConfig:
-        Command: [ "update.refresh_token_updater_handler" ]
+        Command: [ "update.refreshTokenUpdateHandler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
