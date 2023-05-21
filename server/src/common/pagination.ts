@@ -1,4 +1,4 @@
-import { per_page } from './const'
+import { perPage } from './const'
 
 interface Pagination {
   page: number
@@ -10,7 +10,7 @@ interface Pagination {
 }
 
 const paginate = <T>(arr: T[], page: number): { pagination: Pagination, data: T[] } => {
-  const limit = per_page
+  const limit = perPage
   const total = arr.length
   const totalPages = Math.ceil(total / limit)
   const hasNext = page < totalPages
