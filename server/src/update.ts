@@ -100,7 +100,7 @@ export const idTokenUpdateHandler = async (): Promise<void> => {
 }
 
 export const listedInfoUpdateHandler = async (): Promise<void> => {
-  const function_name = 'listed_info_updater_handler'
+  const functionName = 'listed_info_updater_handler'
   try {
     const { info: stocks } = await JQuantsClient<{ info: ListedInfoStruct[] }>('/v1/listed/info')
     // DynamoDBに保存
@@ -125,11 +125,11 @@ export const listedInfoUpdateHandler = async (): Promise<void> => {
       }
       await dynamoClient.put(params).promise()
     }
-    const item_count = stocks.length
+    const itemCount = stocks.length
     Logger.log(
-      function_name,
+      functionName,
       `:tori::tori::tori: 銘柄情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
-        `更新件数: ${item_count}件`
+        `更新件数: ${itemCount}件`
       )}`
     )
   } catch (err: unknown) {
