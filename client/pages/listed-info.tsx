@@ -115,11 +115,11 @@ export default function AboutPage (): React.JSX.Element {
   return (
     <Layout>
       <div id="ListedInfo">
-        {error !== null
+        {error !== undefined
           ? (
-          <Alert variant="danger">Failed to load</Alert>
+          <Alert variant="danger">Failed to load...</Alert>
             )
-          : data !== null
+          : data === undefined
             ? (
           <div className="mt-3 d-flex justify-content-between">
             <Spinner animation="grow" variant="primary" />
@@ -137,13 +137,13 @@ export default function AboutPage (): React.JSX.Element {
             <FilteringBlock
               useFiltering={useFiltering}
               setUseFiltering={setUseFiltering}
-              company_name={companyName}
+              companyName={companyName}
               setCompanyName={setCompanyName}
-              market_code={marketCode}
+              marketCode={marketCode}
               setMarketCode={setMarketCode}
-              sector_17_code={sector17Code}
+              sector17Code={sector17Code}
               setSector17Code={setSector17Code}
-              sector_33_code={sector33Code}
+              sector33Code={sector33Code}
               setSector33Code={setSector33Code}
               afterChange={() => { setPage(1) }}
             />
@@ -152,7 +152,7 @@ export default function AboutPage (): React.JSX.Element {
               <Button
                 variant="primary"
                 onClick={() => { setPage(page - 1) }}
-                disabled={data.pagination.hasPrev === false}
+                disabled={!data.pagination.hasPrev}
               >
                 前へ
               </Button>
@@ -162,7 +162,7 @@ export default function AboutPage (): React.JSX.Element {
               <Button
                 variant="primary"
                 onClick={() => { setPage(page + 1) }}
-                disabled={data.pagination.hasNext === false}
+                disabled={!data.pagination.hasNext}
               >
                 次へ
               </Button>
@@ -181,7 +181,7 @@ export default function AboutPage (): React.JSX.Element {
                 {data.data.map((item) => (
                   <tr key={item.Code}>
                     <td>
-                      <Link href={`/company?code=${item.Code as string}`}>
+                      <Link href={`/company?code=${item.Code}`}>
                         {item.Code}
                       </Link>
                     </td>

@@ -60,11 +60,11 @@ export default function Company (): React.JSX.Element {
         <div>
           <h1>🌟 銘柄情報詳細</h1>
           {/* 銘柄基本情報 */}
-          {infoError !== null
+          {infoError !== undefined
             ? (
             <Alert variant="danger">Failed to load...</Alert>
               )
-            : info !== null
+            : info !== undefined
               ? (
             <CompanyBasicInfo info={info} />
                 )
@@ -75,11 +75,11 @@ export default function Company (): React.JSX.Element {
             </Alert>
                 )}
           {/* 株価情報 */}
-          {pricesError !== null
+          {pricesError !== undefined
             ? (
             <Alert variant="danger">Failed to load...</Alert>
               )
-            : prices !== null
+            : prices !== undefined
               ? (
             <CompanyPriceChart prices={prices} />
                 )
@@ -90,11 +90,11 @@ export default function Company (): React.JSX.Element {
             </Alert>
                 )}
           {/* 財務情報 */}
-          {statementsError !== null
+          {statementsError !== undefined
             ? (
             <Alert variant="danger">Failed to load...</Alert>
               )
-            : statements !== null
+            : statements !== undefined
               ? (
             <CompanyStatementsCard statements={statements} />
                 )
