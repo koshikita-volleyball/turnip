@@ -63,7 +63,7 @@ export const listedInfoHandler: APIGatewayProxyHandler = async event => {
   return await api(fn, event)
 }
 
-export const prices_daily_quotes_handler: APIGatewayProxyHandler = async event => {
+export const pricesDailyQuotesHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = async event => {
     const code = event.queryStringParameters?.code
     const date = event.queryStringParameters?.date

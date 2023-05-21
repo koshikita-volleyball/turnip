@@ -245,7 +245,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-prices-daily_quotes
       PackageType: Image
       ImageConfig:
-        Command: [ "api.prices_daily_quotes_handler" ]
+        Command: [ "api.pricesDailyQuotesHandler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
