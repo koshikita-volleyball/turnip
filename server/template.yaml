@@ -287,7 +287,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-slack-notify
       PackageType: Image
       ImageConfig:
-        Command: [ "update.slack_notify_handler" ]
+        Command: [ "update.slackNotifyHandler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64

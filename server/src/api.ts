@@ -118,7 +118,7 @@ export const finsStatementsHandler = async (
   }
 }
 
-export const slack_notify_handler = async (): Promise<void> => {
+export const slackNotifyHandler = async (): Promise<void> => {
   const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
     logLevel: LogLevel.DEBUG
   })
