@@ -17,7 +17,7 @@ export const getFinsStatements = async ({
   from,
   to
 }: GetFinsStatementsProps): Promise<FinsStatementsStruct[]> => {
-  if (code) {
+  if (code !== undefined) {
     return await _getFinsStatementsByStock(code, from, to)
   }
   // TODO: セカンダリインデックスを使用すれば実現できるかも
@@ -32,26 +32,26 @@ const _getFinsStatementsByStock = async (
   from?: string,
   to?: string
 ): Promise<FinsStatementsStruct[]> => {
-  const key_condition_expressions = ['LocalCode = :Code']
-  const expression_attribute_values: ExpressionAttributeValueMap = {
+  const keyConditionExpressions = ['LocalCode = :Code']
+  const expressionAttributeValues: ExpressionAttributeValueMap = {
     ':Code': {
       S: code
     }
   }
 
   const { from: defaultFrom, to: defaultTo } = getDefaultPeriod()
-  key_condition_expressions.push('DisclosedDate BETWEEN :From AND :To')
-  expression_attribute_values[':From'] = {
+  keyConditionExpressions.push('DisclosedDate BETWEEN :From AND :To')
+  expressionAttributeValues[':From'] = {
     S: from ?? defaultFrom
   }
-  expression_attribute_values[':To'] = {
+  expressionAttributeValues[':To'] = {
     S: to ?? defaultTo
   }
   const ddb = new AWS.DynamoDB()
   const params = {
     TableName: GetProcessEnv('FINS_STATEMENTS_DYNAMODB_TABLE_NAME'),
-    KeyConditionExpression: key_condition_expressions.join(' AND '),
-    ExpressionAttributeValues: expression_attribute_values
+    KeyConditionExpression: keyConditionExpressions.join(' AND '),
+    ExpressionAttributeValues: expressionAttributeValues
   }
   const result = await ddb.query(params).promise()
   if (result.Items == null) {

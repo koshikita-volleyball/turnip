@@ -5,7 +5,7 @@ import { WebClient, LogLevel } from '@slack/web-api'
 import GetProcessEnv from './common/process_env'
 import { getStockByCode, getStocks } from './model/stock'
 import {
-  check_required,
+  checkRequired,
   getIndicatorParams,
   getPaginationParams,
   getStockCodedParams,
@@ -27,7 +27,7 @@ export const lambdaHandler: APIGatewayProxyHandler = async event => {
   return await api(fn, event)
 }
 
-export const business_day_handler: APIGatewayProxyHandler = async event => {
+export const businessDayHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = async () => {
     const dates = await getBusinessDays()
     return JSON.stringify(dates)
@@ -35,10 +35,10 @@ export const business_day_handler: APIGatewayProxyHandler = async event => {
   return await api(fn, event)
 }
 
-export const info_handler: APIGatewayProxyHandler = async event => {
+export const infoHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = async event => {
     const { code: _code } = getStockCodedParams(event)
-    const code = check_required('code', _code)
+    const code = checkRequired('code', _code)
     const stock = await getStockByCode(code)
     if (stock == null) {
       throw new NotFoundError(`code: ${code} is not found.`)
@@ -48,28 +48,28 @@ export const info_handler: APIGatewayProxyHandler = async event => {
   return await api(fn, event)
 }
 
-export const listed_info_handler: APIGatewayProxyHandler = async event => {
+export const listedInfoHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = async event => {
     // get params
     const { page } = getPaginationParams(event)
     const stockCommonFilterParams = getStockCommonFilterParams(event)
-    const company_name = event.queryStringParameters?.company_name
+    const companyName = event.queryStringParameters?.company_name
 
     // get stocks from dynamodb
-    const stocks = await getStocks({ ...stockCommonFilterParams, company_name })
+    const stocks = await getStocks({ ...stockCommonFilterParams, company_name: companyName })
 
     return JSON.stringify(paginate<Stock>(stocks, page))
   }
   return await api(fn, event)
 }
 
-export const prices_daily_quotes_handler: APIGatewayProxyHandler = async event => {
+export const pricesDailyQuotesHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = async event => {
     const code = event.queryStringParameters?.code
     const date = event.queryStringParameters?.date
     const from = event.queryStringParameters?.from
     const to = event.queryStringParameters?.to
-    check_required('code', code)
+    checkRequired('code', code)
 
     const dailyQuotes = await getDailyQuotes({ code, date, from, to })
 
@@ -78,7 +78,7 @@ export const prices_daily_quotes_handler: APIGatewayProxyHandler = async event =
   return await api(fn, event)
 }
 
-export const fins_statements_handler = async (
+export const finsStatementsHandler = async (
   event: APIGatewayEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
@@ -87,7 +87,7 @@ export const fins_statements_handler = async (
     const from = event.queryStringParameters?.from
     const to = event.queryStringParameters?.to
 
-    if (!code) {
+    if (code === undefined) {
       return {
         statusCode: 400,
         headers: CORS_HEADERS,
@@ -118,7 +118,7 @@ export const fins_statements_handler = async (
   }
 }
 
-export const slack_notify_handler = async (): Promise<void> => {
+export const slackNotifyHandler = async (): Promise<void> => {
   const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
     logLevel: LogLevel.DEBUG
   })
@@ -130,7 +130,7 @@ export const slack_notify_handler = async (): Promise<void> => {
   console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
 }
 
-export const screener_handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+export const screenerHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   const stockCommonFilter = getStockCommonFilterParams(event)
   const indicatorParams = await getIndicatorParams(event)
 

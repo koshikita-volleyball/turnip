@@ -1,4 +1,4 @@
-import { base_uri } from './const'
+import { baseUri } from './const'
 import GetProcessEnv from './process_env'
 import AWS from './aws'
 
@@ -15,16 +15,16 @@ async function JQuantsClient<T> (
     })
     .promise()
   const idToken = data.Body?.toString('utf-8')
-  if (!idToken) {
-    return await Promise.reject('id_token.txt is empty')
+  if (idToken === undefined) {
+    throw new Error('id_token.txt is empty.')
   }
-  const query_string = (params != null)
+  const queryString = (params != null)
     ? '?' +
       Object.keys(params)
         .map(key => `${key}=${params[key]}`)
         .join('&')
     : ''
-  const response = await fetch(`${base_uri}${path}${query_string}`, {
+  const response = await fetch(`${baseUri}${path}${queryString}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${idToken}`

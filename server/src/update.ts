@@ -4,24 +4,23 @@ import { getBusinessDaysFromJQuants, saveBusinessDaysToS3 } from './model/jpx_bu
 import GetIdToken, { GetRefreshToken } from './common/get_id_token'
 import AWS from 'aws-sdk'
 import GetProcessEnv from './common/process_env'
-import { LogLevel, WebClient } from '@slack/web-api'
 import JQuantsClient from './common/jquants_client'
 import type ListedInfoStruct from './interface/jquants/listed_info'
 import dayjs from 'dayjs'
 import type PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
 import type FinsStatementsStruct from './interface/jquants/fins_statements'
-import Logger, { makeCodeBlock } from './common/logger'
+import { loggerInfo, loggerError, makeCodeBlock } from './common/logger'
 
-export const business_day_update_handler = async (): Promise<void> => {
-  const function_name = 'business_day_update_handler'
+export const businessDayUpdateHandler = async (): Promise<void> => {
+  const functionName = 'business_day_update_handler'
   try {
     const dates = await getBusinessDaysFromJQuants()
     await saveBusinessDaysToS3(dates)
-    Logger.log(function_name, '営業日情報を更新しました！ :spiral_calendar_pad:')
+    loggerInfo(functionName, '営業日情報を更新しました！ :spiral_calendar_pad:')
   } catch (err) {
     if (err instanceof Error) {
-      Logger.error(
-        function_name,
+      loggerError(
+        functionName,
         `:tori::tori::tori: 営業日情報の更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(
           err.message
         )}`
@@ -30,34 +29,34 @@ export const business_day_update_handler = async (): Promise<void> => {
   }
 }
 
-export const refresh_token_updater_handler = async (): Promise<void> => {
-  const function_name = 'refresh_token_updater_handler'
+export const refreshTokenUpdateHandler = async (): Promise<void> => {
+  const functionName = 'refresh_token_updater_handler'
   try {
-    const refresh_token = await GetRefreshToken()
+    const refreshToken = await GetRefreshToken()
     const s3 = new AWS.S3()
     const bucket = GetProcessEnv('S3_BUCKET_NAME')
     const key = 'refresh_token.txt'
     const params = {
       Bucket: bucket,
       Key: key,
-      Body: refresh_token
+      Body: refreshToken
     }
     await s3.putObject(params).promise()
-    Logger.log(
-      function_name,
+    loggerInfo(
+      functionName,
       `:tori::tori::tori: リフレッシュトークンを更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
-        refresh_token
+        refreshToken
       )}`
     )
   } catch (err: unknown) {
     if (err instanceof Error) {
-      Logger.error(function_name, err.message)
+      loggerError(functionName, err.message)
     }
   }
 }
 
-export const id_token_updater_handler = async (): Promise<void> => {
-  const function_name = 'id_token_updater_handler'
+export const idTokenUpdateHandler = async (): Promise<void> => {
+  const functionName = 'id_token_updater_handler'
   try {
     // S3からリフレッシュトークンを取得
     const bucket = GetProcessEnv('S3_BUCKET_NAME')
@@ -68,30 +67,29 @@ export const id_token_updater_handler = async (): Promise<void> => {
     }
     const data = await s3.getObject(params).promise()
     const refreshToken = data.Body?.toString('utf-8')
-    if (refreshToken) {
-      console.log('refreshToken: ', refreshToken)
+    if (refreshToken !== undefined) {
       // リフレッシュトークンを使ってIDトークンを更新
-      const id_token = await GetIdToken(refreshToken)
+      const idToken = await GetIdToken(refreshToken)
       // S3にIDトークンを保存
       const params = {
         Bucket: bucket,
         Key: 'id_token.txt',
-        Body: id_token
+        Body: idToken
       }
       await s3.putObject(params).promise()
-      Logger.log(
-        function_name,
+      loggerInfo(
+        functionName,
         `:tori::tori::tori: IDトークンを更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
-          id_token
+          idToken
         )}`
       )
     } else {
-      Logger.error(function_name, 'リフレッシュトークンが取得できませんでした！')
+      loggerError(functionName, 'リフレッシュトークンが取得できませんでした！')
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
-      Logger.error(
-        function_name,
+      loggerError(
+        functionName,
         `:tori::tori::tori: IDトークンの更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(
           err.message
         )}`
@@ -100,8 +98,8 @@ export const id_token_updater_handler = async (): Promise<void> => {
   }
 }
 
-export const listed_info_updater_handler = async (): Promise<void> => {
-  const function_name = 'listed_info_updater_handler'
+export const listedInfoUpdateHandler = async (): Promise<void> => {
+  const functionName = 'listed_info_updater_handler'
   try {
     const { info: stocks } = await JQuantsClient<{ info: ListedInfoStruct[] }>('/v1/listed/info')
     // DynamoDBに保存
@@ -126,11 +124,11 @@ export const listed_info_updater_handler = async (): Promise<void> => {
       }
       await dynamoClient.put(params).promise()
     }
-    const item_count = stocks.length
-    Logger.log(
-      function_name,
+    const itemCount = stocks.length
+    loggerInfo(
+      functionName,
       `:tori::tori::tori: 銘柄情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
-        `更新件数: ${item_count}件`
+        `更新件数: ${itemCount}件`
       )}`
     )
   } catch (err: unknown) {
@@ -140,8 +138,8 @@ export const listed_info_updater_handler = async (): Promise<void> => {
   }
 }
 
-export const prices_daily_quotes_updater_handler = async (): Promise<void> => {
-  const function_name = 'prices_daily_quotes_updater_handler'
+export const pricesDailyQuotesUpdateHandler = async (): Promise<void> => {
+  const functionName = 'prices_daily_quotes_updater_handler'
   try {
     const today = dayjs().format('YYYY-MM-DD')
     const { daily_quotes: prices } = await JQuantsClient<{
@@ -172,17 +170,17 @@ export const prices_daily_quotes_updater_handler = async (): Promise<void> => {
       }
       await dynamoClient.put(params).promise()
     }
-    const item_count = prices.length
-    Logger.log(
-      function_name,
+    const itemCount = prices.length
+    loggerInfo(
+      functionName,
       `:tori::tori::tori: 株価四本値情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
-        `更新件数: ${item_count}件`
+        `更新件数: ${itemCount}件`
       )}`
     )
   } catch (err: unknown) {
     if (err instanceof Error) {
-      Logger.error(
-        function_name,
+      loggerError(
+        functionName,
         `:tori::tori::tori: 株価四本値情報の更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(
           err.message
         )}`
@@ -191,8 +189,8 @@ export const prices_daily_quotes_updater_handler = async (): Promise<void> => {
   }
 }
 
-export const fins_statements_updater_handler = async (): Promise<void> => {
-  const function_name = 'fins_statements_updater_handler'
+export const finsStatementsUpdateHandler = async (): Promise<void> => {
+  const functionName = 'fins_statements_updater_handler'
   try {
     const today = dayjs().format('YYYY-MM-DD')
     const { statements } = await JQuantsClient<{
@@ -344,27 +342,17 @@ export const fins_statements_updater_handler = async (): Promise<void> => {
       }
       await dynamoClient.put(params).promise()
     }
-    // Slackに通知
-    const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
-      logLevel: LogLevel.DEBUG
-    })
-    const channel = GetProcessEnv('SLACK_CHANNEL_NOTICE')
-    const result = await slackClient.chat.postMessage({
-      text: ':tori::tori::tori: 財務情報を更新しました！ :tori::tori::tori:',
-      channel
-    })
-    console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
-    const item_count = statements.length
-    Logger.log(
-      function_name,
+    const itemCount = statements.length
+    loggerInfo(
+      functionName,
       `:tori::tori::tori: 財務情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
-        `更新件数: ${item_count}件`
+        `更新件数: ${itemCount}件`
       )}`
     )
   } catch (err: unknown) {
     if (err instanceof Error) {
-      Logger.error(
-        function_name,
+      loggerError(
+        functionName,
         `:tori::tori::tori: 財務情報の更新に失敗しました！:tori::tori::tori:\n\n${makeCodeBlock(
           err.message
         )}`
