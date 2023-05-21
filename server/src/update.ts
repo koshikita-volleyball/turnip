@@ -99,7 +99,7 @@ export const idTokenUpdateHandler = async (): Promise<void> => {
   }
 }
 
-export const listed_info_updater_handler = async (): Promise<void> => {
+export const listedInfoUpdateHandler = async (): Promise<void> => {
   const function_name = 'listed_info_updater_handler'
   try {
     const { info: stocks } = await JQuantsClient<{ info: ListedInfoStruct[] }>('/v1/listed/info')
