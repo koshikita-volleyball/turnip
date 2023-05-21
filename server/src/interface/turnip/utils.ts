@@ -1,6 +1,6 @@
-import PricesDailyQuotesStruct from '../jquants/prices_daily_quotes'
+import type PricesDailyQuotesStruct from '../jquants/prices_daily_quotes'
 
-export type DiffPricesDailyQuotesStruct = {
+export interface DiffPricesDailyQuotesStruct {
   before: PricesDailyQuotesStruct
   after: PricesDailyQuotesStruct
 }
