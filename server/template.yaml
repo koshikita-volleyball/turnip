@@ -139,6 +139,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-hello
+      Description: "`Hello World`を返すAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "api.lambdaHandler" ]
@@ -160,6 +161,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-business-day
+      Description: "営業日情報を返すAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "api.business_day_handler" ]
@@ -181,6 +183,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-business-day-update
+      Description: "営業日情報を定期更新するAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "update.business_day_update_handler" ]
@@ -201,6 +204,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-info
+      Description: "銘柄情報(単一)を返すAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "api.info_handler" ]
@@ -222,6 +226,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-listed-info
+      Description: "銘柄情報(一覧)を返すAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "api.listed_info_handler" ]
@@ -243,6 +248,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-prices-daily_quotes
+      Description: "株価四本値情報を返すAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "api.prices_daily_quotes_handler" ]
@@ -264,6 +270,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-fins-statements
+      Description: "財務情報を返すAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "api.fins_statements_handler" ]
@@ -285,6 +292,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-slack-notify
+      Description: "Slack通知を行うAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "update.slack_notify_handler" ]
@@ -305,6 +313,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-screener
+      Description: "銘柄スクリーニング結果を返すAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "api.screener_handler" ]
@@ -326,6 +335,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-tmp-code
+      Description: "一時コードを返すAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "api.tmp_code_handler" ]
@@ -347,6 +357,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-refresh-token-updater
+      Description: "リフレッシュトークンを定期更新するAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "update.refresh_token_updater_handler" ]
@@ -367,6 +378,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-id-token-updater
+      Description: "IDトークンを定期更新するAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "update.id_token_updater_handler" ]
@@ -387,6 +399,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-listed-info-updater
+      Description: "銘柄情報を定期更新するAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "update.listed_info_updater_handler" ]
@@ -407,6 +420,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-daily-quotes-updater
+      Description: "株化四本値情報を定期更新するAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "update.prices_daily_quotes_updater_handler" ]
@@ -427,6 +441,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${AWS::StackName}-statements-updater
+      Description: "財務情報を定期更新するAPI。"
       PackageType: Image
       ImageConfig:
         Command: [ "update.fins_statements_updater_handler" ]
