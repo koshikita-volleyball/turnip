@@ -56,7 +56,7 @@ export const refreshTokenUpdateHandler = async (): Promise<void> => {
   }
 }
 
-export const id_token_updater_handler = async (): Promise<void> => {
+export const idTokenUpdateHandler = async (): Promise<void> => {
   const function_name = 'id_token_updater_handler'
   try {
     // S3からリフレッシュトークンを取得
