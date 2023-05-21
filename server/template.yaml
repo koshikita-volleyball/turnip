@@ -224,7 +224,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-listed-info
       PackageType: Image
       ImageConfig:
-        Command: [ "api.listed_info_handler" ]
+        Command: [ "api.listedInfoHandler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64

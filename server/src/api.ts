@@ -48,7 +48,7 @@ export const infoHandler: APIGatewayProxyHandler = async event => {
   return await api(fn, event)
 }
 
-export const listed_info_handler: APIGatewayProxyHandler = async event => {
+export const listedInfoHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = async event => {
     // get params
     const { page } = getPaginationParams(event)
