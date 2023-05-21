@@ -23,9 +23,9 @@ const customStyles = {
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
     width: '1000px',
-    maxWidth: '100%',
+    maxWidth: '95vw',
     height: '800px',
-    maxHeight: '100%',
+    maxHeight: '95vh',
   },
 }
 
