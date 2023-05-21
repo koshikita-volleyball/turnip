@@ -10,21 +10,21 @@ import type FinsStatementsStruct from '../interface/fins_statements'
 import CompanyStatementsCard from '../components/CompanyStatementsCard'
 import CompanyBasicInfo from '../components/CompanyBasicInfo'
 
-const fetcher = async (url: string) =>
+const fetcher = async (url: string): Promise<any> =>
   await fetch(url).then(async (r) => {
     if (r.ok) {
       return await r.json()
     } else {
-      throw null
+      return null
     }
   })
 
-export default function Company () {
+export default function Company (): React.JSX.Element {
   const [code, setCode] = useState<string>('')
 
   const {
     data: info,
-    error: info_error
+    error: infoError
   }: {
     data: ListedInfoStruct
     error: any
@@ -32,7 +32,7 @@ export default function Company () {
 
   const {
     data: prices,
-    error: prices_error
+    error: pricesError
   }: {
     data: PricesDailyQuotesStruct[]
     error: any
@@ -40,7 +40,7 @@ export default function Company () {
 
   const {
     data: statements,
-    error: statements_error
+    error: statementsError
   }: {
     data: FinsStatementsStruct[]
     error: any
@@ -49,7 +49,7 @@ export default function Company () {
   useEffect(() => {
     const url = new URL(window.location.href)
     const code = url.searchParams.get('code')
-    if (code) {
+    if (code !== null) {
       setCode(code)
     }
   }, [])
@@ -60,11 +60,11 @@ export default function Company () {
         <div>
           <h1>🌟 銘柄情報詳細</h1>
           {/* 銘柄基本情報 */}
-          {info_error
+          {infoError !== null
             ? (
             <Alert variant="danger">Failed to load...</Alert>
               )
-            : info
+            : info !== null
               ? (
             <CompanyBasicInfo info={info} />
                 )
@@ -75,11 +75,11 @@ export default function Company () {
             </Alert>
                 )}
           {/* 株価情報 */}
-          {prices_error
+          {pricesError !== null
             ? (
             <Alert variant="danger">Failed to load...</Alert>
               )
-            : prices
+            : prices !== null
               ? (
             <CompanyPriceChart prices={prices} />
                 )
@@ -90,11 +90,11 @@ export default function Company () {
             </Alert>
                 )}
           {/* 財務情報 */}
-          {statements_error
+          {statementsError !== null
             ? (
             <Alert variant="danger">Failed to load...</Alert>
               )
-            : statements
+            : statements !== null
               ? (
             <CompanyStatementsCard statements={statements} />
                 )
