@@ -13,15 +13,15 @@ import type FinsStatementsStruct from './interface/jquants/fins_statements'
 import Logger, { makeCodeBlock } from './common/logger'
 
 export const businessDayUpdateHandler = async (): Promise<void> => {
-  const function_name = 'business_day_update_handler'
+  const functionName = 'business_day_update_handler'
   try {
     const dates = await getBusinessDaysFromJQuants()
     await saveBusinessDaysToS3(dates)
-    Logger.log(function_name, '営業日情報を更新しました！ :spiral_calendar_pad:')
+    Logger.log(functionName, '営業日情報を更新しました！ :spiral_calendar_pad:')
   } catch (err) {
     if (err instanceof Error) {
       Logger.error(
-        function_name,
+        functionName,
         `:tori::tori::tori: 営業日情報の更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(
           err.message
         )}`
