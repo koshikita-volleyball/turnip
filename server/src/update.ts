@@ -140,7 +140,7 @@ export const listedInfoUpdateHandler = async (): Promise<void> => {
 }
 
 export const pricesDailyQuotesUpdateHandler = async (): Promise<void> => {
-  const function_name = 'prices_daily_quotes_updater_handler'
+  const functionName = 'prices_daily_quotes_updater_handler'
   try {
     const today = dayjs().format('YYYY-MM-DD')
     const { daily_quotes: prices } = await JQuantsClient<{
@@ -171,17 +171,17 @@ export const pricesDailyQuotesUpdateHandler = async (): Promise<void> => {
       }
       await dynamoClient.put(params).promise()
     }
-    const item_count = prices.length
+    const itemCount = prices.length
     Logger.log(
-      function_name,
+      functionName,
       `:tori::tori::tori: 株価四本値情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
-        `更新件数: ${item_count}件`
+        `更新件数: ${itemCount}件`
       )}`
     )
   } catch (err: unknown) {
     if (err instanceof Error) {
       Logger.error(
-        function_name,
+        functionName,
         `:tori::tori::tori: 株価四本値情報の更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(
           err.message
         )}`
