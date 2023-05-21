@@ -53,10 +53,10 @@ export const listedInfoHandler: APIGatewayProxyHandler = async event => {
     // get params
     const { page } = getPaginationParams(event)
     const stockCommonFilterParams = getStockCommonFilterParams(event)
-    const company_name = event.queryStringParameters?.company_name
+    const companyName = event.queryStringParameters?.company_name
 
     // get stocks from dynamodb
-    const stocks = await getStocks({ ...stockCommonFilterParams, company_name })
+    const stocks = await getStocks({ ...stockCommonFilterParams, company_name: companyName })
 
     return JSON.stringify(paginate<Stock>(stocks, page))
   }
