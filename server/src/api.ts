@@ -78,7 +78,7 @@ export const pricesDailyQuotesHandler: APIGatewayProxyHandler = async event => {
   return await api(fn, event)
 }
 
-export const fins_statements_handler = async (
+export const finsStatementsHandler = async (
   event: APIGatewayEvent
 ): Promise<APIGatewayProxyResult> => {
   try {

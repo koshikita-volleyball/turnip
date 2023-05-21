@@ -266,7 +266,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-fins-statements
       PackageType: Image
       ImageConfig:
-        Command: [ "api.fins_statements_handler" ]
+        Command: [ "api.finsStatementsHandler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
