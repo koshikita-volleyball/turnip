@@ -1,4 +1,4 @@
-type PaginationStruct = {
+interface PaginationStruct {
   page: number
   limit: number
   total: number

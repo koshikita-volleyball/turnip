@@ -1,4 +1,4 @@
-type PricesDailyQuotesStruct = {
+interface PricesDailyQuotesStruct {
   Date: string
   Code: string
   Open: number

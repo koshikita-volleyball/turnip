@@ -1,4 +1,4 @@
-type SharedData = {
+interface SharedData {
   username: string
   email: string
 }

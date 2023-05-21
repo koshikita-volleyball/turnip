@@ -1,4 +1,4 @@
-import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda'
+import { type APIGatewayEvent, type APIGatewayProxyResult } from 'aws-lambda'
 import { CORS_HEADERS } from './const'
 import { HttpResponseError, InternalServerError } from '../interface/turnip/error'
 
@@ -8,14 +8,14 @@ export type APIFn = Fn | AsyncFn
 
 export const api = async (
   fn: Fn | AsyncFn,
-  event: APIGatewayEvent,
+  event: APIGatewayEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
     const body = await fn(event)
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body,
+      body
     }
   } catch (err: unknown) {
     if (err instanceof HttpResponseError) {

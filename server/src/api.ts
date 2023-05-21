@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/require-await */
 import './common/initializer'
-import { APIGatewayEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
+import { type APIGatewayEvent, type APIGatewayProxyHandler, type APIGatewayProxyResult } from 'aws-lambda'
 import { WebClient, LogLevel } from '@slack/web-api'
 import GetProcessEnv from './common/process_env'
 import { getStockByCode, getStocks } from './model/stock'
@@ -9,22 +9,22 @@ import {
   getIndicatorParams,
   getPaginationParams,
   getStockCodedParams,
-  getStockCommonFilterParams,
+  getStockCommonFilterParams
 } from './common/query_parser'
 import paginate from './common/pagination'
-import { Stock } from './interface/turnip/stock'
+import { type Stock } from './interface/turnip/stock'
 import { getDailyQuotes } from './model/daily_quotes'
 import { getFinsStatements } from './model/fins_statements'
 import { CORS_HEADERS } from './common/const'
 import { NotFoundError } from './interface/turnip/error'
-import { api, APIFn } from './common/handler'
+import { api, type APIFn } from './common/handler'
 import { getBusinessDays } from './analysis/jpx_business_day'
 
 export const lambdaHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = () => {
     return 'Hello World'
   }
-  return api(fn, event)
+  return await api(fn, event)
 }
 
 export const business_day_handler: APIGatewayProxyHandler = async event => {
@@ -32,7 +32,7 @@ export const business_day_handler: APIGatewayProxyHandler = async event => {
     const dates = await getBusinessDays()
     return JSON.stringify(dates)
   }
-  return api(fn, event)
+  return await api(fn, event)
 }
 
 export const info_handler: APIGatewayProxyHandler = async event => {
@@ -40,12 +40,12 @@ export const info_handler: APIGatewayProxyHandler = async event => {
     const { code: _code } = getStockCodedParams(event)
     const code = check_required('code', _code)
     const stock = await getStockByCode(code)
-    if (!stock) {
+    if (stock == null) {
       throw new NotFoundError(`code: ${code} is not found.`)
     }
     return JSON.stringify(stock)
   }
-  return api(fn, event)
+  return await api(fn, event)
 }
 
 export const listed_info_handler: APIGatewayProxyHandler = async event => {
@@ -60,7 +60,7 @@ export const listed_info_handler: APIGatewayProxyHandler = async event => {
 
     return JSON.stringify(paginate<Stock>(stocks, page))
   }
-  return api(fn, event)
+  return await api(fn, event)
 }
 
 export const prices_daily_quotes_handler: APIGatewayProxyHandler = async event => {
@@ -75,11 +75,11 @@ export const prices_daily_quotes_handler: APIGatewayProxyHandler = async event =
 
     return JSON.stringify(dailyQuotes)
   }
-  return api(fn, event)
+  return await api(fn, event)
 }
 
 export const fins_statements_handler = async (
-  event: APIGatewayEvent,
+  event: APIGatewayEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
     const code = event.queryStringParameters?.code
@@ -92,8 +92,8 @@ export const fins_statements_handler = async (
         statusCode: 400,
         headers: CORS_HEADERS,
         body: JSON.stringify({
-          message: 'code is required.',
-        }),
+          message: 'code is required.'
+        })
       }
     }
 
@@ -102,7 +102,7 @@ export const fins_statements_handler = async (
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(finsStatements),
+      body: JSON.stringify(finsStatements)
     }
   } catch (err) {
     if (err instanceof Error) {
@@ -112,20 +112,20 @@ export const fins_statements_handler = async (
       statusCode: 500,
       headers: CORS_HEADERS,
       body: JSON.stringify({
-        message: err,
-      }),
+        message: err
+      })
     }
   }
 }
 
 export const slack_notify_handler = async (): Promise<void> => {
   const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
-    logLevel: LogLevel.DEBUG,
+    logLevel: LogLevel.DEBUG
   })
   const channel = GetProcessEnv('SLACK_CHANNEL_NOTICE')
   const result = await slackClient.chat.postMessage({
     text: '朝７時だよ！ :tori:',
-    channel,
+    channel
   })
   console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
 }
@@ -137,6 +137,6 @@ export const screener_handler = async (event: APIGatewayEvent): Promise<APIGatew
   return {
     statusCode: 200,
     headers: CORS_HEADERS,
-    body: JSON.stringify({ stockCommonFilter, indicatorParams }),
+    body: JSON.stringify({ stockCommonFilter, indicatorParams })
   }
 }

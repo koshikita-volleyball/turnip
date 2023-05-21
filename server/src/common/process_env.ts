@@ -15,7 +15,7 @@ type ProcessEnvKey =
   | 'PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'
   | 'FINS_STATEMENTS_DYNAMODB_TABLE_NAME'
 
-function GetProcessEnv(key: ProcessEnvKey): string {
+function GetProcessEnv (key: ProcessEnvKey): string {
   const value = process.env[key] ?? ''
   if (value === '') {
     console.error(`[ERROR] ${key} is not defined.`)

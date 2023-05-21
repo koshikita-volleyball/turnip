@@ -16,7 +16,7 @@ const Sector17Info = [
   { code: '15', name: '銀行' },
   { code: '16', name: '金融（除く銀行）' },
   { code: '17', name: '不動産' },
-  { code: '99', name: 'その他' },
+  { code: '99', name: 'その他' }
 ]
 
 export default Sector17Info
