@@ -190,7 +190,7 @@ export const pricesDailyQuotesUpdateHandler = async (): Promise<void> => {
   }
 }
 
-export const fins_statements_updater_handler = async (): Promise<void> => {
+export const finsStatementsUpdateHandler = async (): Promise<void> => {
   const function_name = 'fins_statements_updater_handler'
   try {
     const today = dayjs().format('YYYY-MM-DD')
