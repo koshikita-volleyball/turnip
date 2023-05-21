@@ -71,13 +71,13 @@ export default function ContactPage (): React.JSX.Element {
         <FilteringBlock
           useFiltering={useFiltering}
           setUseFiltering={setUseFiltering}
-          company_name={companyName}
+          companyName={companyName}
           setCompanyName={setCompanyName}
-          market_code={marketCode}
+          marketCode={marketCode}
           setMarketCode={setMarketCode}
-          sector_17_code={sector17Code}
+          sector17Code={sector17Code}
           setSector17Code={setSector17Code}
-          sector_33_code={sector33Code}
+          sector33Code={sector33Code}
           setSector33Code={setSector33Code}
           afterChange={() => {}}
         />
