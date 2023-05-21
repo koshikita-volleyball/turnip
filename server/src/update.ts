@@ -57,7 +57,7 @@ export const refreshTokenUpdateHandler = async (): Promise<void> => {
 }
 
 export const idTokenUpdateHandler = async (): Promise<void> => {
-  const function_name = 'id_token_updater_handler'
+  const functionName = 'id_token_updater_handler'
   try {
     // S3からリフレッシュトークンを取得
     const bucket = GetProcessEnv('S3_BUCKET_NAME')
@@ -68,30 +68,29 @@ export const idTokenUpdateHandler = async (): Promise<void> => {
     }
     const data = await s3.getObject(params).promise()
     const refreshToken = data.Body?.toString('utf-8')
-    if (refreshToken) {
-      console.log('refreshToken: ', refreshToken)
+    if (refreshToken !== undefined) {
       // リフレッシュトークンを使ってIDトークンを更新
-      const id_token = await GetIdToken(refreshToken)
+      const idToken = await GetIdToken(refreshToken)
       // S3にIDトークンを保存
       const params = {
         Bucket: bucket,
         Key: 'id_token.txt',
-        Body: id_token
+        Body: idToken
       }
       await s3.putObject(params).promise()
       Logger.log(
-        function_name,
+        functionName,
         `:tori::tori::tori: IDトークンを更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
-          id_token
+          idToken
         )}`
       )
     } else {
-      Logger.error(function_name, 'リフレッシュトークンが取得できませんでした！')
+      Logger.error(functionName, 'リフレッシュトークンが取得できませんでした！')
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
       Logger.error(
-        function_name,
+        functionName,
         `:tori::tori::tori: IDトークンの更新に失敗しました！ :tori::tori::tori:\n\n${makeCodeBlock(
           err.message
         )}`
