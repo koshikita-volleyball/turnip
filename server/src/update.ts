@@ -191,7 +191,7 @@ export const pricesDailyQuotesUpdateHandler = async (): Promise<void> => {
 }
 
 export const finsStatementsUpdateHandler = async (): Promise<void> => {
-  const function_name = 'fins_statements_updater_handler'
+  const functionName = 'fins_statements_updater_handler'
   try {
     const today = dayjs().format('YYYY-MM-DD')
     const { statements } = await JQuantsClient<{
@@ -353,17 +353,17 @@ export const finsStatementsUpdateHandler = async (): Promise<void> => {
       channel
     })
     console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
-    const item_count = statements.length
+    const itemCount = statements.length
     Logger.log(
-      function_name,
+      functionName,
       `:tori::tori::tori: 財務情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
-        `更新件数: ${item_count}件`
+        `更新件数: ${itemCount}件`
       )}`
     )
   } catch (err: unknown) {
     if (err instanceof Error) {
       Logger.error(
-        function_name,
+        functionName,
         `:tori::tori::tori: 財務情報の更新に失敗しました！:tori::tori::tori:\n\n${makeCodeBlock(
           err.message
         )}`
