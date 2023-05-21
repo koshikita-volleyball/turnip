@@ -1,6 +1,6 @@
 interface SharedData {
-  username: string
-  email: string
+  username: string | null
+  email: string | null
 }
 
 export default SharedData
