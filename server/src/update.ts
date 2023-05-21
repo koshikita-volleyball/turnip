@@ -12,7 +12,7 @@ import type PricesDailyQuotesStruct from './interface/jquants/prices_daily_quote
 import type FinsStatementsStruct from './interface/jquants/fins_statements'
 import Logger, { makeCodeBlock } from './common/logger'
 
-export const business_day_update_handler = async (): Promise<void> => {
+export const businessDayUpdateHandler = async (): Promise<void> => {
   const function_name = 'business_day_update_handler'
   try {
     const dates = await getBusinessDaysFromJQuants()
