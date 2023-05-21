@@ -15,7 +15,7 @@ import setting from '../setting'
 import { DataContext } from '../src/DataContext'
 import type SharedData from '../src/SharedData'
 
-export default function MyApp ({ Component, pageProps }: AppProps) {
+export default function MyApp ({ Component, pageProps }: AppProps): React.JSX.Element {
   const [sharedData, setSharedData] = useState<SharedData>({
     username: '',
     email: 'osawa-koki@example.com'

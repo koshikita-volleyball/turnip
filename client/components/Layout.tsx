@@ -15,7 +15,7 @@ const Layout = ({
   title = setting.title,
   menu = true,
   footer = true
-}: Props) => (
+}: Props): React.JSX.Element => (
   <div>
     <Head>
       <title>{title}</title>

@@ -9,8 +9,8 @@ const title = <h2 className="mt-5">💰 財務情報</h2>
 
 export default function CompanyStatementsCard (props: {
   statements: FinsStatementsStruct[]
-}) {
-  if (!props.statements) {
+}): React.JSX.Element {
+  if (props.statements === null) {
     return (
       <>
         {title}

@@ -11,16 +11,16 @@ import setting from '../setting'
 
 Modal.setAppElement('#Modal')
 
-function make_uri (
+function makeUri (
   filtering: {
-    company_name: string
-    market_code: string
-    sector_17_code: string
-    sector_33_code: string
+    companyName: string
+    marketCode: string
+    sector17Code: string
+    sector33Code: string
   },
   rules: ScreeningRuleStructs[]
-) {
-  const { company_name, market_code, sector_17_code, sector_33_code } =
+): string {
+  const { companyName, marketCode, sector17Code, sector33Code } =
     filtering
 
   rules.forEach((rule) => {
@@ -30,35 +30,35 @@ function make_uri (
   return (
     `${setting.apiPath}/api/screener` +
     '?' +
-    `${company_name !== '' ? `&company_name=${company_name}` : ''}` +
-    `${market_code !== '' ? `&market_codes=${market_code}` : ''}` +
-    `${sector_17_code !== '' ? `&sector_17_codes=${sector_17_code}` : ''}` +
-    `${sector_33_code !== '' ? `&sector_33_codes=${sector_33_code}` : ''}` +
+    `${companyName !== '' ? `&company_name=${companyName}` : ''}` +
+    `${marketCode !== '' ? `&market_codes=${marketCode}` : ''}` +
+    `${sector17Code !== '' ? `&sector_17_codes=${sector17Code}` : ''}` +
+    `${sector33Code !== '' ? `&sector_33_codes=${sector33Code}` : ''}` +
     `${rules.length !== 0 ? `&rules=${encodeURI(JSON.stringify(rules))}` : ''}`
   )
 }
 
-export default function ContactPage () {
+export default function ContactPage (): React.JSX.Element {
   const [useFiltering, setUseFiltering] = useState(true)
-  const [company_name, setCompanyName] = useState('')
-  const [market_code, setMarketCode] = useState<string>('')
-  const [sector_17_code, setSector17Code] = useState<string>('')
-  const [sector_33_code, setSector33Code] = useState<string>('')
+  const [companyName, setCompanyName] = useState('')
+  const [marketCode, setMarketCode] = useState<string>('')
+  const [sector17Code, setSector17Code] = useState<string>('')
+  const [sector33Code, setSector33Code] = useState<string>('')
 
   const [rules, setRules] = useState<ScreeningRuleStructs[]>([])
 
   const [modalIsOpen, setIsOpen] = React.useState(false)
 
-  const openModal = () => { setIsOpen(true) }
-  const closeModal = () => { setIsOpen(false) }
+  const openModal: () => void = () => { setIsOpen(true) }
+  const closeModal: () => void = () => { setIsOpen(false) }
 
-  const StartScreening = () => {
-    const uri = make_uri(
+  const StartScreening = (): void => {
+    const uri = makeUri(
       {
-        company_name,
-        market_code,
-        sector_17_code,
-        sector_33_code
+        companyName,
+        marketCode,
+        sector17Code,
+        sector33Code
       },
       rules
     )
@@ -71,13 +71,13 @@ export default function ContactPage () {
         <FilteringBlock
           useFiltering={useFiltering}
           setUseFiltering={setUseFiltering}
-          company_name={company_name}
+          companyName={companyName}
           setCompanyName={setCompanyName}
-          market_code={market_code}
+          marketCode={marketCode}
           setMarketCode={setMarketCode}
-          sector_17_code={sector_17_code}
+          sector17Code={sector17Code}
           setSector17Code={setSector17Code}
-          sector_33_code={sector_33_code}
+          sector33Code={sector33Code}
           setSector33Code={setSector33Code}
           afterChange={() => {}}
         />

@@ -15,7 +15,7 @@ import dayjs from '../src/dayjs'
 export default function ScreeningRuleList (props: {
   rules: ScreeningRuleStructs[]
   setRules: Dispatch<SetStateAction<ScreeningRuleStructs[]>>
-}) {
+}): React.JSX.Element {
   const { rules, setRules } = props
 
   if (rules.length === 0) {

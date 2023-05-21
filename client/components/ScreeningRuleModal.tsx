@@ -34,7 +34,7 @@ export default function ScreeningRuleModal (props: {
   closeModal: () => void
   rules: ScreeningRuleStructs[]
   setRules: Dispatch<SetStateAction<ScreeningRuleStructs[]>>
-}) {
+}): React.JSX.Element {
   const { modalIsOpen, closeModal, rules, setRules } = props
 
   const [selectedRule, setSelectedRule] = useState<ScreeningRuleStructs | null>(
@@ -54,9 +54,9 @@ export default function ScreeningRuleModal (props: {
               <Form.Label>条件</Form.Label>
               <Form.Control
                 as="select"
-                value={selectedRule?.type || ''}
+                value={selectedRule?.type ?? ''}
                 onChange={(e) => {
-                  if (!e.target.value) {
+                  if (e.target.value === '') {
                     setSelectedRule(null)
                     return
                   }
@@ -69,7 +69,7 @@ export default function ScreeningRuleModal (props: {
                       threshold: 1.5,
                       up: true,
                       ohlc:
-                        (selectedRule as ScreeningRuleGrowthRateStruct)?.ohlc ||
+                        (selectedRule as ScreeningRuleGrowthRateStruct)?.ohlc ??
                         ('close' as OHLC),
                       before: dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
                       after: dayjs().format('YYYY-MM-DD')
@@ -268,7 +268,7 @@ export default function ScreeningRuleModal (props: {
               variant="primary"
               className="d-block mt-5 mx-auto"
               onClick={() => {
-                if (selectedRule) {
+                if (selectedRule !== null) {
                   setRules([...rules, { ...selectedRule }])
                 }
                 closeModal()
