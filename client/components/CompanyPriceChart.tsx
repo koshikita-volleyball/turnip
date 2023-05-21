@@ -1,23 +1,23 @@
 import React from 'react'
 import { Chart as ChartJS, registerables } from 'chart.js'
 import { Line } from 'react-chartjs-2'
-ChartJS.register(...registerables)
-import PricesDailyQuotesStruct from '../interface/prices_daily_quotes'
+import type PricesDailyQuotesStruct from '../interface/prices_daily_quotes'
 import { Alert } from 'react-bootstrap'
+ChartJS.register(...registerables)
 
 const dataset_setting = {
   borderWidth: 1,
-  radius: 1,
+  radius: 1
 }
 
 const options = {
   maintainAspectRatio: false,
-  responsive: true,
+  responsive: true
 }
 
 const title = <h2 className="mt-5">💹 株価情報</h2>
 
-export default function CompanyPriceChart(props: {
+export default function CompanyPriceChart (props: {
   prices: PricesDailyQuotesStruct[]
 }) {
   if (!props.prices) {
@@ -40,33 +40,33 @@ export default function CompanyPriceChart(props: {
 
   const labels = props.prices.map((item) => item.Date)
   const graphData = {
-    labels: labels,
+    labels,
     datasets: [
       {
         label: '高値',
         data: props.prices.map((item) => item.High),
         borderColor: 'red',
-        ...dataset_setting,
+        ...dataset_setting
       },
       {
         label: '低値',
         data: props.prices.map((item) => item.Low),
         borderColor: 'blue',
-        ...dataset_setting,
+        ...dataset_setting
       },
       {
         label: '始値',
         data: props.prices.map((item) => item.Open),
         borderColor: 'green',
-        ...dataset_setting,
+        ...dataset_setting
       },
       {
         label: '終値',
         data: props.prices.map((item) => item.Close),
         borderColor: 'orange',
-        ...dataset_setting,
-      },
-    ],
+        ...dataset_setting
+      }
+    ]
   }
 
   return (

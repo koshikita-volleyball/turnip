@@ -1,18 +1,18 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { type Dispatch, type SetStateAction, useState } from 'react'
 import Modal from 'react-modal'
 import {
-  MovingAverageType,
-  OHLC,
-  ScreeningRuleCrossOverStruct,
-  ScreeningRuleGrowthRateStruct,
-  ScreeningRuleStructs,
+  type MovingAverageType,
+  type OHLC,
+  type ScreeningRuleCrossOverStruct,
+  type ScreeningRuleGrowthRateStruct,
+  type ScreeningRuleStructs
 } from '../interface/screening_rule'
 import { Alert, Button, Form } from 'react-bootstrap'
 import dayjs from 'dayjs'
 
 const customStyles = {
   overlay: {
-    zIndex: 999,
+    zIndex: 999
   },
   content: {
     position: 'relative',
@@ -25,11 +25,11 @@ const customStyles = {
     width: '1000px',
     maxWidth: '95vw',
     height: '800px',
-    maxHeight: '95vh',
-  },
+    maxHeight: '95vh%'
+  }
 }
 
-export default function ScreeningRuleModal(props: {
+export default function ScreeningRuleModal (props: {
   modalIsOpen: boolean
   closeModal: () => void
   rules: ScreeningRuleStructs[]
@@ -38,7 +38,7 @@ export default function ScreeningRuleModal(props: {
   const { modalIsOpen, closeModal, rules, setRules } = props
 
   const [selectedRule, setSelectedRule] = useState<ScreeningRuleStructs | null>(
-    null,
+    null
   )
 
   return (
@@ -72,7 +72,7 @@ export default function ScreeningRuleModal(props: {
                         (selectedRule as ScreeningRuleGrowthRateStruct)?.ohlc ||
                         ('close' as OHLC),
                       before: dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
-                      after: dayjs().format('YYYY-MM-DD'),
+                      after: dayjs().format('YYYY-MM-DD')
                     } as unknown as ScreeningRuleGrowthRateStruct)
                   }
                   if (type === 'cross_over') {
@@ -82,7 +82,7 @@ export default function ScreeningRuleModal(props: {
                       line1: 'close' as MovingAverageType,
                       line2: 'ma_25' as MovingAverageType,
                       from: dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
-                      to: dayjs().format('YYYY-MM-DD'),
+                      to: dayjs().format('YYYY-MM-DD')
                     } as unknown as ScreeningRuleCrossOverStruct)
                   }
                 }}
@@ -112,7 +112,7 @@ export default function ScreeningRuleModal(props: {
                           onChange={(e) => {
                             setSelectedRule({
                               ...selectedRule,
-                              positive: e.target.checked,
+                              positive: e.target.checked
                             })
                           }}
                         />
@@ -126,7 +126,7 @@ export default function ScreeningRuleModal(props: {
                           onChange={(e) => {
                             setSelectedRule({
                               ...selectedRule,
-                              threshold: Number(e.target.value),
+                              threshold: Number(e.target.value)
                             })
                           }}
                         />
@@ -135,11 +135,11 @@ export default function ScreeningRuleModal(props: {
                         <Form.Label>OHLC</Form.Label>
                         <Form.Control
                           as="select"
-                          value={(rule as ScreeningRuleGrowthRateStruct).ohlc}
+                          value={(rule).ohlc}
                           onChange={(e) => {
                             setSelectedRule({
                               ...selectedRule,
-                              ohlc: e.target.value as OHLC,
+                              ohlc: e.target.value as OHLC
                             } as unknown as ScreeningRuleGrowthRateStruct)
                           }}
                         >
@@ -158,7 +158,7 @@ export default function ScreeningRuleModal(props: {
                             onChange={(e) => {
                               setSelectedRule({
                                 ...selectedRule,
-                                before: e.target.value,
+                                before: e.target.value
                               })
                             }}
                           />
@@ -169,7 +169,7 @@ export default function ScreeningRuleModal(props: {
                             onChange={(e) => {
                               setSelectedRule({
                                 ...selectedRule,
-                                after: e.target.value,
+                                after: e.target.value
                               })
                             }}
                           />
@@ -201,7 +201,7 @@ export default function ScreeningRuleModal(props: {
                           onChange={(e) => {
                             setSelectedRule({
                               ...selectedRule,
-                              line1: e.target.value as MovingAverageType,
+                              line1: e.target.value as MovingAverageType
                             } as unknown as ScreeningRuleCrossOverStruct)
                           }}
                         >
@@ -218,7 +218,7 @@ export default function ScreeningRuleModal(props: {
                           onChange={(e) => {
                             setSelectedRule({
                               ...selectedRule,
-                              line2: e.target.value as MovingAverageType,
+                              line2: e.target.value as MovingAverageType
                             } as unknown as ScreeningRuleCrossOverStruct)
                           }}
                         >
@@ -241,7 +241,7 @@ export default function ScreeningRuleModal(props: {
                             onChange={(e) => {
                               setSelectedRule({
                                 ...selectedRule,
-                                from: e.target.value,
+                                from: e.target.value
                               })
                             }}
                           />
@@ -252,7 +252,7 @@ export default function ScreeningRuleModal(props: {
                             onChange={(e) => {
                               setSelectedRule({
                                 ...selectedRule,
-                                to: e.target.value,
+                                to: e.target.value
                               })
                             }}
                           />

@@ -10,7 +10,7 @@ export const toDayjs = (date: Date | string | number | dayjs.Dayjs): dayjs.Dayjs
   return dayjs.tz(date)
 }
 
-export const getDefaultPeriod = (): { from: string; to: string } => {
+export const getDefaultPeriod = (): { from: string, to: string } => {
   const from = dayjs().subtract(10, 'year').format('YYYY-MM-DD')
   const to = dayjs().format('YYYY-MM-DD')
   return { from, to }

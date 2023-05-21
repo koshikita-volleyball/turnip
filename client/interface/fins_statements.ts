@@ -1,4 +1,4 @@
-type FinsStatementsStruct = {
+interface FinsStatementsStruct {
   DisclosedDate: string
   DisclosedTime: string
   LocalCode: string

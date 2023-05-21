@@ -32,7 +32,7 @@ const sector33Info = [
   { code: '7200', name: 'その他金融業' },
   { code: '8050', name: '不動産業' },
   { code: '9050', name: 'サービス業' },
-  { code: '9999', name: 'その他' },
+  { code: '9999', name: 'その他' }
 ]
 
 export default sector33Info

@@ -1,9 +1,9 @@
-import { LineType } from './line'
+import { type LineType } from './line'
 
 type IndicatorType = 'growth_rate' | 'cross_over'
 type OHLC = 'open' | 'high' | 'low' | 'close'
 
-type CommonIndicator = {
+interface CommonIndicator {
   type: IndicatorType
   positive: boolean
 }

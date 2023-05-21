@@ -1,6 +1,5 @@
-import React from 'react'
-import { AppProps } from 'next/app'
-import { useState } from 'react'
+import React, { useState } from 'react'
+import { type AppProps } from 'next/app'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -14,12 +13,12 @@ import Head from 'next/head'
 
 import setting from '../setting'
 import { DataContext } from '../src/DataContext'
-import SharedData from '../src/SharedData'
+import type SharedData from '../src/SharedData'
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp ({ Component, pageProps }: AppProps) {
   const [sharedData, setSharedData] = useState<SharedData>({
     username: '',
-    email: 'osawa-koki@example.com',
+    email: 'osawa-koki@example.com'
   })
 
   return (

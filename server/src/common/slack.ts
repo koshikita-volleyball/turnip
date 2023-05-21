@@ -35,7 +35,7 @@ const getChannel = (category: Category): string => {
 
 export const notify = async (text: string, category: Category = 'notice'): Promise<void> => {
   const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
-    logLevel: LogLevel.DEBUG,
+    logLevel: LogLevel.DEBUG
   })
   const channel = getChannel(category)
   const result = await slackClient.chat.postMessage({ text, channel })
