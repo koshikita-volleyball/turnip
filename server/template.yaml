@@ -203,7 +203,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-info
       PackageType: Image
       ImageConfig:
-        Command: [ "api.info_handler" ]
+        Command: [ "api.infoHandler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64

@@ -35,7 +35,7 @@ export const businessDayHandler: APIGatewayProxyHandler = async event => {
   return await api(fn, event)
 }
 
-export const info_handler: APIGatewayProxyHandler = async event => {
+export const infoHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = async event => {
     const { code: _code } = getStockCodedParams(event)
     const code = check_required('code', _code)
