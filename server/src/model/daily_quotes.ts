@@ -17,14 +17,14 @@ export const getDailyQuotes = async ({
   from,
   to
 }: GetDailyQuotesProps): Promise<PricesDailyQuotesStruct[]> => {
-  if (code) {
+  if (code !== undefined) {
     return await _getDailyQuotesByStock(code, from, to)
   }
   // TODO: セカンダリインデックスを使用すれば実現できるかも
   // if (date) {
   //   return await _getDailyQuotesByDate(date)
   // }
-  throw new Error('Missing required parameter: code or date')
+  throw new Error('Missing required parameter: code or date.')
 }
 
 const _getDailyQuotesByStock = async (
@@ -32,26 +32,26 @@ const _getDailyQuotesByStock = async (
   from?: string,
   to?: string
 ): Promise<PricesDailyQuotesStruct[]> => {
-  const key_condition_expressions = ['Code = :Code']
-  const expression_attribute_values: ExpressionAttributeValueMap = {
+  const keyConditionExpressions = ['Code = :Code']
+  const expressionAttributeValues: ExpressionAttributeValueMap = {
     ':Code': {
       S: code
     }
   }
 
   const { from: defaultFrom, to: defaultTo } = getDefaultPeriod()
-  key_condition_expressions.push('#Date BETWEEN :From AND :To')
-  expression_attribute_values[':From'] = {
+  keyConditionExpressions.push('#Date BETWEEN :From AND :To')
+  expressionAttributeValues[':From'] = {
     S: from ?? defaultFrom
   }
-  expression_attribute_values[':To'] = {
+  expressionAttributeValues[':To'] = {
     S: to ?? defaultTo
   }
   const ddb = new AWS.DynamoDB()
   const params = {
     TableName: GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
-    KeyConditionExpression: key_condition_expressions.join(' AND '),
-    ExpressionAttributeValues: expression_attribute_values,
+    KeyConditionExpression: keyConditionExpressions.join(' AND '),
+    ExpressionAttributeValues: expressionAttributeValues,
     ExpressionAttributeNames: {
       '#Date': 'Date'
     }
