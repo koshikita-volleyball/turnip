@@ -7,6 +7,7 @@ module.exports = {
   overrides: [
   ],
   parserOptions: {
+    project: './tsconfig.json',
     ecmaVersion: 'latest',
     sourceType: 'module'
   },
