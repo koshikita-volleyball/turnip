@@ -1,13 +1,13 @@
 import React from 'react'
 import { Alert, Table } from 'react-bootstrap'
-import FinsStatementsStruct from '../interface/fins_statements'
+import type FinsStatementsStruct from '../interface/fins_statements'
 import { Splide, SplideSlide } from '@splidejs/react-splide'
 import '@splidejs/splide/css'
 import dayjs from '../src/dayjs'
 
 const title = <h2 className="mt-5">💰 財務情報</h2>
 
-export default function CompanyStatementsCard(props: {
+export default function CompanyStatementsCard (props: {
   statements: FinsStatementsStruct[]
 }) {
   if (!props.statements) {
@@ -33,7 +33,7 @@ export default function CompanyStatementsCard(props: {
       {title}
       <Splide
         options={{
-          autoplay: false,
+          autoplay: false
         }}
       >
         {props.statements

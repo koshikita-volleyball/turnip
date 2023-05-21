@@ -3,21 +3,21 @@ import Layout from '../components/Layout'
 import useSWR from 'swr'
 import setting from '../setting'
 import { Alert, Button, Spinner, Table } from 'react-bootstrap'
-import ListedInfoStruct from '../interface/listed_info'
+import type ListedInfoStruct from '../interface/listed_info'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import FilteringBlock from '../components/FilteringBlock'
-import PaginationStruct from '../interface/pagination'
+import type PaginationStruct from '../interface/pagination'
 
-const fetcher = (url: string) =>
-  fetch(url).then((r) => (r.ok ? r.json() : null))
+const fetcher = async (url: string) =>
+  await fetch(url).then(async (r) => (r.ok ? await r.json() : null))
 
 const make_params = ({
   page,
   company_name,
   market_code,
   sector_17_code,
-  sector_33_code,
+  sector_33_code
 }: {
   page: number
   company_name: string
@@ -31,7 +31,7 @@ const make_params = ({
   `${sector_17_code !== '' ? `&sector_17_codes=${sector_17_code}` : ''}` +
   `${sector_33_code !== '' ? `&sector_33_codes=${sector_33_code}` : ''}`
 
-export default function AboutPage() {
+export default function AboutPage () {
   const [firstLock, setFirstLock] = useState(false)
   const [page, setPage] = useState(1)
   const [useFiltering, setUseFiltering] = useState(true)
@@ -43,8 +43,8 @@ export default function AboutPage() {
   const router = useRouter()
 
   const {
-    data: data,
-    error,
+    data,
+    error
   }: {
     data: {
       data: ListedInfoStruct[]
@@ -58,9 +58,9 @@ export default function AboutPage() {
         company_name,
         market_code,
         sector_17_code,
-        sector_33_code,
+        sector_33_code
       }),
-    fetcher,
+    fetcher
   )
 
   useSWR(
@@ -70,9 +70,9 @@ export default function AboutPage() {
         company_name,
         market_code,
         sector_17_code,
-        sector_33_code,
+        sector_33_code
       }),
-    fetcher,
+    fetcher
   )
 
   useEffect(() => {
@@ -92,20 +92,20 @@ export default function AboutPage() {
     router.query.market_codes,
     router.query.page,
     router.query.sector_17_codes,
-    router.query.sector_33_codes,
+    router.query.sector_33_codes
   ])
 
   useEffect(() => {
     if (!firstLock) return
     const query = {}
-    if (page !== 1) query['page'] = page
-    if (company_name !== '') query['company_name'] = company_name
-    if (market_code !== '') query['market_codes'] = market_code
-    if (sector_17_code !== '') query['sector_17_codes'] = sector_17_code
-    if (sector_33_code !== '') query['sector_33_codes'] = sector_33_code
+    if (page !== 1) query.page = page
+    if (company_name !== '') query.company_name = company_name
+    if (market_code !== '') query.market_codes = market_code
+    if (sector_17_code !== '') query.sector_17_codes = sector_17_code
+    if (sector_33_code !== '') query.sector_33_codes = sector_33_code
     router.push({
       pathname: '/listed-info',
-      query,
+      query
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, company_name, market_code, sector_17_code, sector_33_code])
@@ -113,9 +113,12 @@ export default function AboutPage() {
   return (
     <Layout>
       <div id="ListedInfo">
-        {error ? (
+        {error
+          ? (
           <Alert variant="danger">Failed to load</Alert>
-        ) : !data ? (
+            )
+          : !data
+              ? (
           <div className="mt-3 d-flex justify-content-between">
             <Spinner animation="grow" variant="primary" />
             <Spinner animation="grow" variant="secondary" />
@@ -126,7 +129,8 @@ export default function AboutPage() {
             <Spinner animation="grow" variant="light" />
             <Spinner animation="grow" variant="dark" />
           </div>
-        ) : (
+                )
+              : (
           <>
             <FilteringBlock
               useFiltering={useFiltering}
@@ -139,14 +143,14 @@ export default function AboutPage() {
               setSector17Code={setSector17Code}
               sector_33_code={sector_33_code}
               setSector33Code={setSector33Code}
-              afterChange={() => setPage(1)}
+              afterChange={() => { setPage(1) }}
             />
             <hr />
             <div className="d-flex justify-content-between align-items-center mt-3">
               <Button
                 variant="primary"
-                onClick={() => setPage(page - 1)}
-                disabled={data.pagination.hasPrev === false}
+                onClick={() => { setPage(page - 1) }}
+                disabled={!data.pagination.hasPrev}
               >
                 前へ
               </Button>
@@ -155,8 +159,8 @@ export default function AboutPage() {
               </Alert>
               <Button
                 variant="primary"
-                onClick={() => setPage(page + 1)}
-                disabled={data.pagination.hasNext === false}
+                onClick={() => { setPage(page + 1) }}
+                disabled={!data.pagination.hasNext}
               >
                 次へ
               </Button>
@@ -188,7 +192,7 @@ export default function AboutPage() {
               </tbody>
             </Table>
           </>
-        )}
+                )}
       </div>
     </Layout>
   )

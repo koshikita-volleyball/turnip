@@ -2,7 +2,7 @@ import React from 'react'
 import Layout from '../components/Layout'
 import setting from '../setting'
 
-export default function Home() {
+export default function Home () {
   return (
     <Layout>
       <div id="Index">
