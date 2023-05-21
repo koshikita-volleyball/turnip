@@ -31,27 +31,27 @@ export const businessDayUpdateHandler = async (): Promise<void> => {
 }
 
 export const refreshTokenUpdateHandler = async (): Promise<void> => {
-  const function_name = 'refresh_token_updater_handler'
+  const functionName = 'refresh_token_updater_handler'
   try {
-    const refresh_token = await GetRefreshToken()
+    const refreshToken = await GetRefreshToken()
     const s3 = new AWS.S3()
     const bucket = GetProcessEnv('S3_BUCKET_NAME')
     const key = 'refresh_token.txt'
     const params = {
       Bucket: bucket,
       Key: key,
-      Body: refresh_token
+      Body: refreshToken
     }
     await s3.putObject(params).promise()
     Logger.log(
-      function_name,
+      functionName,
       `:tori::tori::tori: リフレッシュトークンを更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(
-        refresh_token
+        refreshToken
       )}`
     )
   } catch (err: unknown) {
     if (err instanceof Error) {
-      Logger.error(function_name, err.message)
+      Logger.error(functionName, err.message)
     }
   }
 }
