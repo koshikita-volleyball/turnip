@@ -27,7 +27,7 @@ export const lambdaHandler: APIGatewayProxyHandler = async event => {
   return await api(fn, event)
 }
 
-export const business_day_handler: APIGatewayProxyHandler = async event => {
+export const businessDayHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = async () => {
     const dates = await getBusinessDays()
     return JSON.stringify(dates)

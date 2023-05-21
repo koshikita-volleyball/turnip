@@ -162,7 +162,7 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-business-day
       PackageType: Image
       ImageConfig:
-        Command: [ "api.business_day_handler" ]
+        Command: [ "api.businessDayHandler" ]
       Role: !GetAtt MyLambdaRole.Arn
       Architectures:
       - x86_64
