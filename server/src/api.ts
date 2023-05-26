@@ -17,8 +17,9 @@ import { getDailyQuotes } from './model/daily_quotes'
 import { getFinsStatements } from './model/fins_statements'
 import { CORS_HEADERS } from './common/const'
 import { NotFoundError } from './interface/turnip/error'
+import { getBusinessDays } from './screener/utils'
+import screener from './screener/screener'
 import { api, type APIFn } from './common/handler'
-import { getBusinessDays } from './analysis/jpx_business_day'
 
 export const lambdaHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = () => {
@@ -130,13 +131,15 @@ export const slackNotifyHandler = async (): Promise<void> => {
   console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
 }
 
-export const screenerHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-  const stockCommonFilter = getStockCommonFilterParams(event)
-  const indicatorParams = await getIndicatorParams(event)
+export const screenerHandler: APIGatewayProxyHandler = async event => {
+  const fn: APIFn = async event => {
+    const stockCommonFilter = getStockCommonFilterParams(event)
+    const indicatorParams = await getIndicatorParams(event)
 
-  return {
-    statusCode: 200,
-    headers: CORS_HEADERS,
-    body: JSON.stringify({ stockCommonFilter, indicatorParams })
+    const stocks = await getStocks(stockCommonFilter)
+
+    const screendStocks = await screener(stocks, indicatorParams)
+    return JSON.stringify({ params: { stockCommonFilter, indicatorParams }, screendStocks })
   }
+  return await api(fn, event)
 }

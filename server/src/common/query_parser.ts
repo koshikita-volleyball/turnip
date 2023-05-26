@@ -1,9 +1,9 @@
 import { type APIGatewayEvent } from 'aws-lambda'
 import { type CrossOverIndicator, type GrowthRateIndicator, type Indicator } from '../interface/jquants/indicator'
 import dayjs from '../common/dayjs'
-import { getBusinessDays } from '../analysis/jpx_business_day'
+import { getBusinessDays } from '../screener/utils'
 import { BadRequestError } from '../interface/turnip/error'
-import { type LineType } from '../interface/jquants/line'
+import { type TimeSeriesLineType } from '../interface/jquants/line'
 
 interface StockCode {
   code?: string
@@ -63,9 +63,9 @@ export const getPaginationParams = (event: APIGatewayEvent): PaginationParams =>
 
 export const getIndicatorParams = async (event: APIGatewayEvent): Promise<Indicator[]> => {
   try {
-    const conditions = event.queryStringParameters?.conditions
-    if (conditions === undefined) return []
-    return await Promise.all((JSON.parse(decodeURI(conditions)) as Indicator[]).map(_parseIndicator))
+    const rules = event.queryStringParameters?.rules
+    if (rules === undefined) return []
+    return await Promise.all((JSON.parse(decodeURI(rules)) as Indicator[]).map(_parseIndicator))
   } catch (e) {
     console.error(e)
   }
@@ -93,19 +93,19 @@ const _parseGrowthRateIndicator = (
   return {
     ...indicator,
     threshold: indicator.threshold,
-    up: indicator.up ?? true,
-    before: indicator.before ?? businessDays[businessDays.length - 2],
-    after: indicator.after ?? businessDays[businessDays.length - 1],
-    positive: indicator.positive || true
+    up: _default(indicator.up, true),
+    before: _default(indicator.before, businessDays[businessDays.length - 2]),
+    after: _default(indicator.after, businessDays[businessDays.length - 1]),
+    positive: _default(indicator.positive, true)
   }
 }
 
 const _parseCrossOverIndicator = (indicator: CrossOverIndicator, now: dayjs.Dayjs): {
-  line1: LineType
-  line2: LineType
+  line1: TimeSeriesLineType
+  line2: TimeSeriesLineType
   from: string
   to: string
-  positive: true
+  positive: boolean
   type: 'cross_over'
 } => {
   if (indicator.from === undefined) {
@@ -113,14 +113,17 @@ const _parseCrossOverIndicator = (indicator: CrossOverIndicator, now: dayjs.Dayj
   }
   return {
     ...indicator,
-    line1: indicator.line1 ?? 'close',
-    line2: indicator.line2 ?? 'ma_25',
+    line1: _default(indicator.line1, 'close'),
+    line2: _default(indicator.line2, 'ma_25'),
     from: indicator.from,
-    to: indicator.to ?? now.format('YYYY-MM-DD'),
-    positive: indicator.positive || true
+    to: _default(indicator.to, now.format('YYYY-MM-DD')),
+    positive: _default(indicator.positive, true)
   }
 }
 
+const _default = <T>(val: T | undefined, def: T): T => {
+  return val !== undefined ? val : def
+}
 const _parseList = (str: string | undefined): string[] | undefined => {
   if (str === undefined) return undefined
   return str.split(',')

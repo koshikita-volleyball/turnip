@@ -7,9 +7,18 @@ import GetProcessEnv from './common/process_env'
 import JQuantsClient from './common/jquants_client'
 import type ListedInfoStruct from './interface/jquants/listed_info'
 import dayjs from 'dayjs'
+import { api, type APIFn } from './common/handler'
+import { type APIGatewayProxyHandler } from 'aws-lambda'
 import type PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
 import type FinsStatementsStruct from './interface/jquants/fins_statements'
 import { loggerInfo, loggerError, makeCodeBlock } from './common/logger'
+
+export const lambdaHandler: APIGatewayProxyHandler = async event => {
+  const fn: APIFn = () => {
+    return 'Hello World'
+  }
+  return await api(fn, event)
+}
 
 export const businessDayUpdateHandler = async (): Promise<void> => {
   const functionName = 'business_day_update_handler'
