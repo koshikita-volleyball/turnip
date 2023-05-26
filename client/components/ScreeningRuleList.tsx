@@ -1,21 +1,21 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { type Dispatch, type SetStateAction } from 'react'
 import {
-  ScreeningRuleCrossOverStruct,
-  ScreeningRuleGrowthRateStruct,
-  ScreeningRuleStructs,
+  type ScreeningRuleCrossOverStruct,
+  type ScreeningRuleGrowthRateStruct,
+  type ScreeningRuleStructs
 } from '../interface/screening_rule'
 import { Alert, Table } from 'react-bootstrap'
 import {
   Trash,
   ChevronDoubleUp,
-  ChevronDoubleDown,
+  ChevronDoubleDown
 } from 'react-bootstrap-icons'
 import dayjs from '../src/dayjs'
 
-export default function ScreeningRuleList(props: {
+export default function ScreeningRuleList (props: {
   rules: ScreeningRuleStructs[]
   setRules: Dispatch<SetStateAction<ScreeningRuleStructs[]>>
-}) {
+}): React.JSX.Element {
   const { rules, setRules } = props
 
   if (rules.length === 0) {

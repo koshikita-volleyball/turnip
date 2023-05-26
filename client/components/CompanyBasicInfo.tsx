@@ -1,11 +1,11 @@
 import React from 'react'
-import ListedInfoStruct from '../interface/listed_info'
+import type ListedInfoStruct from '../interface/listed_info'
 import { Alert, Table } from 'react-bootstrap'
 
 const title = <h2 className="mt-5">🏠 基本情報</h2>
 
-export default function CompanyBasicInfo(props: { info: ListedInfoStruct }) {
-  if (!props.info) {
+export default function CompanyBasicInfo (props: { info: ListedInfoStruct }): React.JSX.Element {
+  if (props.info === null) {
     return (
       <>
         {title}

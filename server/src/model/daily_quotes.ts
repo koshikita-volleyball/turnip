@@ -1,11 +1,11 @@
 import { unmarshall } from '@aws-sdk/util-dynamodb'
-import PricesDailyQuotesStruct from '../interface/jquants/prices_daily_quotes'
+import type PricesDailyQuotesStruct from '../interface/jquants/prices_daily_quotes'
 import GetProcessEnv from '../common/process_env'
 import AWS from 'aws-sdk'
-import { ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
+import { type ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
 import { getDefaultPeriod } from '../common/dayjs'
 
-type GetDailyQuotesProps = {
+interface GetDailyQuotesProps {
   code?: string
   date?: string
   from?: string
@@ -15,48 +15,48 @@ type GetDailyQuotesProps = {
 export const getDailyQuotes = async ({
   code,
   from,
-  to,
+  to
 }: GetDailyQuotesProps): Promise<PricesDailyQuotesStruct[]> => {
-  if (code) {
-    return _getDailyQuotesByStock(code, from, to)
+  if (code !== undefined) {
+    return await _getDailyQuotesByStock(code, from, to)
   }
   // if (date) {
   //   return _getDailyQuotesByDate(date)
   // }
-  throw new Error('Missing required parameter: code or date')
+  throw new Error('Missing required parameter: code or date.')
 }
 
 const _getDailyQuotesByStock = async (
   code: string,
   from?: string,
-  to?: string,
+  to?: string
 ): Promise<PricesDailyQuotesStruct[]> => {
-  const key_condition_expressions = ['Code = :Code']
-  const expression_attribute_values: ExpressionAttributeValueMap = {
+  const keyConditionExpressions = ['Code = :Code']
+  const expressionAttributeValues: ExpressionAttributeValueMap = {
     ':Code': {
-      S: code,
-    },
+      S: code
+    }
   }
 
   const { from: defaultFrom, to: defaultTo } = getDefaultPeriod()
-  key_condition_expressions.push('#Date BETWEEN :From AND :To')
-  expression_attribute_values[':From'] = {
-    S: from ?? defaultFrom,
+  keyConditionExpressions.push('#Date BETWEEN :From AND :To')
+  expressionAttributeValues[':From'] = {
+    S: from ?? defaultFrom
   }
-  expression_attribute_values[':To'] = {
-    S: to ?? defaultTo,
+  expressionAttributeValues[':To'] = {
+    S: to ?? defaultTo
   }
   const ddb = new AWS.DynamoDB()
   const params = {
     TableName: GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
-    KeyConditionExpression: key_condition_expressions.join(' AND '),
-    ExpressionAttributeValues: expression_attribute_values,
+    KeyConditionExpression: keyConditionExpressions.join(' AND '),
+    ExpressionAttributeValues: expressionAttributeValues,
     ExpressionAttributeNames: {
-      '#Date': 'Date',
-    },
+      '#Date': 'Date'
+    }
   }
   const result = await ddb.query(params).promise()
-  if (!result.Items) {
+  if (result.Items == null) {
     return []
   }
   return result.Items.map(item => unmarshall(item) as PricesDailyQuotesStruct)

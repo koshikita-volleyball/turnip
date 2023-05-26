@@ -3,48 +3,48 @@ import Layout from '../components/Layout'
 import useSWR from 'swr'
 import setting from '../setting'
 import { Alert, Button, Spinner, Table } from 'react-bootstrap'
-import ListedInfoStruct from '../interface/listed_info'
+import type ListedInfoStruct from '../interface/listed_info'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import FilteringBlock from '../components/FilteringBlock'
-import PaginationStruct from '../interface/pagination'
+import type PaginationStruct from '../interface/pagination'
 
-const fetcher = (url: string) =>
-  fetch(url).then((r) => (r.ok ? r.json() : null))
+const fetcher = async (url: string): Promise<any> =>
+  await fetch(url).then(async (r) => (r.ok ? await r.json() : null))
 
-const make_params = ({
+const makeParams = ({
   page,
-  company_name,
-  market_code,
-  sector_17_code,
-  sector_33_code,
+  companyName,
+  marketCode,
+  sector17Code,
+  sector33Code
 }: {
   page: number
-  company_name: string
-  market_code: string
-  sector_17_code: string
-  sector_33_code: string
-}) =>
+  companyName: string
+  marketCode: string
+  sector17Code: string
+  sector33Code: string
+}): string =>
   `?page=${page}` +
-  `${company_name !== '' ? `&company_name=${company_name}` : ''}` +
-  `${market_code !== '' ? `&market_codes=${market_code}` : ''}` +
-  `${sector_17_code !== '' ? `&sector_17_codes=${sector_17_code}` : ''}` +
-  `${sector_33_code !== '' ? `&sector_33_codes=${sector_33_code}` : ''}`
+  `${companyName !== '' ? `&company_name=${companyName}` : ''}` +
+  `${marketCode !== '' ? `&market_codes=${marketCode}` : ''}` +
+  `${sector17Code !== '' ? `&sector_17_codes=${sector17Code}` : ''}` +
+  `${sector33Code !== '' ? `&sector_33_codes=${sector33Code}` : ''}`
 
-export default function AboutPage() {
+export default function AboutPage (): React.JSX.Element {
   const [firstLock, setFirstLock] = useState(false)
   const [page, setPage] = useState(1)
   const [useFiltering, setUseFiltering] = useState(true)
-  const [company_name, setCompanyName] = useState('')
-  const [market_code, setMarketCode] = useState<string>('')
-  const [sector_17_code, setSector17Code] = useState<string>('')
-  const [sector_33_code, setSector33Code] = useState<string>('')
+  const [companyName, setCompanyName] = useState('')
+  const [marketCode, setMarketCode] = useState<string>('')
+  const [sector17Code, setSector17Code] = useState<string>('')
+  const [sector33Code, setSector33Code] = useState<string>('')
 
   const router = useRouter()
 
   const {
-    data: data,
-    error,
+    data,
+    error
   }: {
     data: {
       data: ListedInfoStruct[]
@@ -53,69 +53,74 @@ export default function AboutPage() {
     error: any
   } = useSWR(
     `${setting.apiPath}/api/listed_info` +
-      make_params({
+      makeParams({
         page,
-        company_name,
-        market_code,
-        sector_17_code,
-        sector_33_code,
+        companyName,
+        marketCode,
+        sector17Code,
+        sector33Code
       }),
-    fetcher,
+    fetcher
   )
 
   useSWR(
     `${setting.apiPath}/api/listed_info` +
-      make_params({
+      makeParams({
         page: page + 1,
-        company_name,
-        market_code,
-        sector_17_code,
-        sector_33_code,
+        companyName,
+        marketCode,
+        sector17Code,
+        sector33Code
       }),
-    fetcher,
+    fetcher
   )
 
   useEffect(() => {
-    const page = router.query.page
-    if (page) setPage(parseInt(page as string))
-    const company_name = router.query.company_name
-    if (company_name) setCompanyName(company_name as string)
-    const market_code = router.query.market_codes
-    if (market_code) setMarketCode(market_code as string)
-    const sector_17_code = router.query.sector_17_codes
-    if (sector_17_code) setSector17Code(sector_17_code as string)
-    const sector_33_code = router.query.sector_33_codes
-    if (sector_33_code) setSector33Code(sector_33_code as string)
+    const _page = router.query.page
+    const page = (typeof _page === 'string' ? _page : _page?.join('')) ?? null
+    if (page !== null) setPage(parseInt(page))
+    const companyName = router.query.company_name ?? null
+    if (companyName !== null) setCompanyName(companyName as string)
+    const marketCode = router.query.market_codes ?? null
+    if (marketCode !== null) setMarketCode(marketCode as string)
+    const sector17Code = router.query.sector_17_codes ?? null
+    if (sector17Code !== null) setSector17Code(sector17Code as string)
+    const sector33Code = router.query.sector_33_codes ?? null
+    if (sector33Code !== null) setSector33Code(sector33Code as string)
     setFirstLock(true)
   }, [
     router.query.company_name,
     router.query.market_codes,
     router.query.page,
     router.query.sector_17_codes,
-    router.query.sector_33_codes,
+    router.query.sector_33_codes
   ])
 
   useEffect(() => {
     if (!firstLock) return
-    const query = {}
-    if (page !== 1) query['page'] = page
-    if (company_name !== '') query['company_name'] = company_name
-    if (market_code !== '') query['market_codes'] = market_code
-    if (sector_17_code !== '') query['sector_17_codes'] = sector_17_code
-    if (sector_33_code !== '') query['sector_33_codes'] = sector_33_code
-    router.push({
-      pathname: '/listed-info',
-      query,
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, company_name, market_code, sector_17_code, sector_33_code])
+    router.replace(
+      '/listed-info' +
+        makeParams({
+          page,
+          companyName,
+          marketCode,
+          sector17Code,
+          sector33Code
+        })
+    )
+      .then(() => {})
+      .catch(() => {})
+  }, [page, companyName, marketCode, sector17Code, sector33Code])
 
   return (
     <Layout>
       <div id="ListedInfo">
-        {error ? (
-          <Alert variant="danger">Failed to load</Alert>
-        ) : !data ? (
+        {error !== undefined
+          ? (
+          <Alert variant="danger">Failed to load...</Alert>
+            )
+          : data === undefined
+            ? (
           <div className="mt-3 d-flex justify-content-between">
             <Spinner animation="grow" variant="primary" />
             <Spinner animation="grow" variant="secondary" />
@@ -126,37 +131,38 @@ export default function AboutPage() {
             <Spinner animation="grow" variant="light" />
             <Spinner animation="grow" variant="dark" />
           </div>
-        ) : (
+              )
+            : (
           <>
             <FilteringBlock
               useFiltering={useFiltering}
               setUseFiltering={setUseFiltering}
-              company_name={company_name}
+              companyName={companyName}
               setCompanyName={setCompanyName}
-              market_code={market_code}
+              marketCode={marketCode}
               setMarketCode={setMarketCode}
-              sector_17_code={sector_17_code}
+              sector17Code={sector17Code}
               setSector17Code={setSector17Code}
-              sector_33_code={sector_33_code}
+              sector33Code={sector33Code}
               setSector33Code={setSector33Code}
-              afterChange={() => setPage(1)}
+              afterChange={() => { setPage(1) }}
             />
             <hr />
             <div className="d-flex justify-content-between align-items-center mt-3">
               <Button
                 variant="primary"
-                onClick={() => setPage(page - 1)}
-                disabled={data.pagination.hasPrev === false}
+                onClick={() => { setPage(page - 1) }}
+                disabled={!data.pagination.hasPrev}
               >
                 前へ
               </Button>
               <Alert variant="info" className="text-center mx-1 my-0 px-3 py-1">
-                Page {page} / {data.pagination?.totalPages || 'xxx'}
+                Page {page} / {data.pagination?.totalPages ?? 'xxx'}
               </Alert>
               <Button
                 variant="primary"
-                onClick={() => setPage(page + 1)}
-                disabled={data.pagination.hasNext === false}
+                onClick={() => { setPage(page + 1) }}
+                disabled={!data.pagination.hasNext}
               >
                 次へ
               </Button>
@@ -188,7 +194,7 @@ export default function AboutPage() {
               </tbody>
             </Table>
           </>
-        )}
+              )}
       </div>
     </Layout>
   )

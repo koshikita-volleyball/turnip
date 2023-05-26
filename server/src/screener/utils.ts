@@ -1,6 +1,6 @@
-import { OHLC } from '../interface/jquants/indicator'
-import { TimeSeriesLineType, TimeSeriesPoint } from '../interface/jquants/line'
-import PricesDailyQuotesStruct from '../interface/jquants/prices_daily_quotes'
+import { type OHLC } from '../interface/jquants/indicator'
+import { type TimeSeriesLineType, type TimeSeriesPoint } from '../interface/jquants/line'
+import type PricesDailyQuotesStruct from '../interface/jquants/prices_daily_quotes'
 import { getDailyQuotes } from '../model/daily_quotes'
 import { getBusinessDaysFromS3 } from '../model/jpx_business_day'
 
@@ -14,7 +14,7 @@ export const isBusinessDay = async (date: string): Promise<boolean> => {
 // 銘柄毎の時系列グラフ
 export const getStockTimeSeries = async (
   code: string,
-  type: TimeSeriesLineType,
+  type: TimeSeriesLineType
 ): Promise<TimeSeriesPoint[]> => {
   const data = await getDailyQuotes({ code })
   const closes = data.map(d => ({ date: d.Date, value: d.Close }))

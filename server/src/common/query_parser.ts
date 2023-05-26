@@ -1,36 +1,37 @@
-import { APIGatewayEvent } from 'aws-lambda'
-import { CrossOverIndicator, GrowthRateIndicator, Indicator } from '../interface/jquants/indicator'
+import { type APIGatewayEvent } from 'aws-lambda'
+import { type CrossOverIndicator, type GrowthRateIndicator, type Indicator } from '../interface/jquants/indicator'
 import dayjs from '../common/dayjs'
 import { getBusinessDays } from '../screener/utils'
 import { BadRequestError } from '../interface/turnip/error'
+import { type TimeSeriesLineType } from '../interface/jquants/line'
 
-type StockCode = {
+interface StockCode {
   code?: string
 }
 
-type StockCommonFilter = {
+interface StockCommonFilter {
   codes?: string[]
   sector_17_codes?: string[]
   sector_33_codes?: string[]
   market_codes?: string[]
 }
 
-type Date = {
+interface Date {
   date?: string
 }
 
-type Period = {
+interface Period {
   from?: string
   to?: string
 }
 
-type PaginationParams = {
+interface PaginationParams {
   page: number
 }
 
-export const check_required = <T>(name: string, value: T | undefined) => {
+export const checkRequired = <T>(name: string, value: T | undefined): T => {
   if (value === undefined || value === null) {
-    throw new BadRequestError(`Missing required parameter: ${name}`)
+    throw new BadRequestError(`Missing required parameter: ${name}.`)
   }
   return value
 }
@@ -44,27 +45,27 @@ export const getStockCommonFilterParams = (event: APIGatewayEvent): StockCommonF
   codes: _parseList(event.queryStringParameters?.codes),
   sector_17_codes: _parseList(event.queryStringParameters?.sector_17_codes),
   sector_33_codes: _parseList(event.queryStringParameters?.sector_33_codes),
-  market_codes: _parseList(event.queryStringParameters?.market_codes),
+  market_codes: _parseList(event.queryStringParameters?.market_codes)
 })
 
 export const getDateParams = (event: APIGatewayEvent): Date => ({
-  date: event.queryStringParameters?.date,
+  date: event.queryStringParameters?.date
 })
 
 export const getPeriodParams = (event: APIGatewayEvent): Period => ({
   from: event.queryStringParameters?.from,
-  to: event.queryStringParameters?.to,
+  to: event.queryStringParameters?.to
 })
 
 export const getPaginationParams = (event: APIGatewayEvent): PaginationParams => ({
-  page: parseInt(event.queryStringParameters?.page || '1'),
+  page: parseInt(event.queryStringParameters?.page ?? '1')
 })
 
 export const getIndicatorParams = async (event: APIGatewayEvent): Promise<Indicator[]> => {
   try {
     const rules = event.queryStringParameters?.rules
-    if (!rules) return []
-    return Promise.all((JSON.parse(decodeURI(rules)) as Indicator[]).map(_parseIndicator))
+    if (rules === undefined) return []
+    return await Promise.all((JSON.parse(decodeURI(rules)) as Indicator[]).map(_parseIndicator))
   } catch (e) {
     console.error(e)
   }
@@ -79,15 +80,15 @@ const _parseIndicator = async (indicator: Indicator): Promise<Indicator> => {
   } else if (indicator.type === 'cross_over') {
     return _parseCrossOverIndicator(indicator, now)
   }
-  throw new Error('Unknown indicator type')
+  throw new Error('Unknown indicator type.')
 }
 
 const _parseGrowthRateIndicator = (
   indicator: GrowthRateIndicator,
-  businessDays: string[],
+  businessDays: string[]
 ): GrowthRateIndicator => {
-  if (!indicator.threshold) {
-    throw new Error('`threshold` is required for growth_rate indicator')
+  if (indicator.threshold === undefined) {
+    throw new Error('`threshold` is required for growth_rate indicator.')
   }
   return {
     ...indicator,
@@ -95,13 +96,20 @@ const _parseGrowthRateIndicator = (
     up: _default(indicator.up, true),
     before: _default(indicator.before, businessDays[businessDays.length - 2]),
     after: _default(indicator.after, businessDays[businessDays.length - 1]),
-    positive: _default(indicator.positive, true),
+    positive: _default(indicator.positive, true)
   }
 }
 
-const _parseCrossOverIndicator = (indicator: CrossOverIndicator, now: dayjs.Dayjs) => {
-  if (!indicator.from) {
-    throw new Error('`from` is required for cross_over indicator')
+const _parseCrossOverIndicator = (indicator: CrossOverIndicator, now: dayjs.Dayjs): {
+  line1: TimeSeriesLineType
+  line2: TimeSeriesLineType
+  from: string
+  to: string
+  positive: boolean
+  type: 'cross_over'
+} => {
+  if (indicator.from === undefined) {
+    throw new Error('`from` is required for cross_over indicator.')
   }
   return {
     ...indicator,
@@ -109,7 +117,7 @@ const _parseCrossOverIndicator = (indicator: CrossOverIndicator, now: dayjs.Dayj
     line2: _default(indicator.line2, 'ma_25'),
     from: indicator.from,
     to: _default(indicator.to, now.format('YYYY-MM-DD')),
-    positive: _default(indicator.positive, true),
+    positive: _default(indicator.positive, true)
   }
 }
 
@@ -117,6 +125,6 @@ const _default = <T>(val: T | undefined, def: T): T => {
   return val !== undefined ? val : def
 }
 const _parseList = (str: string | undefined): string[] | undefined => {
-  if (!str) return undefined
+  if (str === undefined) return undefined
   return str.split(',')
 }

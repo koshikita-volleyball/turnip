@@ -5,7 +5,7 @@ type OHLC = 'open' | 'high' | 'low' | 'close'
 type MovingAverageType = 'close' | 'ma_25' | 'ma_50'
 
 // 基底クラス
-type ScreeningRuleStruct = {
+interface ScreeningRuleStruct {
   type: ScreeningRuleType
   positive: boolean
   collapsed: boolean
@@ -31,9 +31,9 @@ type ScreeningRuleStructs =
   | ScreeningRuleCrossOverStruct
 
 export type {
-  ScreeningRuleStructs as ScreeningRuleStructs,
-  ScreeningRuleGrowthRateStruct as ScreeningRuleGrowthRateStruct,
-  ScreeningRuleCrossOverStruct as ScreeningRuleCrossOverStruct,
+  ScreeningRuleStructs,
+  ScreeningRuleGrowthRateStruct,
+  ScreeningRuleCrossOverStruct,
   OHLC,
-  MovingAverageType,
+  MovingAverageType
 }

@@ -1,9 +1,9 @@
-import { TimeSeriesLineType } from './line'
+import { type TimeSeriesLineType } from './line'
 
 type IndicatorType = 'growth_rate' | 'cross_over'
 export type OHLC = 'open' | 'high' | 'low' | 'close'
 
-type CommonIndicator = {
+interface CommonIndicator {
   type: IndicatorType
   positive: boolean
 }
@@ -11,7 +11,7 @@ type CommonIndicator = {
 export type GrowthRateIndicator = CommonIndicator & {
   type: 'growth_rate'
   threshold: number
-  up?: boolean
+  up: boolean
   ohlc: OHLC
   before: string
   after: string

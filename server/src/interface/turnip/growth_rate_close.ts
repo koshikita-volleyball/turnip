@@ -1,6 +1,6 @@
-import { DiffPricesDailyQuotesStruct } from './utils'
+import { type DiffPricesDailyQuotesStruct } from './utils'
 
-type GrowthRateClose = {
+interface GrowthRateClose {
   code: string
   growth_rate: number
   daily_quotes: DiffPricesDailyQuotesStruct

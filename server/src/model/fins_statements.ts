@@ -1,11 +1,11 @@
 import { unmarshall } from '@aws-sdk/util-dynamodb'
-import FinsStatementsStruct from '../interface/jquants/fins_statements'
+import type FinsStatementsStruct from '../interface/jquants/fins_statements'
 import GetProcessEnv from '../common/process_env'
 import AWS from 'aws-sdk'
-import { ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
+import { type ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
 import { getDefaultPeriod } from '../common/dayjs'
 
-type GetFinsStatementsProps = {
+interface GetFinsStatementsProps {
   code?: string
   date?: string
   from?: string
@@ -15,9 +15,9 @@ type GetFinsStatementsProps = {
 export const getFinsStatements = async ({
   code,
   from,
-  to,
+  to
 }: GetFinsStatementsProps): Promise<FinsStatementsStruct[]> => {
-  if (code) {
+  if (code !== undefined) {
     return await _getFinsStatementsByStock(code, from, to)
   }
   // TODO: セカンダリインデックスを使用すれば実現できるかも
@@ -30,31 +30,31 @@ export const getFinsStatements = async ({
 const _getFinsStatementsByStock = async (
   code: string,
   from?: string,
-  to?: string,
+  to?: string
 ): Promise<FinsStatementsStruct[]> => {
-  const key_condition_expressions = ['LocalCode = :Code']
-  const expression_attribute_values: ExpressionAttributeValueMap = {
+  const keyConditionExpressions = ['LocalCode = :Code']
+  const expressionAttributeValues: ExpressionAttributeValueMap = {
     ':Code': {
-      S: code,
-    },
+      S: code
+    }
   }
 
   const { from: defaultFrom, to: defaultTo } = getDefaultPeriod()
-  key_condition_expressions.push('DisclosedDate BETWEEN :From AND :To')
-  expression_attribute_values[':From'] = {
-    S: from ?? defaultFrom,
+  keyConditionExpressions.push('DisclosedDate BETWEEN :From AND :To')
+  expressionAttributeValues[':From'] = {
+    S: from ?? defaultFrom
   }
-  expression_attribute_values[':To'] = {
-    S: to ?? defaultTo,
+  expressionAttributeValues[':To'] = {
+    S: to ?? defaultTo
   }
   const ddb = new AWS.DynamoDB()
   const params = {
     TableName: GetProcessEnv('FINS_STATEMENTS_DYNAMODB_TABLE_NAME'),
-    KeyConditionExpression: key_condition_expressions.join(' AND '),
-    ExpressionAttributeValues: expression_attribute_values,
+    KeyConditionExpression: keyConditionExpressions.join(' AND '),
+    ExpressionAttributeValues: expressionAttributeValues
   }
   const result = await ddb.query(params).promise()
-  if (!result.Items) {
+  if (result.Items == null) {
     return []
   }
   return result.Items.map(item => unmarshall(item) as FinsStatementsStruct)

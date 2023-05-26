@@ -2,29 +2,29 @@ import React, { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import setting from '../setting'
 import useSWR from 'swr'
-import ListedInfoStruct from '../interface/listed_info'
+import type ListedInfoStruct from '../interface/listed_info'
 import { Alert, Spinner } from 'react-bootstrap'
 import CompanyPriceChart from '../components/CompanyPriceChart'
-import PricesDailyQuotesStruct from '../interface/prices_daily_quotes'
-import FinsStatementsStruct from '../interface/fins_statements'
+import type PricesDailyQuotesStruct from '../interface/prices_daily_quotes'
+import type FinsStatementsStruct from '../interface/fins_statements'
 import CompanyStatementsCard from '../components/CompanyStatementsCard'
 import CompanyBasicInfo from '../components/CompanyBasicInfo'
 
-const fetcher = (url: string) =>
-  fetch(url).then((r) => {
+const fetcher = async (url: string): Promise<any> =>
+  await fetch(url).then(async (r) => {
     if (r.ok) {
-      return r.json()
+      return await r.json()
     } else {
-      throw null
+      return null
     }
   })
 
-export default function Company() {
+export default function Company (): React.JSX.Element {
   const [code, setCode] = useState<string>('')
 
   const {
     data: info,
-    error: info_error,
+    error: infoError
   }: {
     data: ListedInfoStruct
     error: any
@@ -32,7 +32,7 @@ export default function Company() {
 
   const {
     data: prices,
-    error: prices_error,
+    error: pricesError
   }: {
     data: PricesDailyQuotesStruct[]
     error: any
@@ -40,7 +40,7 @@ export default function Company() {
 
   const {
     data: statements,
-    error: statements_error,
+    error: statementsError
   }: {
     data: FinsStatementsStruct[]
     error: any
@@ -49,7 +49,7 @@ export default function Company() {
   useEffect(() => {
     const url = new URL(window.location.href)
     const code = url.searchParams.get('code')
-    if (code) {
+    if (code !== null) {
       setCode(code)
     }
   }, [])
@@ -60,38 +60,50 @@ export default function Company() {
         <div>
           <h1>🌟 銘柄情報詳細</h1>
           {/* 銘柄基本情報 */}
-          {info_error ? (
+          {infoError !== undefined
+            ? (
             <Alert variant="danger">Failed to load...</Alert>
-          ) : info ? (
+              )
+            : info !== undefined
+              ? (
             <CompanyBasicInfo info={info} />
-          ) : (
+                )
+              : (
             <Alert variant="secondary" className="d-flex align-items-center">
               <Spinner animation="grow" variant="primary" className="me-3" />
               基本情報を取得中...
             </Alert>
-          )}
+                )}
           {/* 株価情報 */}
-          {prices_error ? (
+          {pricesError !== undefined
+            ? (
             <Alert variant="danger">Failed to load...</Alert>
-          ) : prices ? (
+              )
+            : prices !== undefined
+              ? (
             <CompanyPriceChart prices={prices} />
-          ) : (
+                )
+              : (
             <Alert variant="secondary" className="d-flex align-items-center">
               <Spinner animation="grow" variant="primary" className="me-3" />
               株価データを取得中...
             </Alert>
-          )}
+                )}
           {/* 財務情報 */}
-          {statements_error ? (
+          {statementsError !== undefined
+            ? (
             <Alert variant="danger">Failed to load...</Alert>
-          ) : statements ? (
+              )
+            : statements !== undefined
+              ? (
             <CompanyStatementsCard statements={statements} />
-          ) : (
+                )
+              : (
             <Alert variant="secondary" className="d-flex align-items-center">
               <Spinner animation="grow" variant="primary" className="me-3" />
               財務データを取得中...
             </Alert>
-          )}
+                )}
         </div>
       </div>
     </Layout>

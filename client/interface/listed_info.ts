@@ -1,4 +1,4 @@
-type ListedInfoStruct = {
+interface ListedInfoStruct {
   Date: Date
   Code: string
   CompanyName: string

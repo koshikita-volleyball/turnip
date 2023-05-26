@@ -1,9 +1,9 @@
-import React, { ReactNode } from 'react'
+import React, { type ReactNode } from 'react'
 import Head from 'next/head'
 import setting from '../setting'
 import Menu from './Menu'
 
-type Props = {
+interface Props {
   children?: ReactNode
   title?: string
   menu?: boolean
@@ -14,8 +14,8 @@ const Layout = ({
   children,
   title = setting.title,
   menu = true,
-  footer = true,
-}: Props) => (
+  footer = true
+}: Props): React.JSX.Element => (
   <div>
     <Head>
       <title>{title}</title>
@@ -28,14 +28,16 @@ const Layout = ({
       />
     </Head>
     <div id="Wrapper">
-      {menu ? (
+      {menu
+        ? (
         <>
           <main>{children}</main>
           <Menu />
         </>
-      ) : (
-        children
-      )}
+          )
+        : (
+            children
+          )}
     </div>
     <div id="Modal"></div>
     {footer && (

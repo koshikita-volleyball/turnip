@@ -1,4 +1,4 @@
-import { Checker } from './screener'
+import { type Checker } from './screener'
 import { getOHLC } from './utils'
 
 const growthRate: Checker = ({ indicator, prices }): boolean => {
@@ -7,7 +7,7 @@ const growthRate: Checker = ({ indicator, prices }): boolean => {
   }
   const beforePrice = prices.find(d => d.Date === indicator.before)
   const afterPrice = prices.find(d => d.Date === indicator.after)
-  if (!beforePrice || !afterPrice) {
+  if ((beforePrice == null) || (afterPrice == null)) {
     return false
   }
   const beforeVal = getOHLC(beforePrice, 'close') // FIXME:

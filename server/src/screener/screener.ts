@@ -1,11 +1,11 @@
-import { Indicator } from '../interface/jquants/indicator'
-import { Stock } from '../interface/turnip/stock'
+import { type Indicator } from '../interface/jquants/indicator'
+import { type Stock } from '../interface/turnip/stock'
 import growthRate from './growth_rate'
 import crossOver from './cross_over'
-import PricesDailyQuotesStruct from '../interface/jquants/prices_daily_quotes'
+import type PricesDailyQuotesStruct from '../interface/jquants/prices_daily_quotes'
 import { getDailyQuotes } from '../model/daily_quotes'
 
-type CheckerProps = {
+interface CheckerProps {
   indicator: Indicator
   stock: Stock
   prices: PricesDailyQuotesStruct[]
@@ -14,7 +14,7 @@ type CheckerProps = {
 export type Checker = (props: CheckerProps) => boolean
 
 const screener = async (stocks: Stock[], indicators: Indicator[]): Promise<Stock[]> => {
-  const results = await Promise.all(stocks.map(stock => _checkIndicators(stock, indicators)))
+  const results = await Promise.all(stocks.map(async stock => await _checkIndicators(stock, indicators)))
   return stocks.filter((_, i) => results[i])
 }
 
