@@ -1,7 +1,6 @@
 {
   "name": "turnip",
   "description": "株価予測プログラム！",
-  "version": "1.0.0",
   "author": "koshikita-volleyball",
   "license": "Apache-2.0",
   "repository": {

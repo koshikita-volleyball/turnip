@@ -1,8 +1,6 @@
 {
   "name": "turnip",
-  "version": "1.0.0",
   "description": "株価予測プログラム！",
-  "main": "app.js",
   "repository": "https://github.com/koshikita-volleyball/turnip.git",
   "author": "koshikita-volleyball",
   "license": "Apache-2.0",
