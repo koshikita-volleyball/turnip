@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Lint
-        run: yarn lint:check
+        run: yarn lint
       - name: Test
         run: yarn test
       - name: Vulnerability check
@@ -80,7 +80,7 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Lint
-        run: yarn lint:check
+        run: yarn lint
       - name: Test
         run: yarn test
       - name: Vulnerability check

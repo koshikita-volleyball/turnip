@@ -11,7 +11,7 @@
   "scripts": {
     "compile": "tsc",
     "server": "ts-node server.ts",
-    "lint:check": "eslint .",
+    "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "tsc && mocha tests/unit/"
   },
