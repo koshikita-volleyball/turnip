@@ -127,8 +127,8 @@ export const screenerHandler = async (event: APIGatewayEvent): Promise<APIGatewa
 }
 
 interface RouteMapper {
-  path: string;
-  handler: APIFn;
+  path: string
+  handler: APIFn
 }
 
 const routeMappers: RouteMapper[] = [
@@ -171,7 +171,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       statusCode: 404,
       headers: CORS_HEADERS,
       body: JSON.stringify({
-        message: `path: '${path}' is not found.`
+        message: `path: '${path ?? '<empty>'}' is not found.`
       })
     }
   }
