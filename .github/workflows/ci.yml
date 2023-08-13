@@ -12,7 +12,7 @@ on:
 
 jobs:
   lambda-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     defaults:
       run:
         working-directory: ./server/src/
@@ -43,7 +43,7 @@ jobs:
       # - name: Deprication check
       #   run: yarn outdated
   nextjs-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     defaults:
       run:
         working-directory: ./client/

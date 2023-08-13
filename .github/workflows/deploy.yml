@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   lambda-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     defaults:
       run:
         working-directory: ./server/src/
@@ -41,7 +41,7 @@ jobs:
       # - name: Deprication check
       #   run: yarn outdated
   lambda-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     defaults:
       run:
         working-directory: ./server/
@@ -68,7 +68,7 @@ jobs:
       - name: Deploy Lambda
         run: sam deploy --stack-name ${{ env.project-name }}-production
   nextjs-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     defaults:
       run:
         working-directory: ./client/
@@ -86,7 +86,7 @@ jobs:
       - name: Vulnerability check
         run: yarn audit
   nextjs-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     defaults:
       run:
         working-directory: ./client/
