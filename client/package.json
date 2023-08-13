@@ -20,7 +20,7 @@
     "test": "jest",
     "start": "next start",
     "type-check": "tsc",
-    "lint:check": "eslint .",
+    "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
