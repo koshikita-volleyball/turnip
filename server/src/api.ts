@@ -20,69 +20,47 @@ import { NotFoundError } from './interface/turnip/error'
 import { api, type APIFn } from './common/handler'
 import { getBusinessDays } from './analysis/jpx_business_day'
 
-export const handler: APIGatewayProxyHandler = async event => {
-  const fn: APIFn = () => {
-    return 'Hello World'
-  }
-  return await api(fn, event)
+const helloHandler: APIFn = () => {
+  return 'Hello World'
 }
 
-export const lambdaHandler: APIGatewayProxyHandler = async event => {
-  const fn: APIFn = () => {
-    return 'Hello World'
-  }
-  return await api(fn, event)
+const businessDayHandler: APIFn = async () => {
+  const dates = await getBusinessDays()
+  return JSON.stringify(dates)
 }
 
-export const businessDayHandler: APIGatewayProxyHandler = async event => {
-  const fn: APIFn = async () => {
-    const dates = await getBusinessDays()
-    return JSON.stringify(dates)
+const infoHandler: APIFn = async event => {
+  const { code: _code } = getStockCodedParams(event)
+  const code = checkRequired('code', _code)
+  const stock = await getStockByCode(code)
+  if (stock == null) {
+    throw new NotFoundError(`code: ${code} is not found.`)
   }
-  return await api(fn, event)
+  return JSON.stringify(stock)
 }
 
-export const infoHandler: APIGatewayProxyHandler = async event => {
-  const fn: APIFn = async event => {
-    const { code: _code } = getStockCodedParams(event)
-    const code = checkRequired('code', _code)
-    const stock = await getStockByCode(code)
-    if (stock == null) {
-      throw new NotFoundError(`code: ${code} is not found.`)
-    }
-    return JSON.stringify(stock)
-  }
-  return await api(fn, event)
+const listedInfoHandler: APIFn = async event => {
+  // get params
+  const { page } = getPaginationParams(event)
+  const stockCommonFilterParams = getStockCommonFilterParams(event)
+  const companyName = event.queryStringParameters?.company_name
+
+  // get stocks from dynamodb
+  const stocks = await getStocks({ ...stockCommonFilterParams, company_name: companyName })
+
+  return JSON.stringify(paginate<Stock>(stocks, page))
 }
 
-export const listedInfoHandler: APIGatewayProxyHandler = async event => {
-  const fn: APIFn = async event => {
-    // get params
-    const { page } = getPaginationParams(event)
-    const stockCommonFilterParams = getStockCommonFilterParams(event)
-    const companyName = event.queryStringParameters?.company_name
+const pricesDailyQuotesHandler: APIFn = async event => {
+  const code = event.queryStringParameters?.code
+  const date = event.queryStringParameters?.date
+  const from = event.queryStringParameters?.from
+  const to = event.queryStringParameters?.to
+  checkRequired('code', code)
 
-    // get stocks from dynamodb
-    const stocks = await getStocks({ ...stockCommonFilterParams, company_name: companyName })
+  const dailyQuotes = await getDailyQuotes({ code, date, from, to })
 
-    return JSON.stringify(paginate<Stock>(stocks, page))
-  }
-  return await api(fn, event)
-}
-
-export const pricesDailyQuotesHandler: APIGatewayProxyHandler = async event => {
-  const fn: APIFn = async event => {
-    const code = event.queryStringParameters?.code
-    const date = event.queryStringParameters?.date
-    const from = event.queryStringParameters?.from
-    const to = event.queryStringParameters?.to
-    checkRequired('code', code)
-
-    const dailyQuotes = await getDailyQuotes({ code, date, from, to })
-
-    return JSON.stringify(dailyQuotes)
-  }
-  return await api(fn, event)
+  return JSON.stringify(dailyQuotes)
 }
 
 export const finsStatementsHandler = async (
@@ -146,4 +124,57 @@ export const screenerHandler = async (event: APIGatewayEvent): Promise<APIGatewa
     headers: CORS_HEADERS,
     body: JSON.stringify({ stockCommonFilter, indicatorParams })
   }
+}
+
+interface RouteMapper {
+  path: string;
+  handler: APIFn;
+}
+
+const routeMappers: RouteMapper[] = [
+  {
+    path: 'hello',
+    handler: helloHandler
+  },
+  {
+    path: 'business_day',
+    handler: businessDayHandler
+  },
+  {
+    path: 'info',
+    handler: infoHandler
+  },
+  {
+    path: 'listed_info',
+    handler: listedInfoHandler
+  },
+  {
+    path: 'prices-daily-quotes',
+    handler: pricesDailyQuotesHandler
+  }
+]
+
+export const handler: APIGatewayProxyHandler = async (event) => {
+  if (event.pathParameters == null) {
+    return {
+      statusCode: 400,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        message: 'path is required.'
+      })
+    }
+  }
+  const path = event.pathParameters.proxy
+  const route = routeMappers.find(r => r.path === path)
+  if (route == null) {
+    return {
+      statusCode: 404,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        message: `path: '${path}' is not found.`
+      })
+    }
+  }
+  const fn = route.handler
+  return await api(fn, event)
 }
