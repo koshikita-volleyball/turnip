@@ -81,6 +81,8 @@ jobs:
         run: yarn install
       - name: Lint
         run: yarn lint
+      - name: Type check
+        run: yarn type-check
       - name: Test
         run: yarn test
       - name: Vulnerability check
