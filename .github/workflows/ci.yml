@@ -10,13 +10,12 @@ on:
       - 'common/*'
       - 'hotfix'
 
-env:
-  client-directory: ./client
-  server-directory: ./server
-
 jobs:
   lambda-check:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server/src/
     strategy:
       matrix:
         node-version: [16.x, 18.x, 20.x]
@@ -35,21 +34,19 @@ jobs:
       - run: echo '${{ toJSON(steps.node_modules_cache_id.outputs) }}'
       - if: ${{ steps.node_modules_cache_id.outputs.cache-hit != 'true' }}
         run: yarn install
-        working-directory: ${{ env.server-directory }}/src
       - name: Lint
         run: yarn lint:check
-        working-directory: ${{ env.server-directory }}/src
       - name: Test
         run: yarn test
-        working-directory: ${{ env.server-directory }}/src
       - name: Vulnerability check
         run: yarn audit
-        working-directory: ${{ env.server-directory }}/src
       # - name: Deprication check
       #   run: yarn outdated
-      #   working-directory: ${{ env.server-directory }}/src
   nextjs-check:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client/
     strategy:
       matrix:
         node-version: [16.x, 18.x, 20.x]
@@ -68,16 +65,11 @@ jobs:
       - run: echo '${{ toJSON(steps.node_modules_cache_id.outputs) }}'
       - if: ${{ steps.node_modules_cache_id.outputs.cache-hit != 'true' }}
         run: yarn install
-        working-directory: ${{ env.client-directory }}
       - name: Lint
         run: yarn lint:check
-        working-directory: ${{ env.client-directory }}
       - name: Test
         run: yarn test
-        working-directory: ${{ env.client-directory }}
       - name: Vulnerability check
         run: yarn audit
-        working-directory: ${{ env.client-directory }}
       # - name: Deprication check
       #   run: yarn outdated
-      #   working-directory: ${{ env.client-directory }}

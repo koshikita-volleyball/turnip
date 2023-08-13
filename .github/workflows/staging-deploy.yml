@@ -6,11 +6,13 @@ on:
 
 env:
   project-name: ${{ secrets.PROJECT_NAME }}
-  server-directory: ./server
 
 jobs:
   staging-deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server/
     steps:
       - run: echo ${{ needs.job1.outputs.output1 }} ${{ needs.job1.outputs.output2 }}
       - name: Echo branch name
@@ -25,7 +27,6 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Create dotenv file
         run: echo $'${{ secrets.LAMBDA_DOTENV }}' > ./src/.env
-        working-directory: ${{ env.server-directory }}
       - name: Add Data to dotenv file
         run: |
           branch_name=${GITHUB_REF#refs/heads/}  # refs/heads/を削除
@@ -35,12 +36,9 @@ jobs:
           echo "LISTED_INFO_DYNAMODB_TABLE_NAME=${{ env.project-name }}-staging-$branch_name-listed-info" >> ./src/.env
           echo "PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME=${{ env.project-name }}-staging-$branch_name-prices-daily-quotes" >> ./src/.env
           echo "FINS_STATEMENTS_DYNAMODB_TABLE_NAME=${{ env.project-name }}-staging-$branch_name-fins-statements" >> ./src/.env
-        working-directory: ${{ env.server-directory }}
       - run: sam build --use-container
-        working-directory: ${{ env.server-directory }}
       - name: Deploy Lambda
         run: |
           branch_name=${GITHUB_REF#refs/heads/}  # refs/heads/を削除
           branch_name=${branch_name#staging/}  # staging/を削除
           sam deploy --stack-name ${{ env.project-name }}-staging-$branch_name
-        working-directory: ${{ env.server-directory }}
