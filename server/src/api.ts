@@ -20,6 +20,13 @@ import { NotFoundError } from './interface/turnip/error'
 import { api, type APIFn } from './common/handler'
 import { getBusinessDays } from './analysis/jpx_business_day'
 
+export const handler: APIGatewayProxyHandler = async event => {
+  const fn: APIFn = () => {
+    return 'Hello World'
+  }
+  return await api(fn, event)
+}
+
 export const lambdaHandler: APIGatewayProxyHandler = async event => {
   const fn: APIFn = () => {
     return 'Hello World'
