@@ -128,28 +128,34 @@ export const screenerHandler = async (event: APIGatewayEvent): Promise<APIGatewa
 
 interface RouteMapper {
   path: string
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE'
   handler: APIFn
 }
 
 const routeMappers: RouteMapper[] = [
   {
     path: 'hello',
+    method: 'GET',
     handler: helloHandler
   },
   {
     path: 'business_day',
+    method: 'GET',
     handler: businessDayHandler
   },
   {
     path: 'info',
+    method: 'GET',
     handler: infoHandler
   },
   {
     path: 'listed_info',
+    method: 'GET',
     handler: listedInfoHandler
   },
   {
     path: 'prices-daily-quotes',
+    method: 'GET',
     handler: pricesDailyQuotesHandler
   }
 ]
@@ -165,13 +171,24 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     }
   }
   const path = event.pathParameters.proxy
-  const route = routeMappers.find(r => r.path === path)
-  if (route == null) {
+  const method = event.httpMethod.toUpperCase()
+  const routes = routeMappers.filter(r => r.path === path)
+  if (routes.length === 0) {
     return {
       statusCode: 404,
       headers: CORS_HEADERS,
       body: JSON.stringify({
         message: `path: '${path ?? '<empty>'}' is not found.`
+      })
+    }
+  }
+  const route = routes.find(r => r.method === method)
+  if (route == null) {
+    return {
+      statusCode: 405,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        message: `method: '${method ?? '<empty>'}' is not allowed.`
       })
     }
   }
