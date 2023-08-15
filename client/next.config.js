@@ -16,3 +16,5 @@ module.exports = {
   },
   trailingSlash: true
 }
+
+export default {}
