@@ -148,6 +148,8 @@ jobs:
         run: echo "NEXT_PUBLIC_LAMBDA_API_URL=${{ env.API_GATEWAY_URL }}" >> .env.local
       - name: Cat .env.local
         run: cat .env.local
+      - name: Create .env file
+        run: echo $'${{ secrets.NEXTJS_DOTENV }}' > .env
       - name: Build with Next.js
         run: yarn build
         # env:
