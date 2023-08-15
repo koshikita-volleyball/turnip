@@ -71,6 +71,8 @@ jobs:
         run: yarn type-check
       - name: Test
         run: yarn test
+      - name: Test build
+        run: yarn build
       - name: Vulnerability check
         run: yarn audit
       # - name: Deprication check
