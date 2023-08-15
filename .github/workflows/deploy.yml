@@ -130,7 +130,7 @@ jobs:
         #   NODE_ENV: production
       - name: Generating .env.local
         run: |
-          echo "${{ secrets.NEXTJS_ENV_LOCAL }}" > .env.local
+          echo "${{ secrets.NEXTJS_DOTENV_LOCAL }}" > .env.local
       - name: Check status code of curl response
         env:
           api-gateway-url: ${{ env.API_GATEWAY_URL }}
