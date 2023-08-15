@@ -3,15 +3,20 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      # Check for updates to GitHub Actions every weekday
       interval: "daily"
   - package-ecosystem: "npm"
     directory: "/client/"
     schedule:
-      # Check for updates managed by Composer once a week
       interval: "daily"
   - package-ecosystem: "npm"
     directory: "/server/src/"
     schedule:
-      # Check for updates managed by Composer once a week
+      interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/work/dynamodb-importer-fins-statements/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/work/dynamodb-importer-prices-daily-quotes/"
+    schedule:
       interval: "daily"
