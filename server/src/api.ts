@@ -63,44 +63,16 @@ const pricesDailyQuotesHandler: APIFn = async event => {
   return JSON.stringify(dailyQuotes)
 }
 
-export const finsStatementsHandler = async (
-  event: APIGatewayEvent
-): Promise<APIGatewayProxyResult> => {
-  try {
-    const code = event.queryStringParameters?.code
-    const date = event.queryStringParameters?.date
-    const from = event.queryStringParameters?.from
-    const to = event.queryStringParameters?.to
+const finsStatementsHandler: APIFn = async event => {
+  const code = event.queryStringParameters?.code
+  const date = event.queryStringParameters?.date
+  const from = event.queryStringParameters?.from
+  const to = event.queryStringParameters?.to
+  checkRequired('code', code)
 
-    if (code === undefined) {
-      return {
-        statusCode: 400,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({
-          message: 'code is required.'
-        })
-      }
-    }
+  const finsStatements = await getFinsStatements({ code, date, from, to })
 
-    const finsStatements = await getFinsStatements({ code, date, from, to })
-
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify(finsStatements)
-    }
-  } catch (err) {
-    if (err instanceof Error) {
-      console.error(`[ERROR] ${err.message}`)
-    }
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({
-        message: err
-      })
-    }
-  }
+  return JSON.stringify(finsStatements)
 }
 
 export const slackNotifyHandler = async (): Promise<void> => {
@@ -157,6 +129,11 @@ const routeMappers: RouteMapper[] = [
     path: 'prices-daily-quotes',
     method: 'GET',
     handler: pricesDailyQuotesHandler
+  },
+  {
+    path: 'fins-statements',
+    method: 'GET',
+    handler: finsStatementsHandler
   }
 ]
 
