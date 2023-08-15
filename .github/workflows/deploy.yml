@@ -157,7 +157,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ./dist
+          path: ./client/dist/
   nextjs-deploy:
     environment:
       name: github-pages
