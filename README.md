@@ -82,7 +82,7 @@ sam local start-api
 | AWS_SECRET_ACCESS_KEY | AWSのシークレットアクセスキー |
 | AWS_REGION | リージョン名 |
 | LAMBDA_DOTENV | Lambda関数で使用する`.env`ファイルの内容 |
-| NEXTJS_ENV_LOCAL | Next.jsで使用する`.env.local`ファイルの内容 |
+| NEXTJS_DOTENV_LOCAL | Next.jsで使用する`.env.local`ファイルの内容 |
 | NEXTJS_DOTENV | Next.jsで使用する`.env`ファイルの内容 |
 
 ## ステージング環境の構築と削除
