@@ -28,7 +28,7 @@ export default function Company (): React.JSX.Element {
   }: {
     data: ListedInfoStruct
     error: any
-  } = useSWR(`${setting.apiPath}/api/info?code=${code}`, fetcher)
+  } = useSWR(code != null ? `${setting.apiPath}/api/info?code=${code}` : null, fetcher)
 
   const {
     data: prices,
@@ -36,7 +36,7 @@ export default function Company (): React.JSX.Element {
   }: {
     data: PricesDailyQuotesStruct[]
     error: any
-  } = useSWR(`${setting.apiPath}/api/prices-daily-quotes?code=${code}`, fetcher)
+  } = useSWR(code != null ? `${setting.apiPath}/api/prices-daily-quotes?code=${code}` : null, fetcher)
 
   const {
     data: statements,
@@ -44,7 +44,7 @@ export default function Company (): React.JSX.Element {
   }: {
     data: FinsStatementsStruct[]
     error: any
-  } = useSWR(`${setting.apiPath}/api/fins-statements?code=${code}`, fetcher)
+  } = useSWR(code != null ? `${setting.apiPath}/api/fins-statements?code=${code}` : null, fetcher)
 
   useEffect(() => {
     const url = new URL(window.location.href)
