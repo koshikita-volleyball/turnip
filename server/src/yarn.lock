@@ -7,10 +7,10 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@aws-sdk/util-dynamodb@^3.326.0":
-  version "3.388.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/util-dynamodb/-/util-dynamodb-3.388.0.tgz#d523d7f5c3266ccb6faf1dfde11719ed14b6dd3a"
-  integrity sha512-NFwzcfK06UHvhzyu/XXZucXN/0cvvTsXppxDmWH+w5OROOT4pM2CLd9FGhS5IwLwORtUA8JNyx1PpGe65DkJIg==
+"@aws-sdk/util-dynamodb@^3.391.0":
+  version "3.391.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/util-dynamodb/-/util-dynamodb-3.391.0.tgz#0f29731c5b9492f65bd58a56d77096491e436db7"
+  integrity sha512-cOqoIyWuQlLEhXorcnoq0P8mcN2iM/zyFRxazRyXYw3f6vjuDRGGAYhXHhcdkr+Nlr40pS7Al1559QktCbjb9g==
   dependencies:
     tslib "^2.5.0"
 
