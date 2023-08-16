@@ -1,0 +1,33 @@
+name: work-ci
+
+on:
+  pull_request:
+    branches:
+      - 'work/*'
+
+jobs:
+  work-check:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        work-directory:
+          - ./work/dynamodb-importer-fins-statements
+          - ./work/dynamodb-importer-prices-daily-quotes
+        node-version:
+          - 18.x
+          - 20.x
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install
+        run: yarn install
+      - name: Lint
+        run: yarn lint
+      - name: Test
+        run: yarn test
+      - name: Vulnerability check
+        run: yarn audit
+      # - name: Deprication check
+      #   run: yarn outdated
