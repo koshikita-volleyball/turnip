@@ -18,6 +18,12 @@ module.exports = {
   plugins: [
     'react'
   ],
+  ignorePatterns: [
+    '.next',
+    'node_modules',
+    'build',
+    'dist'
+  ],
   rules: {
   }
 }
