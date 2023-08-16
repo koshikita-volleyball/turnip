@@ -9,7 +9,7 @@ import {
   slackNotifyHandler
 } from './update'
 
-const dailyScheduledFunctions: (() => Promise<string>)[] = [
+const dailyScheduledFunctions: Array<() => Promise<string>> = [
   refreshTokenUpdateHandler,
   idTokenUpdateHandler,
   businessDayUpdateHandler,
@@ -29,7 +29,7 @@ export const dailyScheduled = async (): Promise<void> => {
       if (error instanceof Error) {
         loggerError(functionName, error.message)
       } else {
-        loggerError(functionName, "Unknown error")
+        loggerError(functionName, 'Unknown error')
       }
     }
   }
