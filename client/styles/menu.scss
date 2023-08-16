@@ -31,6 +31,9 @@
     color: whitesmoke;
     margin-top: 1rem;
     text-align: left;
+    &:hover:not(.active) {
+      background-color: rgba(white, 0.2);
+    }
   }
 }
 
