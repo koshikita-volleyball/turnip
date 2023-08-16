@@ -2,11 +2,8 @@
   "api_handler": {
   "prefix": "api_handler",
   "body": [
-      "export const ${1:lambda_handler}: APIGatewayProxyHandler = async (event)=> {",
-      "  const fn: APIFn = async (event) => {",
-      "    // TODO: Implement your logic here!",
-      "  }",
-      "  return api(fn, event)",
+      "const ${1:lambda_handler}: APIFn = async event => {",
+      "  // TODO: Implement your logic here!",
       "}",
       "",
   ],

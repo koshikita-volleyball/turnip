@@ -8,7 +8,6 @@ on:
       - 'server/*'
       - 'client/*'
       - 'common/*'
-      - 'hotfix'
 
 jobs:
   lambda-check:

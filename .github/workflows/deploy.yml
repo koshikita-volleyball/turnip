@@ -60,12 +60,7 @@ jobs:
       - name: Create dotenv file
         run: echo $'${{ secrets.LAMBDA_DOTENV }}' > ./src/.env
       - name: Add Data to dotenv file
-        run: |
-          echo "ENVIRONMENT=production" >> ./src/.env
-          echo "S3_BUCKET_NAME=${{ env.project-name }}-production-s3-bucket" >> ./src/.env
-          echo "LISTED_INFO_DYNAMODB_TABLE_NAME=${{ env.project-name }}-production-listed-info" >> ./src/.env
-          echo "PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME=${{ env.project-name }}-production-prices-daily-quotes" >> ./src/.env
-          echo "FINS_STATEMENTS_DYNAMODB_TABLE_NAME=${{ env.project-name }}-production-fins-statements" >> ./src/.env
+        run: echo "ENVIRONMENT=production" >> ./src/.env
       - run: sam build --use-container
       - name: Deploy Lambda
         run: sam deploy --stack-name ${{ env.project-name }}-production
@@ -98,6 +93,8 @@ jobs:
       - nextjs-check
       - lambda-deploy
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -114,8 +111,6 @@ jobs:
             echo "API Gateway URL is empty"
             exit 1
           fi
-      - name: Checkout
-        uses: actions/checkout@v3
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -130,7 +125,7 @@ jobs:
         #   NODE_ENV: production
       - name: Generating .env.local
         run: |
-          echo "${{ secrets.NEXTJS_ENV_LOCAL }}" > .env.local
+          echo "${{ secrets.NEXTJS_DOTENV_LOCAL }}" > .env.local
       - name: Check status code of curl response
         env:
           api-gateway-url: ${{ env.API_GATEWAY_URL }}
@@ -157,7 +152,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path:  ./dist/
+          path: ./client/dist/
   nextjs-deploy:
     environment:
       name: github-pages

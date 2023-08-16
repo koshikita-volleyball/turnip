@@ -63,44 +63,16 @@ const pricesDailyQuotesHandler: APIFn = async event => {
   return JSON.stringify(dailyQuotes)
 }
 
-export const finsStatementsHandler = async (
-  event: APIGatewayEvent
-): Promise<APIGatewayProxyResult> => {
-  try {
-    const code = event.queryStringParameters?.code
-    const date = event.queryStringParameters?.date
-    const from = event.queryStringParameters?.from
-    const to = event.queryStringParameters?.to
+const finsStatementsHandler: APIFn = async event => {
+  const code = event.queryStringParameters?.code
+  const date = event.queryStringParameters?.date
+  const from = event.queryStringParameters?.from
+  const to = event.queryStringParameters?.to
+  checkRequired('code', code)
 
-    if (code === undefined) {
-      return {
-        statusCode: 400,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({
-          message: 'code is required.'
-        })
-      }
-    }
+  const finsStatements = await getFinsStatements({ code, date, from, to })
 
-    const finsStatements = await getFinsStatements({ code, date, from, to })
-
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify(finsStatements)
-    }
-  } catch (err) {
-    if (err instanceof Error) {
-      console.error(`[ERROR] ${err.message}`)
-    }
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({
-        message: err
-      })
-    }
-  }
+  return JSON.stringify(finsStatements)
 }
 
 export const slackNotifyHandler = async (): Promise<void> => {
@@ -128,29 +100,40 @@ export const screenerHandler = async (event: APIGatewayEvent): Promise<APIGatewa
 
 interface RouteMapper {
   path: string
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE'
   handler: APIFn
 }
 
 const routeMappers: RouteMapper[] = [
   {
     path: 'hello',
+    method: 'GET',
     handler: helloHandler
   },
   {
     path: 'business_day',
+    method: 'GET',
     handler: businessDayHandler
   },
   {
     path: 'info',
+    method: 'GET',
     handler: infoHandler
   },
   {
     path: 'listed_info',
+    method: 'GET',
     handler: listedInfoHandler
   },
   {
     path: 'prices-daily-quotes',
+    method: 'GET',
     handler: pricesDailyQuotesHandler
+  },
+  {
+    path: 'fins-statements',
+    method: 'GET',
+    handler: finsStatementsHandler
   }
 ]
 
@@ -165,13 +148,24 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     }
   }
   const path = event.pathParameters.proxy
-  const route = routeMappers.find(r => r.path === path)
-  if (route == null) {
+  const method = event.httpMethod.toUpperCase()
+  const routes = routeMappers.filter(r => r.path === path)
+  if (routes.length === 0) {
     return {
       statusCode: 404,
       headers: CORS_HEADERS,
       body: JSON.stringify({
         message: `path: '${path ?? '<empty>'}' is not found.`
+      })
+    }
+  }
+  const route = routes.find(r => r.method === method)
+  if (route == null) {
+    return {
+      statusCode: 405,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        message: `method: '${method ?? '<empty>'}' is not allowed.`
       })
     }
   }
