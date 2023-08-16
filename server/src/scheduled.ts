@@ -6,8 +6,7 @@ import {
   businessDayUpdateHandler,
   listedInfoUpdateHandler,
   pricesDailyQuotesUpdateHandler,
-  finsStatementsUpdateHandler,
-  slackNotifyHandler
+  finsStatementsUpdateHandler
 } from './update'
 
 const dailyScheduledFunctions: Array<() => Promise<string>> = [
@@ -16,8 +15,7 @@ const dailyScheduledFunctions: Array<() => Promise<string>> = [
   businessDayUpdateHandler,
   listedInfoUpdateHandler,
   pricesDailyQuotesUpdateHandler,
-  finsStatementsUpdateHandler,
-  slackNotifyHandler
+  finsStatementsUpdateHandler
 ]
 
 export const dailyScheduled = async (): Promise<void> => {
