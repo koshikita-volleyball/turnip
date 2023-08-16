@@ -5,17 +5,14 @@ import { Button } from 'react-bootstrap'
 import { BsGearFill } from 'react-icons/bs'
 import setting from '../setting'
 
-function Menu (): React.JSX.Element {
-  const [currentPage, setCurrentPage] = useState<string | null>(null)
+interface Props {
+  currentPage: string | null
+}
+
+function Menu (props: Props): React.JSX.Element {
+  const { currentPage } = props
+
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
-
-  useEffect(() => {
-    setCurrentPage(window.location.pathname)
-  }, [])
-
-  const PageChanged = (): void => {
-    setCurrentPage(window.location.pathname)
-  }
 
   return (
     <>
@@ -30,7 +27,6 @@ function Menu (): React.JSX.Element {
                   ? 'btn-primary'
                   : ''
               }`}
-              onClick={PageChanged}
             >
               {page.emoji}&nbsp;{page.name}
             </Link>
