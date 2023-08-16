@@ -8,8 +8,7 @@ import type ListedInfoStruct from './interface/jquants/listed_info'
 import dayjs from 'dayjs'
 import type PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
 import type FinsStatementsStruct from './interface/jquants/fins_statements'
-import { loggerInfo, makeCodeBlock } from './common/logger'
-import { LogLevel, WebClient } from '@slack/web-api'
+import { makeCodeBlock } from './common/logger'
 
 export const refreshTokenUpdateHandler = async (): Promise<string> => {
   const refreshToken = await GetRefreshToken()
