@@ -1,6 +1,6 @@
 import { unmarshall } from '@aws-sdk/util-dynamodb'
 import type PricesDailyQuotesStruct from '../interface/jquants/prices_daily_quotes'
-import GetProcessEnv from '../common/process_env'
+import getProcessEnv from '../common/process_env'
 import AWS from 'aws-sdk'
 import { type ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
 import { getDefaultPeriod } from '../common/dayjs'
@@ -49,7 +49,7 @@ const _getDailyQuotesByStock = async (
   }
   const ddb = new AWS.DynamoDB()
   const params = {
-    TableName: GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
+    TableName: getProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'),
     KeyConditionExpression: keyConditionExpressions.join(' AND '),
     ExpressionAttributeValues: expressionAttributeValues,
     ExpressionAttributeNames: {

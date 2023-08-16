@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
 import { type Stock } from '../interface/turnip/stock'
-import GetProcessEnv from '../common/process_env'
+import getProcessEnv from '../common/process_env'
 
 interface GetStocksProps {
   codes?: string[]
@@ -16,7 +16,7 @@ export const getStocks = async (props?: GetStocksProps): Promise<Stock[]> => {
 
   // TODO スキャンではなくセカンダリインデックスを使用する。#267
   const params = {
-    TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME')
+    TableName: getProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME')
   }
   const stocks = (((await ddb.scan(params).promise()).Items) ?? [])
     .map(item => unmarshall(item) as Stock)
@@ -39,7 +39,7 @@ export const getStocks = async (props?: GetStocksProps): Promise<Stock[]> => {
 export const getStockByCode = async (code: string): Promise<Stock | null> => {
   const ddb = new AWS.DynamoDB()
   const params = {
-    TableName: GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
+    TableName: getProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME'),
     Key: {
       Code: {
         S: code

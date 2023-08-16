@@ -1,5 +1,5 @@
 import { baseUri } from './const'
-import GetProcessEnv from './process_env'
+import getProcessEnv from './process_env'
 
 interface RefreshTokenResponseStruct {
   refreshToken: string
@@ -12,8 +12,8 @@ function GetMailAddressAndPassword (): {
   mailaddress: string
   password: string
 } {
-  const mailaddress = GetProcessEnv('JQUANTS_MAILADDRESS')
-  const password = GetProcessEnv('JQUANTS_PASSWORD')
+  const mailaddress = getProcessEnv('JQUANTS_MAILADDRESS')
+  const password = getProcessEnv('JQUANTS_PASSWORD')
   return { mailaddress, password }
 }
 
