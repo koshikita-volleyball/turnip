@@ -27,7 +27,7 @@ function Menu (): React.JSX.Element {
               href={page.path}
               className={`btn ${
                 currentPage === `${setting.basePath}${page.path}`
-                  ? 'btn-primary'
+                  ? 'btn-primary active'
                   : ''
               }`}
               onClick={PageChanged}
