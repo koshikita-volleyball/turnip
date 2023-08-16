@@ -1,6 +1,6 @@
 import { unmarshall } from '@aws-sdk/util-dynamodb'
 import type FinsStatementsStruct from '../interface/jquants/fins_statements'
-import GetProcessEnv from '../common/process_env'
+import getProcessEnv from '../common/process_env'
 import AWS from 'aws-sdk'
 import { type ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb'
 import { getDefaultPeriod } from '../common/dayjs'
@@ -49,7 +49,7 @@ const _getFinsStatementsByStock = async (
   }
   const ddb = new AWS.DynamoDB()
   const params = {
-    TableName: GetProcessEnv('FINS_STATEMENTS_DYNAMODB_TABLE_NAME'),
+    TableName: getProcessEnv('FINS_STATEMENTS_DYNAMODB_TABLE_NAME'),
     KeyConditionExpression: keyConditionExpressions.join(' AND '),
     ExpressionAttributeValues: expressionAttributeValues
   }

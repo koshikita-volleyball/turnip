@@ -1,5 +1,6 @@
 type ProcessEnvKey =
   | 'ENVIRONMENT'
+  | 'AWS_REGION'
   | 'SLACK_API_TOKEN'
   | 'SLACK_CHANNEL_NOTICE'
   | 'SLACK_CHANNEL_PRODUCTION_LOG'
@@ -15,7 +16,7 @@ type ProcessEnvKey =
   | 'PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME'
   | 'FINS_STATEMENTS_DYNAMODB_TABLE_NAME'
 
-function GetProcessEnv (key: ProcessEnvKey): string {
+function getProcessEnv (key: ProcessEnvKey): string {
   const value = process.env[key] ?? ''
   if (value === '') {
     console.error(`[ERROR] ${key} is not defined.`)
@@ -23,4 +24,4 @@ function GetProcessEnv (key: ProcessEnvKey): string {
   return value
 }
 
-export default GetProcessEnv
+export default getProcessEnv
