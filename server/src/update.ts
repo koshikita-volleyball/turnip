@@ -2,7 +2,7 @@
 import { getBusinessDaysFromJQuants, saveBusinessDaysToS3 } from './model/jpx_business_day'
 import GetIdToken, { GetRefreshToken } from './common/get_id_token'
 import AWS from 'aws-sdk'
-import GetProcessEnv from './common/process_env'
+import getProcessEnv from './common/process_env'
 import JQuantsClient from './common/jquants_client'
 import type ListedInfoStruct from './interface/jquants/listed_info'
 import dayjs from 'dayjs'
@@ -13,7 +13,7 @@ import { makeCodeBlock } from './common/logger'
 export const refreshTokenUpdateHandler = async (): Promise<string> => {
   const refreshToken = await GetRefreshToken()
   const s3 = new AWS.S3()
-  const bucket = GetProcessEnv('S3_BUCKET_NAME')
+  const bucket = getProcessEnv('S3_BUCKET_NAME')
   const key = 'refresh_token.txt'
   const params = {
     Bucket: bucket,
@@ -25,7 +25,7 @@ export const refreshTokenUpdateHandler = async (): Promise<string> => {
 }
 
 export const idTokenUpdateHandler = async (): Promise<string> => {
-  const bucket = GetProcessEnv('S3_BUCKET_NAME')
+  const bucket = getProcessEnv('S3_BUCKET_NAME')
   const s3 = new AWS.S3()
   const refreshTokenGetParams = {
     Bucket: bucket,
@@ -56,7 +56,7 @@ export const listedInfoUpdateHandler = async (): Promise<string> => {
   const { info: stocks } = await JQuantsClient<{ info: ListedInfoStruct[] }>('/v1/listed/info')
   // DynamoDBに保存
   const dynamoClient = new AWS.DynamoDB.DocumentClient()
-  const tableName = GetProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME')
+  const tableName = getProcessEnv('LISTED_INFO_DYNAMODB_TABLE_NAME')
   for (const stock of stocks) {
     const params = {
       TableName: tableName,
@@ -88,7 +88,7 @@ export const pricesDailyQuotesUpdateHandler = async (): Promise<string> => {
     date: today
   })
   const dynamoClient = new AWS.DynamoDB.DocumentClient()
-  const tableName = GetProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME')
+  const tableName = getProcessEnv('PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME')
   for (const price of prices) {
     // DynamoDBに保存
     const params = {
@@ -124,7 +124,7 @@ export const finsStatementsUpdateHandler = async (): Promise<string> => {
     date: today
   })
   const dynamoClient = new AWS.DynamoDB.DocumentClient()
-  const tableName = GetProcessEnv('FINS_STATEMENTS_DYNAMODB_TABLE_NAME')
+  const tableName = getProcessEnv('FINS_STATEMENTS_DYNAMODB_TABLE_NAME')
   for (const statement of statements) {
     // DynamoDBに保存
     const params = {

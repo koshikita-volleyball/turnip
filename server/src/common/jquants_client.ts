@@ -1,5 +1,5 @@
 import { baseUri } from './const'
-import GetProcessEnv from './process_env'
+import getProcessEnv from './process_env'
 import AWS from './aws'
 
 async function JQuantsClient<T> (
@@ -10,7 +10,7 @@ async function JQuantsClient<T> (
   const s3 = new AWS.S3()
   const data = await s3
     .getObject({
-      Bucket: GetProcessEnv('S3_BUCKET_NAME'),
+      Bucket: getProcessEnv('S3_BUCKET_NAME'),
       Key: 'id_token.txt'
     })
     .promise()
