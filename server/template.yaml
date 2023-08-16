@@ -179,6 +179,12 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: cron(0 22 * * ? *)
+      Environment:
+        Variables:
+          S3_BUCKET_NAME: !Ref MyBucket
+          LISTED_INFO_DYNAMODB_TABLE_NAME: !Ref ListedInfoTable
+          PRICES_DAILY_QUOTES_DYNAMODB_TABLE_NAME: !Ref PricesDailyQuotesTable
+          FINS_STATEMENTS_DYNAMODB_TABLE_NAME: !Ref FinsStatementsTable
     Metadata:
       DockerTag: nodejs18.x-v1
       DockerContext: ./src
