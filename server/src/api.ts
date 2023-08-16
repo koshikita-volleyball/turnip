@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/require-await */
 import './common/initializer'
 import { type APIGatewayEvent, type APIGatewayProxyHandler, type APIGatewayProxyResult } from 'aws-lambda'
-import { WebClient, LogLevel } from '@slack/web-api'
-import GetProcessEnv from './common/process_env'
 import { getStockByCode, getStocks } from './model/stock'
 import {
   checkRequired,
@@ -73,18 +71,6 @@ const finsStatementsHandler: APIFn = async event => {
   const finsStatements = await getFinsStatements({ code, date, from, to })
 
   return JSON.stringify(finsStatements)
-}
-
-export const slackNotifyHandler = async (): Promise<void> => {
-  const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
-    logLevel: LogLevel.DEBUG
-  })
-  const channel = GetProcessEnv('SLACK_CHANNEL_NOTICE')
-  const result = await slackClient.chat.postMessage({
-    text: '朝７時だよ！ :tori:',
-    channel
-  })
-  console.log(`Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`)
 }
 
 export const screenerHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
