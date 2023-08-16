@@ -1,3 +1,4 @@
+import './common/initializer'
 import { loggerError, loggerInfo } from './common/logger'
 import {
   refreshTokenUpdateHandler,
