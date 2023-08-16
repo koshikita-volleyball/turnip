@@ -10,7 +10,6 @@
   },
   "scripts": {
     "compile": "tsc",
-    "server": "ts-node server.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit",
