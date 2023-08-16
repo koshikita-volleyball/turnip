@@ -9,10 +9,10 @@ import dayjs from 'dayjs'
 import type PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
 import type FinsStatementsStruct from './interface/jquants/fins_statements'
 import { makeCodeBlock } from './common/logger'
+import { GetObjectCommand, PutObjectCommand, s3Client } from './common/s3_client'
 
 export const refreshTokenUpdateHandler = async (): Promise<string> => {
   const refreshToken = await GetRefreshToken()
-  const s3 = new AWS.S3()
   const bucket = getProcessEnv('S3_BUCKET_NAME')
   const key = 'refresh_token.txt'
   const params = {
@@ -20,19 +20,18 @@ export const refreshTokenUpdateHandler = async (): Promise<string> => {
     Key: key,
     Body: refreshToken
   }
-  await s3.putObject(params).promise()
+  await s3Client.send(new PutObjectCommand(params))
   return 'リフレッシュトークンを更新しました！ :key:'
 }
 
 export const idTokenUpdateHandler = async (): Promise<string> => {
   const bucket = getProcessEnv('S3_BUCKET_NAME')
-  const s3 = new AWS.S3()
   const refreshTokenGetParams = {
     Bucket: bucket,
     Key: 'refresh_token.txt'
   }
-  const data = await s3.getObject(refreshTokenGetParams).promise()
-  const refreshToken = data.Body?.toString('utf-8')
+  const refreshTokenS3RawData = await s3Client.send(new GetObjectCommand(refreshTokenGetParams))
+  const refreshToken = await refreshTokenS3RawData.Body?.transformToString()
   if (refreshToken == null) throw new Error('リフレッシュトークンが取得できませんでした。')
   // リフレッシュトークンを使ってIDトークンを更新
   const idToken = await GetIdToken(refreshToken)
@@ -42,7 +41,7 @@ export const idTokenUpdateHandler = async (): Promise<string> => {
     Key: 'id_token.txt',
     Body: idToken
   }
-  await s3.putObject(idTokenSaveParam).promise()
+  await s3Client.send(new PutObjectCommand(idTokenSaveParam))
   return `:tori::tori::tori: IDトークンを更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(idToken)}`
 }
 
