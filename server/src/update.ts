@@ -9,7 +9,6 @@ import dayjs from 'dayjs'
 import type PricesDailyQuotesStruct from './interface/jquants/prices_daily_quotes'
 import type FinsStatementsStruct from './interface/jquants/fins_statements'
 import { makeCodeBlock } from './common/logger'
-import { LogLevel, WebClient } from '@slack/web-api'
 
 export const refreshTokenUpdateHandler = async (): Promise<string> => {
   const refreshToken = await GetRefreshToken()
@@ -270,16 +269,4 @@ export const finsStatementsUpdateHandler = async (): Promise<string> => {
   }
   const itemCount = statements.length
   return `:tori::tori::tori: 財務情報を更新しました！ :tori::tori::tori:\n\n${makeCodeBlock(`更新件数: ${itemCount}件`)}`
-}
-
-export const slackNotifyHandler = async (): Promise<string> => {
-  const slackClient = new WebClient(GetProcessEnv('SLACK_API_TOKEN'), {
-    logLevel: LogLevel.DEBUG
-  })
-  const channel = GetProcessEnv('SLACK_CHANNEL_NOTICE')
-  const result = await slackClient.chat.postMessage({
-    text: '朝７時だよ！ :tori:',
-    channel
-  })
-  return `Successfully send message ${result.ts ?? 'xxxxx'} in conversation ${channel}.`
 }
