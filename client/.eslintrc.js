@@ -22,7 +22,8 @@ module.exports = {
     '.next',
     'node_modules',
     'build',
-    'dist'
+    'dist',
+    'next-env.d.ts'
   ],
   rules: {
   }
