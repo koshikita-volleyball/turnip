@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.391.0",
-    "@aws-sdk/util-dynamodb": "^3.395.0",
+    "@aws-sdk/util-dynamodb": "^3.410.0",
     "@slack/web-api": "^6.8.1",
     "aws-sdk": "^2.1441.0",
     "dayjs": "^1.11.7",
