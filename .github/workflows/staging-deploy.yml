@@ -17,7 +17,7 @@ jobs:
       - run: echo ${{ needs.job1.outputs.output1 }} ${{ needs.job1.outputs.output2 }}
       - name: Echo branch name
         run: echo ${{ needs.get-branch-name.outputs.branch_name }}
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
       - uses: aws-actions/setup-sam@v2
       - uses: aws-actions/configure-aws-credentials@v2
