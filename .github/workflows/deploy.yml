@@ -27,7 +27,7 @@ jobs:
         working-directory: ./server/src/
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
       - name: Install dependencies
@@ -71,7 +71,7 @@ jobs:
         working-directory: ./client/
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
       - name: Install dependencies
@@ -112,7 +112,7 @@ jobs:
             exit 1
           fi
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
       - name: Setup Pages
